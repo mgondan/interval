@@ -1,5 +1,5 @@
 % Interval arithmetic in Prolog
-:- module(interval, [ int/2, op(150, xfx, ...) ]).
+:- module(interval, [ int/2, op(150, xfx, ...), example/0 ]).
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
