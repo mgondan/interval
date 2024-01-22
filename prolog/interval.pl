@@ -1,5 +1,5 @@
 % Interval arithmetic in Prolog
-:- module(interval, [ int/2, op(150, xfx, ...), example/0 ]).
+:- module(interval, [ int/2, op(150, xfx, ...) ]).
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -18,6 +18,25 @@ example(2.0 * (1...2 / -1...1)).
 example(2...3 * (1...2 / -1...1)).
 example((2 * 1...2) / -1...1).
 example((2...3 * 1...2) / -1...1).
+example(2...4 =@= 1...3).
+example(-2...(-1)^(-1)).
+example(-1...2^(-1)).
+example(-2...1^(-1)).
+example(1...2^(-2)).
+example(-2...(-1)^(-2)).
+example(-1...2^(-2)).
+example(-2...1^(-2)).
+example(-2...(-1)^1).
+example(-1...2^1).
+example(-2...1^1).
+example(1...2^2).
+example(-2...(-1)^2).
+example(-1...2^2).
+example(-2...1^2).
+example(abs(-0.2 ... -0.1)).
+example(abs(0.1 ... 0.2)).
+example(abs(-0.2 ... 0.1)).
+example(abs(-0.1 ... 0.2)).
 
 example :-
     example(Expr),
@@ -45,6 +64,16 @@ top(L ... U, Res)
 % division is non-deterministic (see below)
 top(A / B, Res)
  => div(A, B, Res).
+
+% equality = overlapping
+top(A =@= B, Res)
+ => equal(A, B, Res).
+
+top(A^B, Res)
+ => power(A, B, Res).
+
+top(abs(A), Res)
+ => absolute(A, Res).
 
 % functions with "mono" support
 top(Expr, Res),
@@ -164,141 +193,190 @@ div(A ... B, C ... D, Res),
     Res = L...U.
 
 % N1 / P
-div(A ... B, 0.0 ... D, Res),
-    neg1(A ... B),
-    pos(0.0 ... D)
- => L is -1.0Inf,
-    U is B / D,
-    Res = L...U.
+div(A...B, 0.0...D, Res),
+    neg1(A...B),
+    pos(0.0...D)
+ => U is B / D,
+    Res = -1.0Inf...U.
 
-div(A ... B, C ... D, Res),
-    neg1(A ... B),
-    pos(C ... D)
+div(A...B, C...D, Res),
+    neg1(A...B),
+    pos(C...D)
  => L is A / C,
     U is B / D,
     Res = L...U.
 
 % P1 / M (2 solutions)
-div(A ... B, C ... D, Res),
-    pos1(A ... B),
-    mix(C ... D)
- => (   L is -1.0Inf,
-        U is A / C,
-        Res = L...U
+div(A...B, C...D, Res),
+    pos1(A...B),
+    mix(C...D)
+ => (   U is A / C,
+        Res = -1.0Inf...U
     ;   L is A / D,
-        U is 1.0Inf,
-        Res = L...U
+        Res = L...1.0Inf
     ).
 
 % P0 / M
-div(A ... B, C ... D, Res),
-    pos0(A ... B),
-    mix(C ... D)
- => L is -1.0Inf,
-    U is 1.0Inf,
-    Res = L...U.
+div(A...B, C...D, Res),
+    pos0(A...B),
+    mix(C...D)
+ => Res = -1.0Inf...1.0Inf.
 
 % M / M
-div(A ... B, C ... D, Res),
-    mix(A ... B),
-    mix(C ... D)
- => L is -1.0Inf,
-    U is 1.0Inf,
-    Res = L...U.
+div(A...B, C...D, Res),
+    mix(A...B),
+    mix(C...D)
+ => Res = -1.0Inf...1.0Inf.
 
 % N0 / M
-div(A ... B, C ... D, Res),
-    neg0(A ... B),
-    mix(C ... D)
- => L is -1.0Inf,
-    U is 1.0Inf,
-    Res = L...U.
+div(A...B, C...D, Res),
+    neg0(A...B),
+    mix(C...D)
+ => Res = -1.0Inf...1.0Inf.
 
 % N1 / M (2 solutions)
-div(A ... B, C ... D, Res),
-    neg0(A ... B),
-    mix(C ... D)
- => (   L is -1.0Inf,
-        U is B / D,
-        Res = L...U
+div(A...B, C...D, Res),
+    neg0(A...B),
+    mix(C...D)
+ => (   U is B / D,
+        Res = -1.0Inf...U
     ;   L is B / C,
-        U is 1.0Inf,
-        Res = L...U
+        Res = L...1.0Inf
     ).
 
 % P1 / N
-div(A ... B, C ... 0.0, Res),
-    pos1(A ... B),
-    neg(C ... 0.0)
- => L is -1.0Inf,
-    U is A / C,
-    Res = L...U.
+div(A...B, C...0.0, Res),
+    pos1(A...B),
+    neg(C...0.0)
+ => U is A / C,
+    Res = -1.0Inf...U.
 
-div(A ... B, C ... D, Res),
-    pos1(A ... B),
-    neg(C ... D)
+div(A...B, C...D, Res),
+    pos1(A...B),
+    neg(C...D)
  => L is B / D,
     U is A / C,
     Res = L...U.
 
 % P0 / N
-div(A ... B, C ... 0.0, Res),
-    pos0(A ... B),
-    neg(C ... 0.0)
- => L is -1.0Inf,
-    U is 0.0,
-    Res = L...U.
+div(A...B, C...0.0, Res),
+    pos0(A...B),
+    neg(C...0.0)
+ => Res = -1.0Inf...0.0.
 
-div(A ... B, C ... D, Res),
-    pos0(A ... B),
-    neg(C ... D)
+div(A...B, C...D, Res),
+    pos0(A...B),
+    neg(C...D)
  => L is B / D,
-    U is 0.0,
-    Res = L...U.
+    Res = L...0.0.
 
 % M / N
-div(A ... B, C ... 0.0, Res),
-    mix(A ... B),
-    neg(C ... 0.0)
- => L is -1.0Inf,
-    U is 1.0Inf,
-    Res = L...U.
+div(A...B, C...0.0, Res),
+    mix(A...B),
+    neg(C...0.0)
+ => Res = -1.0Inf...1.0Inf.
 
-div(A ... B, C ... D, Res),
-    mix(A ... B),
-    neg(C ... D)
+div(A...B, C...D, Res),
+    mix(A...B),
+    neg(C...D)
  => L is B / D,
     U is A / D,
     Res = L...U.
 
 % N0 / N
-div(A ... B, C ... 0.0, Res),
-    neg0(A ... B),
-    neg(C ... 0.0)
- => L is 0.0,
-    U is 1.0Inf,
-    Res = L...U.
+div(A...B, C...0.0, Res),
+    neg0(A...B),
+    neg(C...0.0)
+ => Res = 0.0...1.0Inf.
 
-div(A ... B, C ... D, Res),
-    neg0(A ... B),
-    neg(C ... D)
- => L is 0.0,
-    U is A / D,
-    Res = L...U.
+div(A...B, C...D, Res),
+    neg0(A...B),
+    neg(C...D)
+ => U is A / D,
+    Res = 0.0...U.
 
 % N1 / N
-div(A ... B, C ... 0.0, Res),
-    neg1(A ... B),
-    neg(C ... 0.0)
+div(A...B, C...0.0, Res),
+    neg1(A...B),
+    neg(C...0.0)
  => L is B / C,
-    U is 1.0Inf,
-    Res = L...U.
+    Res = L...1.0Inf.
 
-div(A ... B, C ... D, Res),
-    neg1(A ... B),
-    neg(C ... D)
+div(A...B, C...D, Res),
+    neg1(A...B),
+    neg(C...D)
  => L is B / C,
     U is A / D,
+    Res = L...U.
+
+% overlapping intervals are considered "equal"
+equal(A...B, C...D, Res),
+    L is max(A, C),
+    U is min(B, D),
+    L =< U
+ => Res = true.
+
+equal(_, _, Res)
+ => Res = false.
+
+% Power
+%
+% limited to integer exponents
+power(A...B, C, Res),
+    integer(C),
+    (   pos(A...B)
+    ;   neg(A...B)
+    )
+ => Ac is A^C,
+    Bc is B^C,
+    sort([Ac, Bc], [L, U]),
+    Res = L...U.
+
+% mixed
+power(A...B, C, Res),
+    integer(C),
+    C > 0,
+    1 is C mod 2
+ => Ac is A^C,
+    Bc is B^C,
+    sort([Ac, Bc], [L, U]),
+    Res = L...U.
+
+power(_..._, C, Res),
+    integer(C),
+    C < 0,
+    1 is C mod 2
+ => Res = -1.0Inf...1.0Inf.
+
+power(A...B, C, Res),
+    integer(C),
+    C > 0,
+    0 is C mod 2
+ => U is max(abs(A), B)^C,
+    Res = 0.0...U.
+
+power(A...B, C, Res),
+    integer(C),
+    C < 0,
+    0 is C mod 2
+ => L is min(abs(A), B)^C,
+    Res = L...1.0Inf.
+
+%
+% Absolute value
+%
+absolute(A, Res),
+    pos(A)
+ => Res = A.
+
+absolute(A, Res),
+    neg(A)
+ => int(-A, Res).
+
+absolute(A...B, Res)
+    % mixed
+ => L is 0.0,
+    U is max(-A, B),
     Res = L...U.
 
 %
@@ -327,7 +405,3 @@ neg0(L ... 0.0) :-
 
 neg1(_ ... U) :-
     U < 0.
-
-
-
-
