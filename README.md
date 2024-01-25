@@ -2,9 +2,9 @@
 
 Interval arithmetic for SWI-Prolog
 
-Example
+Usage
 ```
 pack_install(interval).
 use_module(library(interval)).
-example((2...3 * 1...2) / -1...1).
+interval((2...3 * 1...2) / -1...1, Res).
 ```
