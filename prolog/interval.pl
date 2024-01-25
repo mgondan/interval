@@ -1,5 +1,5 @@
 % Interval arithmetic in Prolog
-:- module(interval, [ int/2, op(150, xfx, ...) ]).
+:- module(interval, [ interval/2, lower/3, upper/3, op(150, xfx, ...) ]).
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -41,42 +41,49 @@ example(abs(-0.1 ... 0.2)).
 example :-
     example(Expr),
     writeln(Expr),
-    int(Expr, Res),
+    interval(Expr, Res),
     writeln(Res).
 
-% scalars, symbols like pi
-int(X, Res),
+% scalars, symbols like pi, do not change anything
+interval(X, Res),
     atomic(X)
  => Res = X.
 
+% already an interval
+interval(L...U, Res)
+ => Res = L...U.
+
 % nested expressions, evaluate components
-int(Expr, Res),
+interval(Expr, Res),
     compound(Expr)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(int, Args, List),
+    maplist(interval, Args, List),
     compound_name_arguments(Top, Name, List),
-    top(Top, Res).
+    int(Top, Res).
 
-% top-level expressions (do not evaluate their arguments)
-top(L ... U, Res)
- => Res = L ... U.
+%
+% define here how to handle interval functions
+%
+:- multifile int/2.
+int(L...U, Res)
+ => Res = L...U.
 
 % division is non-deterministic (see below)
-top(A / B, Res)
+int(A / B, Res)
  => div(A, B, Res).
 
 % equality = overlapping
-top(A =@= B, Res)
+int(A =@= B, Res)
  => equal(A, B, Res).
 
-top(A^B, Res)
+int(A^B, Res)
  => power(A, B, Res).
 
-top(abs(A), Res)
+int(abs(A), Res)
  => absolute(A, Res).
 
 % functions with "mono" support
-top(Expr, Res),
+int(Expr, Res),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, Signs)
  => compound_name_arguments(Expr, Name, Args),
@@ -104,6 +111,9 @@ lower(-, _...B, L)
 lower(*, A...B, L)
  => ( L = A ; L = B).
 
+lower(/, X, L)
+ => L = X.
+
 lower(_, X, L)
  => L = X.
 
@@ -115,6 +125,9 @@ upper(-, A..._, U)
 
 upper(*, A...B, U)
  => ( U = A ; U = B).
+
+upper(/, X, U)
+ => U = X.
 
 upper(_, X, U)
  => U = X.
@@ -130,64 +143,67 @@ mono((-)/2, [+, -]).
 % combine everything with everything
 mono((*)/2, [*, *]).
 
+% leave second argument unchanged
+mono((**)/2, [*, /]). % for testing
+
 % Hickey Theorem 8 and Figure 4
 %
 % P1 / P (special case, then general case)
-div(A ... B, 0.0 ... D, Res),
-    pos1(A ... B),
-    pos(0.0 ... D)
+div(A...B, 0.0...D, Res),
+    pos1(A...B),
+    pos(0.0...D)
  => L is A / D,
     U is 1.0Inf,
     Res = L...U.
 
-div(A ... B, C ... D, Res),
-    pos1(A ... B),
-    pos(C ... D)
+div(A...B, C...D, Res),
+    pos1(A...B),
+    pos(C...D)
  => L is A / D,
     U is B / C,
     Res = L...U.
 
 % P0 / P
-div(A ... B, 0.0 ... D, Res),
-    pos0(A ... B),
-    pos(0.0 ... D)
+div(A...B, 0.0...D, Res),
+    pos0(A...B),
+    pos(0.0...D)
  => L is 0.0,
     U is 1.0Inf,
     Res = L...U.
 
-div(A ... B, C ... D, Res),
-    pos0(A ... B),
-    pos(C ... D)
+div(A...B, C...D, Res),
+    pos0(A...B),
+    pos(C...D)
  => L is 0.0,
     U is B / C,
     Res = L...U.
 
 % M / P
-div(A ... B, 0.0 ... D, Res),
-    mix(A ... B),
-    pos(0.0 ... D)
+div(A...B, 0.0...D, Res),
+    mix(A...B),
+    pos(0.0...D)
  => L is -1.0Inf,
     U is 1.0Inf,
     Res = L...U.
 
-div(A ... B, C ... D, Res),
-    mix(A ... B),
-    pos(C ... D)
+div(A...B, C...D, Res),
+    mix(A...B),
+    pos(C...D)
  => L is A / C,
     U is B / C,
     Res = L...U.
 
 % N0 / P
-div(A ... B, 0.0 ... D, Res),
-    neg0(A ... B),
-    pos(0.0 ... D)
+div(A...B, 0.0...D, Res),
+    neg0(A...B),
+    pos(0.0...D)
  => L is -1.0Inf,
     U is 0.0,
     Res = L...U.
 
-div(A ... B, C ... D, Res),
-    neg0(A ... B),
-    pos(C ... D)
+div(A...B, C...D, Res),
+    neg0(A...B),
+    pos(C...D)
  => L is A / C,
     U is 0.0,
     Res = L...U.
@@ -319,9 +335,7 @@ equal(A...B, C...D, Res),
 equal(_, _, Res)
  => Res = false.
 
-% Power
-%
-% limited to integer exponents
+% power (limited to integer exponents)
 power(A...B, C, Res),
     integer(C),
     (   pos(A...B)
@@ -362,9 +376,7 @@ power(A...B, C, Res),
  => L is min(abs(A), B)^C,
     Res = L...1.0Inf.
 
-%
-% Absolute value
-%
+% absolute value
 absolute(A, Res),
     pos(A)
  => Res = A.
@@ -379,29 +391,28 @@ absolute(A...B, Res)
     U is max(-A, B),
     Res = L...U.
 
-%
 % Hickey Figure 1
-%
-mix(L ... U) :-
+mix(L...U) :-
     L < 0,
     U > 0.
 
-pos(L ... U) :-
+pos(L...U) :-
     L >= 0,
     U > 0.
 
-pos0(0.0 ... U) :-
+pos0(0.0...U) :-
     U > 0.
 
-pos1(L ... _) :-
+pos1(L..._) :-
     L > 0.
 
-neg(L ... U) :-
+neg(L...U) :-
     L < 0,
     U =< 0.
 
-neg0(L ... 0.0) :-
+neg0(L...0.0) :-
     L < 0.
 
-neg1(_ ... U) :-
+neg1(_...U) :-
     U < 0.
+
