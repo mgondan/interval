@@ -1,5 +1,7 @@
+:- module(rint, []).
+
+:- reexport(library(interval)).
 :- use_module(library(rologp)).
-:- use_module(library(interval)).
 
 interval:int(Expr, Res),
     compound(Expr),
@@ -20,4 +22,4 @@ interval:int(Expr, Res),
     max_list(Us, U),
     Res = L...U.
 
-rmono(pbinom/3, [/, /, +]).
+rmono(pbinom/3, [/, /, -]).
