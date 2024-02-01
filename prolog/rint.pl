@@ -25,3 +25,8 @@ interval:int(Expr, Res),
 rmono(pbinom/3, [/, /, -]).
 rmono(pnorm/1, [+]).
 rmono(pnorm/3, [+, -, *]). % probably wrong
+
+
+%qnorm
+rmono(qnorm/1, [+]).
+rmono(qnorm/3, [+, +, *]).
