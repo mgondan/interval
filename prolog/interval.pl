@@ -5,9 +5,15 @@
 :- set_prolog_flag(float_undefined, nan).
 :- set_prolog_flag(float_zero_div, infinity).
 
-example(1 + 2).
+:- begin_tests(wuenic).
+
+test(interval) :-
+  interval(1 + 2, 3.0...3.0),
+  interval(1...2 + 3...4, 4.0...6.0).
+
+:- end_tests(wuenic).
+
 example(1 + 3...4).
-example(1...2 + 3...4).
 example(1...2 + (3...4 + 5...6)).
 example(1...2 - 3...4).
 example(1...2 - (3...4 + 5...6)).
