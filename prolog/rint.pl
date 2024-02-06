@@ -25,8 +25,13 @@ interval:int(Expr, Res),
 rmono(pbinom/3, [/, /, -]).
 rmono(pnorm/1, [+]).
 rmono(pnorm/3, [+, -, *]). % probably wrong
-
-
-%qnorm
 rmono(qnorm/1, [+]).
 rmono(qnorm/3, [+, +, *]).
+
+rmono(mean/1, [+]).
+rmono(sum/1, [+]).
+rmono(median/1, [+]).
+rmono(lm/2, [-,-]).
+rmono(chisq.test/2, [+,+]).
+rmono(t.test/2, [+,+]).
+rmono(t.test/1, [+]).
