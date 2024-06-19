@@ -17,5 +17,5 @@ Include R-functions
 ```
 pack_install(rologp).
 use_module(library(rint)).
-interval(pbinom(3, 10, 0.1...0.2, Res)).
+interval(pbinom(3, 10, 0.1...0.2), Res).
 ```
