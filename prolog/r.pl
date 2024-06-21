@@ -11,7 +11,7 @@ r_initialize,
 
 r_initialize
  => pack_property(interval, directory(Dir)),
-    directory_file_path(Dir, prolog, Dir1),
+    directory_file_path(Dir, 'R', Dir1),
     r_source(r, Dir1),
     assert(r_initialized).
 
