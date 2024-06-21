@@ -1,4 +1,4 @@
-:- module(r, [r_initialize/0, r/1, r/2, r_source/1]).
+:- module(r, [r_initialize/0, r/1, r/2, r_source/2]).
 
 :- use_module(library(rologp)).
 
@@ -10,7 +10,9 @@ r_initialize,
  => true.
 
 r_initialize
- => r_source(r),
+ => pack_property(interval, directory(Dir)),
+    directory_file_path(Dir, prolog, Dir1),
+    r_source(r, Dir1),
     assert(r_initialized).
 
 % Call R
@@ -21,7 +23,9 @@ r(Expr)
 r(Expr, Res)
  => r_eval(Expr, Res).
 
-r_source(File)
- => format(string(String), "~w.R", [File]),
+r_source(Name, Dir)
+ => file_name_extension(Name, 'R', File),
+    directory_file_path(Dir, File, Path),
+    atom_string(Path, String),
     r(source(String)).
 
