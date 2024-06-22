@@ -155,6 +155,66 @@ eval(X, Res)
  => Res is X.
 
 %
+% Comparison
+%
+int_hook((<)/2).
+int_hook(_...A2 < B1..._, Res) :-
+    A2 < B1,
+    !,
+    Res = true.
+
+int_hook(_..._ < _..._, false).
+
+int_hook((=<)/2).
+int_hook(A1..._ =< _...B2, Res) :-
+    A1 =< B2,
+    !,
+    Res = true.
+
+int_hook(_..._ =< _..._, false).
+
+int_hook((>)/2).
+int_hook(A1..._ > _...B2, Res) :-
+    A1 > B2,
+    !,
+    Res = true.
+
+int_hook(_..._ > _..._, false).
+
+int_hook((>=)/2).
+int_hook(_...A2 >= B1..._, Res) :-
+    A2 >= B1,
+    !,
+    Res = true.
+
+int_hook(_..._ >= _..._, false).
+
+int_hook(A =\= B, Res) :-
+    (   interval(A < B, true)
+    ;   interval(A > B, true)
+    ), !,
+    Res = true.
+
+int_hook(_..._ =\= _..._, false).
+
+int_hook(A =:= B, Res) :-
+    interval(A =< B, true),
+    interval(A >= B, true),
+    !,
+    Res = true.
+
+int_hook(_..._ =:= _..._, false).
+
+:- begin_tests(comparison).
+
+test((<)) :-
+    A = 1...2,
+    B = 3...4,
+    interval(A < B, false).
+
+:- end_tests(comparison).
+
+%
 % Division
 %
 int_hook((/)/2).

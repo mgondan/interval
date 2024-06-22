@@ -124,21 +124,21 @@ rint :-
      interval(qbinom(Alpha, N, Pi, true), Res),
      writeln(qbinom(Alpha, N, Pi) --> Res).
 
-rint1 :-
+rint :-
      K = 10...11,
      N = 20...21,
      Pi = 0.60 ... 0.65,
      interval(dbinom(K, N, Pi), Res),
      writeln(dbinom(K, N, Pi) --> Res).
 
-rint1 :-
+rint :-
      K = 14...15,
      N = 20...21,
      Pi = 0.60 ... 0.65,
      interval(dbinom(K, N, Pi), Res),
      writeln(dbinom(K, N, Pi) --> Res).
 
-rint1 :-
+rint :-
      K = 10...15,
      N = 20...21,
      Pi = 0.60 ... 0.65,
