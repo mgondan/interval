@@ -5,14 +5,14 @@
 :- use_module(library(interval)).
 
 test_interval :-
-    run_tests([comparison]).
+    run_tests([interval]).
 
-:- begin_tests(comparison).
+:- begin_tests(interval).
 
 test((<)) :-
     A = 1...2,
     B = 3...4,
     interval(A < B, false).
 
-:- end_tests(comparison).
+:- end_tests(interval).
 
