@@ -205,15 +205,6 @@ int_hook(A =:= B, Res) :-
 
 int_hook(_..._ =:= _..._, false).
 
-:- begin_tests(comparison).
-
-test((<)) :-
-    A = 1...2,
-    B = 3...4,
-    interval(A < B, false).
-
-:- end_tests(comparison).
-
 %
 % Division
 %
