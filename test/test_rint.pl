@@ -4,7 +4,7 @@
 :- use_module(library(debug)).
 :- use_module(library(rint)).
 
-test_interval :-
+test_rint :-
     run_tests([binom]).
 
 :- begin_tests(binom).
@@ -17,4 +17,3 @@ test(dbinom1) :-
     U < 0.17971.
 
 :- end_tests(binom).
-
