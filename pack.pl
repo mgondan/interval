@@ -1,3 +1,4 @@
+pack_version(2).
 name(interval).
 title('Interval arithmetic for SWI-Prolog').
 version('0.1').

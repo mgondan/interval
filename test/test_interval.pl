@@ -12,7 +12,7 @@ test_interval :-
 test((<)) :-
     A = 1...2,
     B = 3...4,
-    interval(A < B, false).
+    interval(A < B, true).
 
 :- end_tests(interval).
 
