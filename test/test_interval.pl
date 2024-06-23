@@ -7,12 +7,12 @@
 test_interval :-
     run_tests([interval]).
 
-:- begin_tests(interval).
+:- begin_tests(comparison).
 
-test((<)) :-
+test(<) :-
     A = 1...2,
     B = 3...4,
     interval(A < B, true).
 
-:- end_tests(interval).
+:- end_tests(comparison).
 
