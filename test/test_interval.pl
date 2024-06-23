@@ -5,7 +5,7 @@
 :- use_module(library(interval)).
 
 test_interval :-
-    run_tests([interval]).
+    run_tests([comparison]).
 
 :- begin_tests(comparison).
 
