@@ -22,4 +22,4 @@ include(swipl)
 
 enable_testing()
 swipl_add_test(interval)
-
+swipl_add_test(rint)
