@@ -17,6 +17,10 @@
 interval(A, Res) :-
     interval(A, Res, []).
 
+% For maplist
+interval_(Opt, A, Res) :-
+    interval(A, Res, Opt).
+
 %
 % If 1st argument already is an interval, do not do anything
 %
@@ -35,7 +39,7 @@ interval(Expr, Res, Opt),
     compound_name_arity(Expr, Name, Arity),
     int_hook(Name/Arity)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval, Args, Args1),
+    maplist(interval_(Opt), Args, Args1),
     compound_name_arguments(Expr1, Name, Args1),
     int_hook(Expr1, Res, Opt).
 
@@ -75,7 +79,7 @@ interval(Expr, Res, Opt),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, **)
  => Expr =.. [ Name | Args],
-    maplist(interval, Args, Args1, Opt),
+    maplist(interval_(Opt), Args, Args1),
     findall(R, both(Name, Args1, R), Bounds),
     min_list(Bounds, L),
     max_list(Bounds, U),
@@ -92,7 +96,7 @@ interval(Expr, Res, Opt),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, Dir)
  => Expr =.. [ Name | Args],
-    maplist(interval, Args, Args1, Opt),
+    maplist(interval_(Opt), Args, Args1),
     findall(R, lower(Dir, Name, Args1, R), Lower),
     min_list(Lower, L),
     findall(R, upper(Dir, Name, Args1, R), Upper),
