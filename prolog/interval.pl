@@ -419,3 +419,27 @@ div(A...B, C...D, Res),
     eval(A / D, U),
     Res = L...U.
 
+%
+% Square root
+%
+% sqrt/1: "normal" behavior, returns nan for negative argument
+% sqrt1/1: crops negative part of interval at 0
+%
+mono(sqrt/1, [+]).
+
+int_hook(sqrt1/1).
+int_hook(sqrt1(A...B), Res) :-
+    strictneg(A, B),
+    !, Res = 1.5NaN.
+
+int_hook(sqrt1(A...B), Res) :-
+    zeroneg(A, B),
+    !, Res = 0.0.
+
+int_hook(sqrt1(A...B), Res) :-
+    mixed(A, B),
+    !, interval(sqrt(0...B), Res).
+
+int_hook(sqrt1(X), Res) :-
+    interval(sqrt(X), Res).
+    
