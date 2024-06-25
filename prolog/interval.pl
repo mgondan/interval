@@ -1,34 +1,26 @@
-:- module(interval, [interval/2, op(150, xfx, ...)]).
+:- module(interval, [interval/2, interval/3, op(150, xfx, ...)]).
 
 :- multifile int_hook/1.
-:- multifile int_hook/2.
+:- multifile int_hook/3.
 :- multifile eval_hook/2.
 :- multifile mono/2.
 
-:- discontiguous interval/2.
+:- discontiguous interval/3.
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
 :- set_prolog_flag(float_zero_div, infinity).
 
-test :-
-    test(A),
-    interval(A, Res),
-    writeln(A = Res).
-
-test(1.1 / -1.2... -1.1).
-test(1.1...1.2 / -1.2...1.3).
-test(1.1...1.2 / 1.2...1.3).
-test(1.1 + 1.2...1.3 * 2.1).
-test(1.2...1.3 * 2.1...2.4).
-test(1.2...1.3 - 2.1...2.4).
-test(1.2...1.3 + 2.1...2.4).
-test(1.2...1.3).
+%
+% User-level
+%
+interval(A, Res) :-
+    interval(A, Res, []).
 
 %
 % If 1st argument already is an interval, do not do anything
 %
-interval(L...U, Res)
+interval(L...U, Res, _)
  => Res = L...U.
 
 %
@@ -38,27 +30,27 @@ interval(L...U, Res)
 % 2. Calculate result with interval:int_hook(Expr, Res)
 %
 % see below example for (/)/2.
-interval(Expr, Res),
+interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     int_hook(Name/Arity)
  => compound_name_arguments(Expr, Name, Args),
     maplist(interval, Args, Args1),
     compound_name_arguments(Expr1, Name, Args1),
-    int_hook(Expr1, Res).
+    int_hook(Expr1, Res, Opt).
 
 %
 % Default behavior for atoms
 %
 % force result to interval (deprecated)
-interval(A, L...U),
+interval(A, L...U, _),
     atomic(A)
  => eval(A, R),
     L = R,
     U = R.
 
 % work with atom
-interval(A, Res),
+interval(A, Res, _),
     atomic(A)
  => eval(A, Res).
 
@@ -78,12 +70,12 @@ mono((-)/2, [+, -]).
 mono((*)/2, **).
 
 % special case: multiplication ([*, *], commutative)
-interval(Expr, Res),
+interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, **)
  => Expr =.. [ Name | Args],
-    maplist(interval, Args, Args1),
+    maplist(interval, Args, Args1, Opt),
     findall(R, both(Name, Args1, R), Bounds),
     min_list(Bounds, L),
     max_list(Bounds, U),
@@ -95,12 +87,12 @@ both(Name, Args, Res) :-
     eval(Expr, Res).
 
 % general case
-interval(Expr, Res),
+interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, Dir)
  => Expr =.. [ Name | Args],
-    maplist(interval, Args, Args1),
+    maplist(interval, Args, Args1, Opt),
     findall(R, lower(Dir, Name, Args1, R), Lower),
     min_list(Lower, L),
     findall(R, upper(Dir, Name, Args1, R), Upper),
@@ -158,67 +150,67 @@ eval(X, Res)
 % Comparison
 %
 int_hook((<)/2).
-int_hook(_...A2 < B1..._, Res) :-
+int_hook(_...A2 < B1..._, Res, _) :-
     A2 < B1,
     !,
     Res = true.
 
-int_hook(_..._ < _..._, false).
+int_hook(_..._ < _..._, false, _).
 
 int_hook((=<)/2).
-int_hook(A1..._ =< _...B2, Res) :-
+int_hook(A1..._ =< _...B2, Res, _) :-
     A1 =< B2,
     !,
     Res = true.
 
-int_hook(_..._ =< _..._, false).
+int_hook(_..._ =< _..._, false, _).
 
 int_hook((>)/2).
-int_hook(A1..._ > _...B2, Res) :-
+int_hook(A1..._ > _...B2, Res, _) :-
     A1 > B2,
     !,
     Res = true.
 
-int_hook(_..._ > _..._, false).
+int_hook(_..._ > _..._, false, _).
 
 int_hook((>=)/2).
-int_hook(_...A2 >= B1..._, Res) :-
+int_hook(_...A2 >= B1..._, Res, _) :-
     A2 >= B1,
     !,
     Res = true.
 
-int_hook(_..._ >= _..._, false).
+int_hook(_..._ >= _..._, false, _).
 
-int_hook(A =\= B, Res) :-
-    (   interval(A < B, true)
-    ;   interval(A > B, true)
+int_hook(A =\= B, Res, Opt) :-
+    (   interval(A < B, true, Opt)
+    ;   interval(A > B, true, Opt)
     ), !,
     Res = true.
 
-int_hook(_..._ =\= _..._, false).
+int_hook(_..._ =\= _..._, false, _).
 
-int_hook(A =:= B, Res) :-
-    interval(A =< B, true),
-    interval(A >= B, true),
+int_hook(A =:= B, Res, Opt) :-
+    interval(A =< B, true, Opt),
+    interval(A >= B, true, Opt),
     !,
     Res = true.
 
-int_hook(_..._ =:= _..._, false).
+int_hook(_..._ =:= _..._, false, _).
 
 %
 % Division
 %
 int_hook((/)/2).
-int_hook(A1...A2 / B1...B2, Res) :-
+int_hook(A1...A2 / B1...B2, Res, _) :-
     div(A1...A2, B1...B2, Res).
 
-int_hook(A1...A2 / B, Res) :-
+int_hook(A1...A2 / B, Res, _) :-
     div(A1...A2, B...B, Res).
 
-int_hook(A / B1...B2, Res) :-
+int_hook(A / B1...B2, Res, _) :-
     div(A...A, B1...B2, Res).
 
-int_hook(A / B, Res) :-
+int_hook(A / B, Res, _) :-
     Res is A / B.
 
 % Hickey Figure 1
@@ -428,18 +420,18 @@ div(A...B, C...D, Res),
 mono(sqrt/1, [+]).
 
 int_hook(sqrt1/1).
-int_hook(sqrt1(A...B), Res) :-
+int_hook(sqrt1(A...B), Res, _) :-
     strictneg(A, B),
     !, Res = 1.5NaN.
 
-int_hook(sqrt1(A...B), Res) :-
+int_hook(sqrt1(A...B), Res, _) :-
     zeroneg(A, B),
     !, Res = 0.0.
 
-int_hook(sqrt1(A...B), Res) :-
+int_hook(sqrt1(A...B), Res, Opt) :-
     mixed(A, B),
-    !, interval(sqrt(0...B), Res).
+    !, interval(sqrt(0...B), Res, Opt).
 
-int_hook(sqrt1(X), Res) :-
-    interval(sqrt(X), Res).
+int_hook(sqrt1(X), Res, Opt) :-
+    interval(sqrt(X), Res, Opt).
     

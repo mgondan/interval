@@ -9,7 +9,7 @@
 % Skip R vectors
 %
 interval:int_hook((:)/2).
-interval:int_hook(A:B, A:B).
+interval:int_hook(A:B, A:B, _).
 
 %
 % Obtain atoms or functions from R
@@ -36,15 +36,15 @@ r_hook(false).
 interval:int_hook(pbinom/4).
 
 % lower tail
-interval:int_hook(pbinom(X, N, P, true), Res) :-
-    interval(pbinom0(X, N, P), Res).
+interval:int_hook(pbinom(X, N, P, true), Res, Opt) :-
+    interval(pbinom0(X, N, P), Res, Opt).
 
 r_hook(pbinom0/3).
 interval:mono(pbinom0/3, [+, -, -]).
 
 % upper tail
-interval:int_hook(pbinom(X, N, P, false), Res) :-
-    interval(pbinom1(X, N, P), Res).
+interval:int_hook(pbinom(X, N, P, false), Res, Opt) :-
+    interval(pbinom1(X, N, P), Res, Opt).
 
 r_hook(pbinom1/3).
 interval:mono(pbinom1/3, [-, +, +]).
@@ -55,15 +55,15 @@ interval:mono(pbinom1/3, [-, +, +]).
 interval:int_hook(qbinom/4).
 
 % lower tail
-interval:int_hook(qbinom(Alpha, N, P, true), Res) :-
-    interval(qbinom0(Alpha, N, P), Res).
+interval:int_hook(qbinom(Alpha, N, P, true), Res, Opt) :-
+    interval(qbinom0(Alpha, N, P), Res, Opt).
 
 r_hook(qbinom0/3).
 interval:mono(qbinom0/3, [+, +, +]).
 
 % upper tail
-interval:int_hook(qbinom(Alpha, N, P, false), Res) :-
-    interval(qbinom1(Alpha, N, P), Res).
+interval:int_hook(qbinom(Alpha, N, P, false), Res, Opt) :-
+    interval(qbinom1(Alpha, N, P), Res, Opt).
 
 r_hook(qbinom1/3).
 interval:mono(qbinom1/3, [-, +, +]).
@@ -74,25 +74,25 @@ interval:mono(qbinom1/3, [-, +, +]).
 interval:int_hook(dbinom/3).
 
 % left to X / N
-interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res) :-
+interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res, Opt) :-
     X2 < N1 * P1,
     !,
-    interval(dbinom0(X1...X2, N1...N2, P1...P2), Res).
+    interval(dbinom0(X1...X2, N1...N2, P1...P2), Res, Opt).
 
 r_hook(dbinom0/3).
 interval:mono(dbinom0/3, [+, -, -]).
 
 % right to X / N
-interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res) :-
+interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res, Opt) :-
     X1 > N2 * P2,
     !,
-    interval(dbinom1(X1...X2, N1...N2, P1...P2), Res).
+    interval(dbinom1(X1...X2, N1...N2, P1...P2), Res, Opt).
 
 r_hook(dbinom1/3).
 interval:mono(dbinom1/3, [-, +, +]).
 
 % otherwise
-interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res) :-
+interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res, _) :-
     r(dbinom2(X1, X2, N1, N2, P1, P2), #(L, U)),
     Res = L...U.
 
