@@ -438,4 +438,22 @@ int_hook(sqrt1(A...B), Res, Opt) :-
 
 int_hook(sqrt1(X), Res, Opt) :-
     interval(sqrt(X), Res, Opt).
-    
+
+%
+% round interval
+%
+int_hook(round/1).
+int_hook(round(A...B), Res, Opt) :-
+    option(digit(Dig), Opt, 2),
+    eval(floor(A, Dig), A1),
+    eval(ceiling(B, Dig), B1),
+    Res = A1...B1.
+
+eval_hook(floor(A, Dig), Res) :-
+    Mul is 10^Dig,
+    Res is floor(A * Mul) / Mul.
+
+eval_hook(ceiling(A, Dig), Res) :-
+    Mul is 10^Dig,
+    Res is ceiling(A * Mul) / Mul.
+

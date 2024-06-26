@@ -9,7 +9,7 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 test_interval :-
-    run_tests([comparison, sqrt]).
+    run_tests([comparison, sqrt, round]).
 
 :- begin_tests(comparison).
 
@@ -93,4 +93,14 @@ test(sqrt10) :-
     X = 1.5NaN.
 
 :- end_tests(sqrt).
+
+:- begin_tests(round).
+
+test(round1) :-
+    A = 2.71828...3.14159,
+    interval(round(A), L...U),
+    L = 2.71,
+    U = 3.15.
+
+:- end_tests(round).
 
