@@ -426,18 +426,44 @@ mono(sqrt/1, [+]).
 int_hook(sqrt1/1).
 int_hook(sqrt1(A...B), Res, _) :-
     strictneg(A, B),
-    !, Res = 1.5NaN.
+    !,
+    Res = 1.5NaN.
 
 int_hook(sqrt1(A...B), Res, _) :-
     zeroneg(A, B),
-    !, Res = 0.0.
+    !,
+    Res = 0.0.
 
 int_hook(sqrt1(A...B), Res, Opt) :-
     mixed(A, B),
-    !, interval(sqrt(0...B), Res, Opt).
+    !,
+    interval(sqrt(0...B), Res, Opt).
 
 int_hook(sqrt1(X), Res, Opt) :-
     interval(sqrt(X), Res, Opt).
+
+%
+% Absolute value
+%
+int_hook(abs/1).
+int_hook(abs(A...B), Res, _) :-
+    positive(A, B),
+    !,
+    Res = A...B.
+
+int_hook(abs(A...B), Res, _) :-
+    negative(A, B),
+    !,
+    eval(abs(A), U),
+    eval(abs(B), L),
+    Res = L...U.
+
+% mixed
+int_hook(abs(A...B), Res, _) :-
+    !,
+    L = 0.0,
+    U is max(A, B),
+    Res = L...U.
 
 %
 % round interval
