@@ -222,13 +222,12 @@ mixed(L, U) :-
     L < 0,
     U > 0.
 
-zero(0.0, 0.0).
-
 positive(L, U) :-
     L >= 0,
     U > 0.
 
-zeropos(0.0, U) :-
+zeropos(L, U) :-
+    L =:= 0,
     U > 0.
 
 strictpos(L, _) :-
@@ -238,8 +237,9 @@ negative(L, U) :-
     L < 0,
     U =< 0.
 
-zeroneg(L, 0.0) :-
-    L < 0.
+zeroneg(L, U) :-
+    L < 0,
+    U =:= 0.
 
 strictneg(_, U) :-
     U < 0.
@@ -248,9 +248,9 @@ strictneg(_, U) :-
 % Hickey Theorem 8 and Figure 4
 %
 % P1 / P (special case, then general case)
-div(A...B, 0.0...D, Res),
+div(A...B, C...D, Res),
     strictpos(A, B),
-    positive(0.0, D)
+    zeropos(C, D)
  => eval(A / D, L),
     Res = L...1.0Inf.
 
@@ -462,7 +462,7 @@ int_hook(abs(A...B), Res, _) :-
 int_hook(abs(A...B), Res, _) :-
     !,
     L = 0.0,
-    U is max(A, B),
+    U is max(abs(A), abs(B)),
     Res = L...U.
 
 %

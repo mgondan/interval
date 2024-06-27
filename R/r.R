@@ -30,3 +30,7 @@ dbinom2 = function(k1, k2, N1, N2, p1, p2)
   c(min(d1), max(d2))
 }
 
+# pnorm/qnorm with 1 argument z
+pnorm0 <- pnorm
+qnorm0 <- qnorm
+dnorm0 <- dnorm1 <- dnorm2 <- dnorm

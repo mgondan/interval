@@ -96,52 +96,55 @@ interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res, _) :-
     r(dbinom2(X1, X2, N1, N2, P1, P2), #(L, U)),
     Res = L...U.
 
-rint :-
-     K = 10 ... 11,
-     N = 20 ... 21,
-     Pi = 0.50 ... 0.55,
-     interval(pbinom(K, N, Pi, true), Res),
-     writeln(pbinom(K, N, Pi) --> Res).
+%
+% Normal distribution
+%
+r_hook(pnorm0/1).
+interval:mono(pnorm0/1, [+]).
 
-rint :-
-     K = 10 ... 11,
-     N = 20 ... 21,
-     Pi = 0.50 ... 0.55,
-     interval(pbinom0(K, N, Pi), Res),
-     writeln(pbinom0(K, N, Pi) --> Res).
+interval:int_hook(pnorm/3).
+interval:int_hook(pnorm(X, Mu, Sigma), Res, Opt) :-
+     interval((X - Mu)/Sigma, Z, Opt),
+     interval(pnorm0(Z), Res, Opt).
 
-rint :-
-     K = 10 ... 11,
-     N = 20 ... 21,
-     Pi = 0.50 ... 0.55,
-     interval(pbinom1(K, N, Pi), Res),
-     writeln(pbinom1(K, N, Pi) --> Res).
+%
+% Quantile function
+%
+r_hook(qnorm0/1).
+interval:mono(qnorm0/1, [+]).
 
-rint :-
-     Alpha = 0.05 ... 0.06,
-     N = 60 ... 65,
-     Pi = 0.50 ... 0.55,
-     interval(qbinom(Alpha, N, Pi, true), Res),
-     writeln(qbinom(Alpha, N, Pi) --> Res).
+interval:int_hook(qnorm/3).
+interval:int_hook(qnorm(P, Mu, Sigma), Res, Opt) :-
+     interval(qnorm0(P), Z, Opt),
+     interval(Mu + Z * Sigma, Res, Opt).
 
-rint :-
-     K = 10...11,
-     N = 20...21,
-     Pi = 0.60 ... 0.65,
-     interval(dbinom(K, N, Pi), Res),
-     writeln(dbinom(K, N, Pi) --> Res).
+%
+% Density
+%
+r_hook(dnorm1/1).
+interval:mono(dnorm1/1, [+]).
 
-rint :-
-     K = 14...15,
-     N = 20...21,
-     Pi = 0.60 ... 0.65,
-     interval(dbinom(K, N, Pi), Res),
-     writeln(dbinom(K, N, Pi) --> Res).
+r_hook(dnorm2/1).
+interval:mono(dnorm2/1, [-]).
 
-rint :-
-     K = 10...15,
-     N = 20...21,
-     Pi = 0.60 ... 0.65,
-     interval(dbinom(K, N, Pi), Res),
-     writeln(dbinom(K, N, Pi) --> Res).
+interval:int_hook(dnorm/3).
+interval:int_hook(dnorm(X, Mu, Sigma), Res, Opt) :-
+    interval((X - Mu)/Sigma, Z, Opt),
+    interval(1/Sigma * dnorm0(Z), Res, Opt).
+
+interval:int_hook(dnorm0/1).
+interval:int_hook(dnorm0(A...B), Res, Opt) :-
+    B =< 0,
+    !,
+    interval(dnorm1(A...B), Res, Opt).
+
+interval:int_hook(dnorm0(A...B), Res, Opt) :-
+    A >= 0,
+    !,
+    interval(dnorm2(A...B), Res, Opt).
+
+% mixed
+interval:int_hook(dnorm0(A...B), Res, Opt) :-
+    Max is max(abs(A), B),
+    interval(dnorm2(0...Max), Res, Opt).
 
