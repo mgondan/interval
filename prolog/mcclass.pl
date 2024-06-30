@@ -19,7 +19,7 @@ interval:int_hook(dfrac(A, B), Res, Opt) :-
 %
 interval:int_hook(tstat/1).
 interval:int_hook(tstat(A), Res, Opt) :-
-    interval(A, R, [digits(2) | Opt]).
+    interval(A, Res, [digits(2) | Opt]).
 
 %
 % Forget parts of an expression
