@@ -85,7 +85,7 @@ test(sqrt8) :-
 test(sqrt9) :-
     A = -2...0,
     interval(sqrt1(A), X),
-    X = 1.5NaN...0.0.
+    X = 0.0.
 
 test(sqrt10) :-
     A = -2... -1,
