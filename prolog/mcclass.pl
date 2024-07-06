@@ -12,7 +12,7 @@ interval:int_hook(frac(A, B), Res, Opt) :-
 
 interval:int_hook(dfrac/2).
 interval:int_hook(dfrac(A, B), Res, Opt) :-
-    interval(A / B, Res), Opt.
+    interval(A / B, Res, Opt).
 
 %
 % Reasonable number of digits
