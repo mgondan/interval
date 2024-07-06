@@ -34,6 +34,16 @@ interval(L...U, Res, _)
 % 2. Calculate result with interval:int_hook(Expr, Res)
 %
 % see below example for (/)/2.
+
+% no evaluation through maplist
+interval(Expr, Res, Opt),
+    compound(Expr),
+    compound_name_arity(Expr, Name, Arity),
+    memberchk(Name, [omit_left, omit_right]),
+    int_hook(Name/Arity)
+ => int_hook(Expr, Res, Opt).
+
+
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
