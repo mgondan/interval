@@ -206,24 +206,17 @@ int_hook(_..._ =:= _..._, false, _).
 %
 int_hook((/)/2).
 int_hook(A1...A2 / B1...B2, Res, _) :-
-    (
-        strictneg(A1, A2);
-        strictpos(A1, A2)
-    ),
-    mixed(B1,B2),
+    !,
     div(A1...A2, B1...B2, Res).
 
-int_hook(A1...A2 / B1...B2, Res, _) :-
-    div(A1...A2, B1...B2, Res),
-    !.
-
 int_hook(A1...A2 / B, Res, _) :-
-    div(A1...A2, B...B, Res),
-    !.
+    !,
+    div(A1...A2, B...B, Res).
 
 int_hook(A / B1...B2, Res, _) :-
-    div(A...A, B1...B2, Res),
-    !.
+    !,
+    div(A...A, B1...B2, Res).
+
 
 int_hook(A / B, Res, _) :-
     Res is A / B.
