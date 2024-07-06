@@ -9,7 +9,7 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 test_interval :-
-    run_tests([comparison, sqrt, abs, round]).
+    run_tests([comparison, division, sqrt, abs, round]).
 
 :- begin_tests(comparison).
 
@@ -24,6 +24,212 @@ test(=<) :-
     interval(A =< B, true).
 
 :- end_tests(comparison).
+
+:- begin_tests(division).
+
+test(dividend_strictpos_divisor_zeropos) :-
+    A = 1...2,
+    B = 0...2,
+    interval(A / B, L...U),
+    L is 0.5,
+    U is 1.0Inf.
+
+test(dividend_strictpos_divisor_positive) :-
+    A = 1...2,
+    B = 1...2,
+    interval(A / B, L...U),
+    L is 0.5,
+    U is 2.
+
+test(dividend_zeropos_divisor_zeropos) :-
+    A = 0...2,
+    B = 0...1,
+    interval(A / B, L...U),
+    L is 0.0,
+    U is 1.0Inf.
+
+test(dividend_zeropos_divisor_positive) :-
+    A = 0...2,
+    B = 1...2,
+    interval(A / B, L...U),
+    L is 0.0,
+    U is 2.
+
+test(dividend_mixed_divisor_zeropos) :-
+    A = -1...1,
+    B = 0...1,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is 1.0Inf.
+
+test(dividend_mixed_divisor_positive) :-
+    A = -1...1,
+    B = 2...4,
+    interval(A / B, L...U),
+    L is -0.5,
+    U is 0.5.
+
+test(dividend_zeroneg_divisor_zeropos) :-
+    A = -1...0,
+    B = 0...1,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is 0.0.
+
+test(dividend_zeroneg_divisor_positive) :-
+    A = -1...0,
+    B = 2...3,
+    interval(A / B, L...U),
+    L is -0.5,
+    U is 0.0.
+
+test(dividend_strictneg_divisor_zeropos) :-
+    A = -2... -1,
+    B = 0...2,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is -0.5.
+
+test(dividend_strictneg_divisor_positive) :-
+    A = -2... -1,
+    B = 2...4,
+    interval(A / B, L...U),
+    L is -1,
+    U is -0.25.
+
+test(dividend_strictpos_divisor_mixed) :-
+    A = 1...2,
+    B = -2...1,
+    setof(Res, interval(A / B, Res), Results), 
+    L1 is -1.0Inf,
+    U1 is -0.5,
+    L2 is 1,
+    U2 is 1.0Inf,
+    Results = [L1...U1, L2...U2].
+    
+
+test(dividend_zeropos_divisor_mixed) :-
+    A = 0...1,
+    B = -1...1,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is 1.0Inf.
+
+test(dividend_mixed_divisor_mixed) :-
+    A = -1...1,
+    B = -2...2,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is 1.0Inf.
+
+test(dividend_zeroneg_divisor_mixed) :-
+    A = -1...0,
+    B = -2...2,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is 1.0Inf.
+
+test(dividend_strictneg_divisor_mixed) :-
+    A = -2... -1,
+    B = -2...2,
+    setof(Res, interval(A / B, Res), Results), 
+    L1 is -1.0Inf,
+    U1 is -0.5,
+    L2 is 0.5,
+    U2 is 1.0Inf,
+    Results = [L1...U1, L2...U2].
+
+test(dividend_strictpos_divisor_zeroneg) :-
+    A = 1...2,
+    B = -2...0.0,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is -0.5.
+
+test(dividend_strictpos_divisor_negative) :-
+    A = 1...2,
+    B = -2... -1,
+    interval(A / B, L...U),
+    L is -2,
+    U is -0.5.
+
+test(dividend_zeropos_divisor_zeroneg) :-
+    A = 0...1,
+    B = -1...0.0,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is 0.0.
+
+test(dividend_zeropos_divisor_negative) :-
+    A = 0...1,
+    B = -2... -1,
+    interval(A / B, L...U),
+    L is -1,
+    U is 0.0.
+
+test(dividend_mixed_divisor_zeroneg) :-
+    A = -1...2,
+    B = -2...0.0,
+    interval(A / B, L...U),
+    L is -1.0Inf,
+    U is 1.0Inf.
+
+test(dividend_mixed_divisor_negative) :-
+    A = -1...2,
+    B = -2... -1,
+    interval(A / B, L...U),
+    L is -2,
+    U is 1.
+
+test(dividend_zeroneg_divisor_zeroneg) :-
+    A = -1...0,
+    B = -2...0.0,
+    interval(A / B, L...U),
+    L is 0.0,
+    U is 1.0Inf.
+
+test(dividend_zeroneg_divisor_negative) :-
+    A = -1...0,
+    B = -2... -1,
+    interval(A / B, L...U),
+    L is 0.0,
+    U is 1.
+
+test(dividend_strictneg_divisor_zeroneg) :-
+    A = -2... -1,
+    B = -2...0.0,
+    interval(A / B, L...U),
+    L is 0.5,
+    U is 1.0Inf.
+
+test(dividend_strictneg_divisor_negative) :-
+    A = -2... -1,
+    B = -2... -1,
+    interval(A / B, L...U),
+    L is 0.5,
+    U is 2.
+
+test(dividend_interval_divisor_number) :-
+    A = -2... -1,
+    B is 2,
+   interval(A / B, L...U),
+    L is -1,
+    U is -0.5.
+
+test(dividend_number_divisor_interval) :-
+    A = 2,
+    B = -2... -1,
+    interval(A / B, L...U),
+    L is -2,
+    U is -1.
+
+test(dividend_number_divisor_number) :-
+    A = 1,
+    B = 2,
+    interval(A / B, Res),
+    Res is 0.5.
+
+:- end_tests(division).
 
 :- begin_tests(sqrt).
 
