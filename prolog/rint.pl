@@ -8,7 +8,7 @@
 %
 % Skip R vectors
 %
-interval:int_hook((:)/2).
+interval:int_hook_register((:)/2, []).
 interval:int_hook(A:B, A:B, _).
 
 %
@@ -33,7 +33,7 @@ r_hook(false).
 %
 % Binomial distribution
 %
-interval:int_hook(pbinom/4).
+interval:int_hook_register(pbinom/4, []).
 
 % lower tail
 interval:int_hook(pbinom(X, N, P, true), Res, Opt) :-
@@ -52,7 +52,7 @@ interval:mono(pbinom1/3, [-, +, +]).
 %
 % Quantile function
 %
-interval:int_hook(qbinom/4).
+interval:int_hook_register(qbinom/4, []).
 
 % lower tail
 interval:int_hook(qbinom(Alpha, N, P, true), Res, Opt) :-
@@ -71,7 +71,7 @@ interval:mono(qbinom1/3, [-, +, +]).
 %
 % Density
 %
-interval:int_hook(dbinom/3).
+interval:int_hook_register(dbinom/3, []).
 
 % left to X / N
 interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res, Opt) :-
@@ -102,7 +102,7 @@ interval:int_hook(dbinom(X1...X2, N1...N2, P1...P2), Res, _) :-
 r_hook(pnorm0/1).
 interval:mono(pnorm0/1, [+]).
 
-interval:int_hook(pnorm/3).
+interval:int_hook_register(pnorm/3, []).
 interval:int_hook(pnorm(X, Mu, Sigma), Res, Opt) :-
      interval((X - Mu)/Sigma, Z, Opt),
      interval(pnorm0(Z), Res, Opt).
@@ -113,7 +113,7 @@ interval:int_hook(pnorm(X, Mu, Sigma), Res, Opt) :-
 r_hook(qnorm0/1).
 interval:mono(qnorm0/1, [+]).
 
-interval:int_hook(qnorm/3).
+interval:int_hook_register(qnorm/3, []).
 interval:int_hook(qnorm(P, Mu, Sigma), Res, Opt) :-
      interval(qnorm0(P), Z, Opt),
      interval(Mu + Z * Sigma, Res, Opt).
@@ -127,12 +127,12 @@ interval:mono(dnorm1/1, [+]).
 r_hook(dnorm2/1).
 interval:mono(dnorm2/1, [-]).
 
-interval:int_hook(dnorm/3).
+interval:int_hook_register(dnorm/3, []).
 interval:int_hook(dnorm(X, Mu, Sigma), Res, Opt) :-
     interval((X - Mu)/Sigma, Z, Opt),
     interval(1/Sigma * dnorm0(Z), Res, Opt).
 
-interval:int_hook(dnorm0/1).
+interval:int_hook_register(dnorm0/1, []).
 interval:int_hook(dnorm0(A...B), Res, Opt) :-
     B =< 0,
     !,

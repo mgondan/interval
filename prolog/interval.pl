@@ -1,6 +1,6 @@
 :- module(interval, [interval/2, interval/3, op(150, xfx, ...)]).
 
-:- multifile int_hook/1.
+:- multifile int_hook_register/2.
 :- multifile int_hook/3.
 :- multifile eval_hook/2.
 :- multifile mono/2.
@@ -34,14 +34,24 @@ interval(L...U, Res, _)
 % 2. Calculate result with interval:int_hook(Expr, Res)
 %
 % see below example for (/)/2.
+
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
-    int_hook(Name/Arity)
+    int_hook_register(Name/Arity, Opt),
+    option(evaluate(Eval), Opt, true),
+    Eval = true
  => compound_name_arguments(Expr, Name, Args),
     maplist(interval_(Opt), Args, Args1),
     compound_name_arguments(Expr1, Name, Args1),
     int_hook(Expr1, Res, Opt).
+
+% no evaluation through maplist
+interval(Expr, Res, Opt),
+    compound(Expr),
+    compound_name_arity(Expr, Name, Arity),
+    int_hook_register(Name/Arity, _Opt)
+ => int_hook(Expr, Res, Opt).
 
 %
 % Default behavior for atoms
@@ -153,7 +163,7 @@ eval(X, Res)
 %
 % Comparison
 %
-int_hook((<)/2).
+int_hook_register((<)/2, []).
 int_hook(_...A2 < B1..._, Res, _) :-
     A2 < B1,
     !,
@@ -161,7 +171,7 @@ int_hook(_...A2 < B1..._, Res, _) :-
 
 int_hook(_..._ < _..._, false, _).
 
-int_hook((=<)/2).
+int_hook_register((=<)/2, []).
 int_hook(A1..._ =< _...B2, Res, _) :-
     A1 =< B2,
     !,
@@ -169,7 +179,7 @@ int_hook(A1..._ =< _...B2, Res, _) :-
 
 int_hook(_..._ =< _..._, false, _).
 
-int_hook((>)/2).
+int_hook_register((>)/2, []).
 int_hook(A1..._ > _...B2, Res, _) :-
     A1 > B2,
     !,
@@ -177,7 +187,7 @@ int_hook(A1..._ > _...B2, Res, _) :-
 
 int_hook(_..._ > _..._, false, _).
 
-int_hook((>=)/2).
+int_hook_register((>=)/2, []).
 int_hook(_...A2 >= B1..._, Res, _) :-
     A2 >= B1,
     !,
@@ -204,7 +214,7 @@ int_hook(_..._ =:= _..._, false, _).
 %
 % Division
 %
-int_hook((/)/2).
+int_hook_register((/)/2, []).
 int_hook(A1...A2 / B1...B2, Res, _) :-
     !,
     div(A1...A2, B1...B2, Res).
@@ -427,7 +437,7 @@ div(A...B, C...D, Res),
 %
 mono(sqrt/1, [+]).
 
-int_hook(sqrt1/1).
+int_hook_register(sqrt1/1, []).
 int_hook(sqrt1(A...B), Res, _) :-
     strictneg(A, B),
     !,
@@ -449,7 +459,7 @@ int_hook(sqrt1(X), Res, Opt) :-
 %
 % Absolute value
 %
-int_hook(abs/1).
+int_hook_register(abs/1, []).
 int_hook(abs(A...B), Res, _) :-
     positive(A, B),
     !,
@@ -472,7 +482,7 @@ int_hook(abs(A...B), Res, _) :-
 %
 % round interval
 %
-int_hook(round/1).
+int_hook_register(round/1, []).
 int_hook(round(A...B), Res, Opt) :-
     option(digit(Dig), Opt, 2),
     eval(floor(A, Dig), A1),
