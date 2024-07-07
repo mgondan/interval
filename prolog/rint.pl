@@ -37,6 +37,7 @@ interval:int_hook(pbinom/4, []).
 
 % lower tail
 interval:int_hook(pbinom(X, N, P, true), Res, Opt) :-
+    !,
     interval(pbinom0(X, N, P), Res, Opt).
 
 r_hook(pbinom0/3).
@@ -56,6 +57,7 @@ interval:int_hook(qbinom/4, []).
 
 % lower tail
 interval:int_hook(qbinom(Alpha, N, P, true), Res, Opt) :-
+    !,
     interval(qbinom0(Alpha, N, P), Res, Opt).
 
 r_hook(qbinom0/3).
