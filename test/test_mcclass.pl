@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, omit]).
+    run_tests([fractions, tstat, omit]).
 
 :- begin_tests(fractions).
 
@@ -20,6 +20,18 @@ test(dfrac) :-
     U is 1.
 
 :- end_tests(fractions).
+
+:- begin_tests(tstat).
+
+% ToDo: adjust expected results after implementation of option evaluation 
+test(tstat) :-
+    interval(tstat(1...5 / 3...6), L...U),
+    L > 0.1666,
+    L < 0.1667,
+    U > 1.6666,
+    U < 1.6667.
+
+:- end_tests(tstat).
 
 :- begin_tests(omit).
 
