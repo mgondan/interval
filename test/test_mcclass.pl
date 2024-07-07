@@ -5,7 +5,21 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([omit]).
+    run_tests([fractions, omit]).
+
+:- begin_tests(fractions).
+
+test(frac) :-
+    interval(frac(1...2, 2...4), L...U),
+    L is 0.25,
+    U is 1.
+
+test(dfrac) :-
+    interval(dfrac(1...2, 2...4), L...U),
+    L is 0.25,
+    U is 1.
+
+:- end_tests(fractions).
 
 :- begin_tests(omit).
 
