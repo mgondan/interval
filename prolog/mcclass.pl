@@ -6,7 +6,7 @@
 %
 % Fractions, i.e., numerator, line, and denominator
 %
-interval:int_hook(frac/2).
+interval:int_hook(frac/2, []).
 interval:int_hook(frac(A, B), Res, Opt) :-
     interval(A / B, Res, Opt).
 
