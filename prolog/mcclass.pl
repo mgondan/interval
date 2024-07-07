@@ -6,18 +6,18 @@
 %
 % Fractions, i.e., numerator, line, and denominator
 %
-interval:int_hook(frac/2).
+interval:int_hook(frac/2, []).
 interval:int_hook(frac(A, B), Res, Opt) :-
     interval(A / B, Res, Opt).
 
-interval:int_hook(dfrac/2).
+interval:int_hook(dfrac/2, []).
 interval:int_hook(dfrac(A, B), Res, Opt) :-
     interval(A / B, Res, Opt).
 
 %
 % Reasonable number of digits
 %
-interval:int_hook(tstat/1).
+interval:int_hook(tstat/1, []).
 interval:int_hook(tstat(A), Res, Opt) :-
     interval(A, Res1, [digits(2) | Opt]),
     interval(round(Res1), Res, [digits(2) | Opt]).
@@ -25,12 +25,12 @@ interval:int_hook(tstat(A), Res, Opt) :-
 %
 % Forget parts of an expression
 %
-interval:int_hook(omit_left/1).
+interval:int_hook(omit_left/1, [evaluate(false)]).
 interval:int_hook(omit_left(Expr), Res, Opt) :-
     Expr =.. [_Op, _L, R],
     interval(R, Res, Opt).
 
-interval:int_hook(omit_right/1).
+interval:int_hook(omit_right/1, [evaluate(false)]).
 interval:int_hook(omit_right(Expr), Res, Opt) :-
     Expr =.. [_Op, L, _R],
     interval(L, Res, Opt).
