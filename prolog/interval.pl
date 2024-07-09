@@ -11,9 +11,30 @@
 :- set_prolog_flag(float_undefined, nan).
 :- set_prolog_flag(float_zero_div, infinity).
 
-%
-% User-level
-%
+/** <module> Perform arithmetic operations with intervals.
+
+This module adds interval arithemtic to Prolog. 
+An interval is represented as L...U, where L stands for the lower bound and 
+U the upper bound. If the upper bound is a negative number, it has to be written with 
+an additional space, e.g., 1... -2, or in the infix notation, ...(1, -2).  
+The interval/2 parses and evaluates the arithemtic expression with such intervals
+to a result.
+The interval/3 takes a list with options as additional argument. 
+ */
+
+%%  interval(+A, ?Res)
+%   Evalutes an expression to an interval. If the first argument is already an interval, no evaluation is performed.
+%   Supported operations: 
+%     - Basic arithemtic: addition '+', subtraction '-', division '/', multiplication '*'
+%     - Square root: 'interval(sqrt(X), Res)'
+%     - Absolute value: 'interval(abs(X), Res)'
+%     - Comparison: '>', '<', '>=', '=<'
+%     - Rounding: 'interval(round(1.356...1.634), Res, [digit(2)])' 
+%                  with digit(Dig) as third argument and Dig = number of digits after the comma.
+%   
+%   @arg A is the expression to be evaluted.
+%   @arg Res is the result.
+
 interval(A, Res) :-
     interval(A, Res, []).
 
@@ -30,7 +51,7 @@ interval(L...U, Res, _)
 %
 % Hook for custom interval functions
 %
-% 1. Declare function with interval:int_hook(Name/Arity)
+% 1. Declare function with interval:int_hook(Name/Arity, Opt)
 % 2. Calculate result with interval:int_hook(Expr, Res)
 %
 % see below example for (/)/2.
