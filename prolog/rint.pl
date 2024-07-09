@@ -5,6 +5,24 @@
 :- reexport(interval).
 :- reexport(r), r_initialize.
 
+/** <module> Use intervals in R functions.
+
+This module expands the 'interval' module with R functions.
+For general information on the use of interval/2 and interval/3, refer to that module. 
+ */
+
+%   Additional operations: 
+%     - Binomial distribution: 
+%           - Cumulated density lower-tail: interval(pbinom(X, N, P, true), Res)
+%           - Cumulated density upper-tail: interval(pbinom(X, N, P, false), Res)
+%           - Quantile: interval(qbinom(Alpha, N, P, true), Res)
+%           - Density: interval(dbinom(X, N, P), Res)
+%     - Normal distribution:
+%           - Cumulated density: interval(pnorm(X, Mu, Sigma), Res)
+%           - Quantile: interval(qnorm(P, Mu, Sigma), Res)
+%           - Density: interval(dnorm(X, Mu, Sigma), Res)
+
+
 %
 % Skip R vectors
 %
