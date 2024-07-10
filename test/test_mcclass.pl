@@ -45,6 +45,13 @@ test(chi2ratio) :-
     U > 1.6666,
     U < 1.6667.
 
+test(pval) :-
+    interval(pval(1...5 / 3...6), L...U),
+    L > 0.1666,
+    L < 0.1667,
+    U > 1.6666,
+    U < 1.6667.
+
 :- end_tests(number_digit).
 
 :- begin_tests(omit).
