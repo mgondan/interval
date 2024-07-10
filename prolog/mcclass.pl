@@ -25,6 +25,11 @@ interval:int_hook(hdrs/1, []).
 interval:int_hook(hdrs(A), Res, Opt) :-
     interval(A, Res, [digits(1) | Opt]).
 
+interval:int_hook(chi2ratio/1, []).
+interval:int_hook(chi2ratio(A), Res, Opt) :-
+    interval(A, Res, [digits(2) | Opt]).
+
+
 %
 % Forget parts of an expression
 %

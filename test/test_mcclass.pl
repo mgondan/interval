@@ -38,6 +38,13 @@ test(hdrs) :-
     U > 1.6666,
     U < 1.6667.
 
+test(chi2ratio) :-
+    interval(chi2ratio(1...5 / 3...6), L...U),
+    L > 0.1666,
+    L < 0.1667,
+    U > 1.6666,
+    U < 1.6667.
+
 :- end_tests(number_digit).
 
 :- begin_tests(omit).
