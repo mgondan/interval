@@ -21,6 +21,10 @@ interval:int_hook(tstat/1, []).
 interval:int_hook(tstat(A), Res, Opt) :-
     interval(A, Res, [digits(2) | Opt]).
 
+interval:int_hook(hdrs/1, []).
+interval:int_hook(hdrs(A), Res, Opt) :-
+    interval(A, Res, [digits(1) | Opt]).
+
 %
 % Forget parts of an expression
 %

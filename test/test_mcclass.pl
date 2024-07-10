@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, tstat, omit, multiply]).
+    run_tests([fractions, number_digit, omit, multiply]).
 
 :- begin_tests(fractions).
 
@@ -21,7 +21,7 @@ test(dfrac) :-
 
 :- end_tests(fractions).
 
-:- begin_tests(tstat).
+:- begin_tests(number_digit).
 
 % ToDo: adjust expected results after implementation of option evaluation 
 test(tstat) :-
@@ -31,7 +31,14 @@ test(tstat) :-
     U > 1.6666,
     U < 1.6667.
 
-:- end_tests(tstat).
+test(hdrs) :-
+    interval(hdrs(1...5 / 3...6), L...U),
+    L > 0.1666,
+    L < 0.1667,
+    U > 1.6666,
+    U < 1.6667.
+
+:- end_tests(number_digit).
 
 :- begin_tests(omit).
 
