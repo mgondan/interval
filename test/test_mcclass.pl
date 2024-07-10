@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, tstat, omit]).
+    run_tests([fractions, tstat, omit, multiply]).
 
 :- begin_tests(fractions).
 
@@ -50,3 +50,12 @@ test(omit_right) :-
     U < 12.0001.
 
 :- end_tests(omit).
+
+:- begin_tests(multiply).
+
+test(dot) :-
+    interval(dot(2...3, 3...4), L...U),
+    L is 6,
+    U is 12.
+
+:- end_tests(multiply).
