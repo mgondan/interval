@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, number_digit, omit, multiply]).
+    run_tests([fractions, number_digit, omit, multiply, available]).
 
 :- begin_tests(fractions).
 
@@ -80,3 +80,17 @@ test(dot) :-
     U is 12.
 
 :- end_tests(multiply).
+
+:- begin_tests(available).
+
+test(available_int) :-
+    interval(available(1...3), L...U),
+    L is 1,
+    U is 3.
+
+test(available_float) :-
+    interval(available(1.1...3.1), L...U),
+    L is 1.1,
+    U is 3.1.
+
+:- end_tests(available).
