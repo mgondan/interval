@@ -84,13 +84,15 @@ test(dot) :-
 :- begin_tests(available).
 
 test(available_int) :-
-    interval(available(1...3), L...U),
-    L is 1,
-    U is 3.
+    interval(available(1...3 + 2...5), Res),
+    Res = true.
 
 test(available_float) :-
-    interval(available(1.1...3.1), L...U),
-    L is 1.1,
-    U is 3.1.
+    interval(available(1.1...3.1 + 2.1...5.1), Res),
+    Res = true.
+
+test(not_available_nan) :-
+    interval(available(0 / 0), Res),
+    Res = false.
 
 :- end_tests(available).

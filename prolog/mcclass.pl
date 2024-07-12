@@ -56,11 +56,13 @@ interval:int_hook(dot(A, B), Res, Opt) :-
 %
 % Available: not NA
 %
-% todo: boolean function
 interval:int_hook(available/1, []).
 interval:int_hook(available(A), Res, Opt) :-
     interval(A, A1, Opt),
-    available(A1, Res).
+    available(A1, _),
+    !,
+    Res = true;
+    Res = false.
 
 available(A, Res),
    integer(A)
