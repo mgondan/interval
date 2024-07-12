@@ -52,3 +52,44 @@ interval:int_hook(omit_right(Expr), Res, Opt) :-
 interval:int_hook(dot/2, []).
 interval:int_hook(dot(A, B), Res, Opt) :-
     interval(A * B, Res, Opt).
+
+%
+% Available: not NA
+%
+interval:int_hook(available/1, []).
+interval:int_hook(available(A), Res, Opt) :-
+    interval(A, A1, Opt),
+    available(A1, _),
+    !,
+    Res = true;
+    Res = false.
+
+available(A, Res),
+   integer(A)
+=> interval:eval(A, Res).
+
+available(A, Res),
+   number(A)
+=> float_class(A, Class),
+   dif(Class, nan),
+   interval:eval(A, Res).
+
+available(A, Res),
+   atom(A)
+=> interval:eval(A, A1),
+   available(A1, Res).
+
+available(A ... B, Res)
+=> available(A, A1),
+   available(B, B1),
+   eval(A1, B1, Res).
+
+available(ci(A, B), Res)
+=> available(A, A1),
+   available(B, B1),
+   eval(A1, B1, Res).
+
+% For convenience
+eval(Expr1, Expr2, L ... U) :-
+    interval:eval(Expr1, L),
+    interval:eval(Expr2, U).
