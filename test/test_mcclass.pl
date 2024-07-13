@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, number_digit, omit, multiply, available]).
+    run_tests([fractions, number_digit, omit, multiply, available, confidence_intervals, equality]).
 
 :- begin_tests(fractions).
 
@@ -96,3 +96,79 @@ test(not_available_nan) :-
     Res = false.
 
 :- end_tests(available).
+
+:- begin_tests(confidence_intervals).
+
+test(pm) :-
+    A = 1...2,
+    B = 3...4,
+    interval(pm(A, B), ci(LA, UA)),
+    LA = -3... -1,
+    UA = 4...6.
+
+test(ninfpos) :-
+    A = 1...2,
+    interval(ninfpos(A), ci(LA, UA)),
+    LA = -1.0Inf,
+    UA = 1...2.
+
+test(ninfpos_upper) :-
+    A = 1...2,
+    interval(ninfpos(A), Res, [ci(upper)]),
+    Res = 1...2.
+
+test(ninfpos_lower) :-
+    A = 1...2,
+    interval(ninfpos(A), Res, [ci(lower)]),
+    Res = -1.0Inf.
+
+test(neginf) :-
+    A = 1...2,
+    interval(neginf(A), ci(LA, UA)),
+    LA = 1...2,
+    UA = 1.0Inf.
+
+test(neginf_upper) :-
+    A = 1...2,
+    interval(neginf(A), Res, [ci(upper)]),
+    Res = 1.0Inf.
+
+test(neginf_lower) :-
+    A = 1...2,
+    interval(neginf(A), Res, [ci(lower)]),
+    Res = 1...2.
+
+test(ci) :-
+    LA = 1...2,
+    UA = 3...4, 
+    interval(ci(LA, UA), ci(LA, UA)).
+    
+test(ci_upper) :-
+    LA = 1...2,
+    UA = 3...4, 
+    interval(ci(LA, UA), Res, [ci(upper)]),
+    Res = 3...4.
+
+test(ci_lower) :-
+    LA = 1...2,
+    UA = 3...4, 
+    interval(ci(LA, UA), Res, [ci(lower)]),
+    Res = 1...2.
+
+:- end_tests(confidence_intervals).
+
+:- begin_tests(equality).
+
+test(overlapping_true) :-
+    A = 1...2,
+    B = 2...3,
+    interval(A =@= B, Res),
+    Res = true.
+
+test(overlapping_false) :-
+    A = 1...2,
+    B = 3...4,
+    interval(A =@= B, Res),
+    Res = false.
+
+:- end_tests(equality).
