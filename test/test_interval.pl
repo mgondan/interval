@@ -9,7 +9,7 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 test_interval :-
-    run_tests([comparison, division, sqrt, abs, round]).
+    run_tests([comparison, division, sqrt, power, abs, round]).
 
 :- begin_tests(comparison).
 
@@ -299,6 +299,52 @@ test(sqrt10) :-
     X = 1.5NaN.
 
 :- end_tests(sqrt).
+
+:- begin_tests(power).
+
+test(power_pos_base_even_expon) :-
+    Base = 2...3,
+    Exp = 2,
+    interval(Base ^ Exp, L...U),
+    L is 4,
+    U is 9.
+
+test(power_pos_base_odd_expon) :-
+    Base = 2...3,
+    Exp = 3,
+    interval(Base ^ Exp, L...U),
+    L is 8,
+    U is 27.
+
+test(power_neg_base_even_expon) :-
+    Base = -3... -2,
+    Exp = 2,
+    interval(Base ^ Exp, L...U),
+    L is 4,
+    U is 9.
+
+test(power_neg_base_odd_expon) :-
+    Base = -3... -2,
+    Exp = 3,
+    interval(Base ^ Exp, L...U),
+    L is -27,
+    U is -8.
+
+test(power_mixed_base_even_expon) :-
+    Base = -3...2,
+    Exp = 2,
+    interval(Base ^ Exp, L...U),
+    L is 0,
+    U is 9.
+
+test(power_mixed_base_odd_expon) :-
+    Base = -3...2,
+    Exp = 3,
+    interval(Base ^ Exp, L...U),
+    L is -27,
+    U is 8.
+
+:- end_tests(power).
 
 :- begin_tests(abs).
 
