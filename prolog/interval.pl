@@ -27,6 +27,7 @@ The interval/3 takes a list with options as additional argument.
 %   Supported operations: 
 %     - Basic arithemtic: addition '+', subtraction '-', division '/', multiplication '*'
 %     - Square root: 'interval(sqrt(X), Res)'
+%     - Power: 'interval(X^N, Res)' with N being a natural number
 %     - Absolute value: 'interval(abs(X), Res)'
 %     - Comparison: '>', '<', '>=', '=<'
 %     - Rounding: 'interval(round(1.356...1.634), Res, [digit(2)])' 
@@ -102,6 +103,7 @@ mono((+)/2, [+, +]).
 mono((-)/1, [-]).
 mono((-)/2, [+, -]).
 mono((*)/2, **).
+mono((^)/2, [*, /]).
 
 % special case: multiplication ([*, *], commutative)
 interval(Expr, Res, Opt),
@@ -477,6 +479,43 @@ int_hook(sqrt1(X), Res, Opt) :-
     interval(sqrt(X), Res, Opt).
 
 %
+% Power
+%
+int_hook((^)/2, []).
+int_hook(Base^Exp, Res, Opt) :-
+    interval(Base, Base1, Opt),
+    interval(Exp, Exp1, Opt),
+    power(Base1, Exp1, Res).
+
+% Even exponent with negative base
+power(L...U, Exp, Res),
+    negative(L, U),
+    natural(Exp),
+    even(Exp)
+ => eval(U^Exp, L^Exp, Res).
+
+% Even exponent with mixed base
+power(L...U, Exp, Res),
+    mixed(L, U),
+    natural(Exp),
+    even(Exp)
+ => eval(max(L^Exp, U^Exp), Upper),
+    Res = 0...Upper.
+
+% General case
+power(L...U, Exp, Res),
+    natural(Exp)
+ => eval(L^Exp, U^Exp, Res).
+
+% Utility
+even(A) :-
+    A mod 2 =:= 0.
+
+natural(A) :-
+    A >=0,
+    integer(A).
+
+%
 % Absolute value
 %
 int_hook(abs/1, []).
@@ -517,3 +556,7 @@ eval_hook(ceiling(A, Dig), Res) :-
     Mul is 10^Dig,
     Res is ceiling(A * Mul) / Mul.
 
+% For convenience
+eval(Expr1, Expr2, L ... U) :-
+    interval:eval(Expr1, L),
+    interval:eval(Expr2, U).

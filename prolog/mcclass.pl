@@ -82,14 +82,9 @@ available(A, Res),
 available(A ... B, Res)
 => available(A, A1),
    available(B, B1),
-   eval(A1, B1, Res).
+   interval:eval(A1, B1, Res).
 
 available(ci(A, B), Res)
 => available(A, A1),
    available(B, B1),
-   eval(A1, B1, Res).
-
-% For convenience
-eval(Expr1, Expr2, L ... U) :-
-    interval:eval(Expr1, L),
-    interval:eval(Expr2, U).
+   interval:eval(A1, B1, Res).
