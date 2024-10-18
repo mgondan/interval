@@ -12,18 +12,18 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 /** <module> Perform arithmetic operations with intervals.
-
-This module adds interval arithemtic to Prolog. 
+This module adds interval arithmetic to Prolog. 
 An interval is represented as L...U, where L stands for the lower bound and 
 U the upper bound. If the upper bound is a negative number, it has to be written with 
-an additional space, e.g., 1... -2, or in the infix notation, ...(1, -2).  
-The interval/2 parses and evaluates the arithemtic expression with such intervals
-to a result.
-The interval/3 takes a list with options as additional argument. 
- */
+an additional space, e.g., -3... -2, or in the infix notation, ...(-3, -2).  
+The predicate interval/2 parses and evaluates arithemtic expressions with such
+intervals to a result. interval/3 takes a list with options as an additional
+argument. 
+*/
 
 %%  interval(+A, ?Res)
-%   Evalutes an expression to an interval. If the first argument is already an interval, no evaluation is performed.
+%   Evalutes an expression to an interval. If the first argument is already an
+%   interval, no evaluation is performed.
 %   Supported operations: 
 %     - Basic arithemtic: addition '+', subtraction '-', division '/', multiplication '*'
 %     - Square root: 'interval(sqrt(X), Res)'
@@ -39,57 +39,50 @@ The interval/3 takes a list with options as additional argument.
 interval(A, Res) :-
     interval(A, Res, []).
 
-% For maplist
+% For maplist, the options should be the leading argument
 interval_(Opt, A, Res) :-
     interval(A, Res, Opt).
 
-%
-% If 1st argument already is an interval, do not do anything
-%
+% If the argument already is an interval, do not do anything.
 interval(L...U, Res, _)
  => Res = L...U.
 
-%
 % Hook for custom interval functions
-%
 % 1. Declare function with interval:int_hook(Name/Arity, Opt)
 % 2. Calculate result with interval:int_hook(Expr, Res)
-%
-% see below example for (/)/2.
-
+% see example below for (/)/2.
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
-    int_hook(Name/Arity, Opt),
-    option(evaluate(true), Opt, true)
+    int_hook(Name/Arity, Opt1),
+    append(Opt1, Opt, Opt2),
+    option(evaluate(true), Opt2, true)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval_(Opt), Args, Args1),
+    maplist(interval_(Opt2), Args, Args1),
     compound_name_arguments(Expr1, Name, Args1),
-    int_hook(Expr1, Res, Opt).
+    int_hook(Expr1, Res, Opt2).
 
-% no evaluation through maplist
+% If the arguments are known to be already evaluated, skip maplist
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
-    int_hook(Name/Arity, _Opt)
- => int_hook(Expr, Res, Opt).
+    int_hook(Name/Arity, Opt1),
+    append(Opt1, Opt, Opt2),
+ => int_hook(Expr, Res, Opt2).
 
-%
 % Default behavior for atoms
-%
-% force result to interval (deprecated)
+% Force evaluation to an interval (deprecated)
 interval(A, L...U, _),
     atomic(A)
  => eval(A, R),
     L = R,
     U = R.
 
-% work with atom
+% Work with atom
 interval(A, Res, _),
     atomic(A)
  => eval(A, Res).
 
-%
 % Monotonically behaving functions
 %
 % +: increasing
@@ -105,12 +98,12 @@ mono((-)/2, [+, -]).
 mono((*)/2, **).
 mono((^)/2, [*, /]).
 
-% special case: multiplication ([*, *], commutative)
+% Special case: multiplication (commutative)
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, **)
- => Expr =.. [ Name | Args],
+ => Expr =.. [Name | Args],
     maplist(interval_(Opt), Args, Args1),
     findall(R, both(Name, Args1, R), Bounds),
     min_list(Bounds, L),
@@ -122,7 +115,7 @@ both(Name, Args, Res) :-
     Expr =.. [Name | Lower],
     eval(Expr, Res).
 
-% general case
+% General case
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
@@ -170,11 +163,8 @@ upper(*, A...B, U)
 upper(_, A, U)
  => U = A.
 
-%
 % Arithmetic functions for single numbers
-%
 % Define hooks for R functions etc.
-%
 eval(Expr, Res),
     eval_hook(Expr, R)
  => Res = R.
@@ -182,9 +172,7 @@ eval(Expr, Res),
 eval(X, Res)
  => Res is X.
 
-%
 % Comparison
-%
 int_hook((<)/2, []).
 int_hook(_...A2 < B1..._, Res, _) :-
     A2 < B1,
@@ -233,23 +221,23 @@ int_hook(A =:= B, Res, Opt) :-
 
 int_hook(_..._ =:= _..._, false, _).
 
-%
 % Division
-%
 int_hook((/)/2, []).
 int_hook(A1...A2 / B1...B2, Res, _) :-
     !,
     div(A1...A2, B1...B2, Res).
 
+% Todo: This shouldn't be needed, see (<)/2 above 
 int_hook(A1...A2 / B, Res, _) :-
     !,
     div(A1...A2, B...B, Res).
 
+% same
 int_hook(A / B1...B2, Res, _) :-
     !,
     div(A...A, B1...B2, Res).
 
-
+% same
 int_hook(A / B, Res, _) :-
     Res is A / B.
 
@@ -451,14 +439,10 @@ div(A...B, C...D, Res),
     eval(A / D, U),
     Res = L...U.
 
-%
-% Square root
-%
 % sqrt/1: "normal" behavior, returns nan for negative argument
-% sqrt1/1: crops negative part of interval at 0
-%
 mono(sqrt/1, [+]).
 
+% sqrt1/1: crops negative part of interval at 0
 int_hook(sqrt1/1, []).
 int_hook(sqrt1(A...B), Res, _) :-
     strictneg(A, B),
@@ -478,46 +462,37 @@ int_hook(sqrt1(A...B), Res, Opt) :-
 int_hook(sqrt1(X), Res, Opt) :-
     interval(sqrt(X), Res, Opt).
 
-%
 % Power
-%
 int_hook((^)/2, []).
 int_hook(Base^Exp, Res, Opt) :-
-    interval(Base, Base1, Opt),
-    interval(Exp, Exp1, Opt),
+    interval(Base, Base1, Opt), % MG: shouldn't be needed
+    interval(Exp, Exp1, Opt),   % MG: shouldn't be needed
     power(Base1, Exp1, Res).
 
 % Even exponent with negative base
 power(L...U, Exp, Res),
     negative(L, U),
-    natural(Exp),
-    even(Exp)
+    integer(Exp),
+    Exp >= 0,
+    Exp mod 2 =:= 0
  => eval(U^Exp, L^Exp, Res).
 
 % Even exponent with mixed base
 power(L...U, Exp, Res),
     mixed(L, U),
-    natural(Exp),
-    even(Exp)
+    integer(Exp),
+    Exp >= 0,
+    Exp mod 2 =:= 0
  => eval(max(L^Exp, U^Exp), Upper),
     Res = 0...Upper.
 
 % General case
 power(L...U, Exp, Res),
-    natural(Exp)
+    integer(Exp),
+    Exp >= 0
  => eval(L^Exp, U^Exp, Res).
 
-% Utility
-even(A) :-
-    A mod 2 =:= 0.
-
-natural(A) :-
-    A >=0,
-    integer(A).
-
-%
 % Absolute value
-%
 int_hook(abs/1, []).
 int_hook(abs(A...B), Res, _) :-
     positive(A, B),
@@ -531,16 +506,12 @@ int_hook(abs(A...B), Res, _) :-
     eval(abs(B), L),
     Res = L...U.
 
-% mixed
 int_hook(abs(A...B), Res, _) :-
-    !,
     L = 0.0,
     U is max(abs(A), abs(B)),
     Res = L...U.
 
-%
-% round interval
-%
+% Round interval
 int_hook(round/1, []).
 int_hook(round(A...B), Res, Opt) :-
     option(digit(Dig), Opt, 2),
@@ -556,7 +527,7 @@ eval_hook(ceiling(A, Dig), Res) :-
     Mul is 10^Dig,
     Res is ceiling(A * Mul) / Mul.
 
-% For convenience
+% For convenience % MG: I think this predicate is not used.
 eval(Expr1, Expr2, L ... U) :-
     interval:eval(Expr1, L),
     interval:eval(Expr2, U).
