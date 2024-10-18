@@ -67,7 +67,7 @@ interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     int_hook(Name/Arity, Opt1),
-    append(Opt1, Opt, Opt2),
+    append(Opt1, Opt, Opt2)
  => int_hook(Expr, Res, Opt2).
 
 % Default behavior for atoms
