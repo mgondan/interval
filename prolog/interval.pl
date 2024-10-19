@@ -6,6 +6,7 @@
 :- multifile mono/2.
 
 :- discontiguous interval/3.
+:- discontiguous interval:int_hook/4.
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -48,19 +49,36 @@ interval(L...U, Res, _)
  => Res = L...U.
 
 % Hook for custom interval functions
-% 1. Declare function with interval:int_hook(Name/Arity, Opt)
-% 2. Calculate result with interval:int_hook(Expr, Res)
+% 1. Declare function with interval:int_hook(Name/Arity, [ArgsType], Func, Opt)
+%    ArgsType is a list of predicate names that check the arguments' type. 
+%    So, '[..., number]' would expect the first argument to be an interval, the second a number.
+%    'Func' is the functor used for the evaluating predicate, e.g., 'div1'.
+% 2. Calculate result with interval:Func(Expr, Res), where 'Func' is the predicate defined in 'int_hook'.
+%    This takes as many arguments instead of 'Expr' as defined in 'int_hook'.
+
 % see example below for (/)/2.
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
-    int_hook(Name/Arity, Opt1),
+    int_hook(Name/Arity, ArgsType, Func, Opt1),
     append(Opt1, Opt, Opt2),
-    option(evaluate(true), Opt2, true)
+    option(evaluate(true), Opt2, true),
+    compound_name_arguments(Expr, Name, Args),
+    maplist(helper, ArgsType, Args)
  => compound_name_arguments(Expr, Name, Args),
     maplist(interval_(Opt2), Args, Args1),
-    compound_name_arguments(Expr1, Name, Args1),
-    int_hook(Expr1, Res, Opt2).
+    compound_name_arguments(_Expr1, Name, Args1),
+    helper2(Func, Args1, Res).
+
+helper(Functor, Arg) :-
+    call(Functor, Arg).
+
+helper2(Func, Args, Res) :-
+    append(Args, [Res], Args1),
+    Goal =.. [Func | Args1],
+    call(Goal).
+
+...(_..._).
 
 % If the arguments are known to be already evaluated, skip maplist
 interval(Expr, Res, Opt),
@@ -222,23 +240,23 @@ int_hook(A =:= B, Res, Opt) :-
 int_hook(_..._ =:= _..._, false, _).
 
 % Division
-int_hook((/)/2, []).
-int_hook(A1...A2 / B1...B2, Res, _) :-
+int_hook((/)/2, [..., ...], div1, []).
+div1(A1...A2, B1...B2, Res) :-
     !,
     div(A1...A2, B1...B2, Res).
 
-% Todo: This shouldn't be needed, see (<)/2 above 
-int_hook(A1...A2 / B, Res, _) :-
+int_hook((/)/2, [..., number], div2, []).
+div2(A1...A2, B, Res) :-
     !,
     div(A1...A2, B...B, Res).
 
-% same
-int_hook(A / B1...B2, Res, _) :-
+int_hook((/)/2, [number, ...], div3, []).
+div3(A, B1...B2, Res) :-
     !,
     div(A...A, B1...B2, Res).
 
-% same
-int_hook(A / B, Res, _) :-
+int_hook((/)/2, [number, number], div4, []).
+div4(A, B, Res) :-
     Res is A / B.
 
 % Hickey Figure 1
