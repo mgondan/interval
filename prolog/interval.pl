@@ -54,13 +54,11 @@ interval(L...U, Res, _)
 interval(Expr, Res, Opt),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
-    int_hook(Name/Arity, Opt1),
-    append(Opt1, Opt, Opt2),
-    option(evaluate(true), Opt2, true)
- => compound_name_arguments(Expr, Name, Args),
-    maplist(interval_(Opt2), Args, Args1),
-    compound_name_arguments(Expr1, Name, Args1),
-    int_hook(Expr1, Res, Opt2).
+    compound_name_arity(Pattern, Name, Arity),
+    int_hook(Pattern, Opt0)
+ => append(Opt0, Opt, Opt1),
+    mapargs(interval_(Opt1), Expr, Pattern),
+    int_hook(Pattern, Res, Opt1).
 
 % If the arguments are known to be already evaluated, skip maplist
 interval(Expr, Res, Opt),
@@ -173,7 +171,7 @@ eval(X, Res)
  => Res is X.
 
 % Comparison
-int_hook((<)/2, []).
+int_hook(_..._ < _..._, []).
 int_hook(_...A2 < B1..._, Res, _) :-
     A2 < B1,
     !,
@@ -181,7 +179,7 @@ int_hook(_...A2 < B1..._, Res, _) :-
 
 int_hook(_..._ < _..._, false, _).
 
-int_hook((=<)/2, []).
+int_hook(_..._ =< _..._, []).
 int_hook(A1..._ =< _...B2, Res, _) :-
     A1 =< B2,
     !,
@@ -189,7 +187,7 @@ int_hook(A1..._ =< _...B2, Res, _) :-
 
 int_hook(_..._ =< _..._, false, _).
 
-int_hook((>)/2, []).
+int_hook(_..._ > _..._, []).
 int_hook(A1..._ > _...B2, Res, _) :-
     A1 > B2,
     !,
@@ -197,7 +195,7 @@ int_hook(A1..._ > _...B2, Res, _) :-
 
 int_hook(_..._ > _..._, false, _).
 
-int_hook((>=)/2, []).
+int_hook(_..._ >= _..._, []).
 int_hook(_...A2 >= B1..._, Res, _) :-
     A2 >= B1,
     !,
@@ -222,22 +220,22 @@ int_hook(A =:= B, Res, Opt) :-
 int_hook(_..._ =:= _..._, false, _).
 
 % Division
-int_hook((/)/2, []).
+int_hook(_..._ / _..._, []).
 int_hook(A1...A2 / B1...B2, Res, _) :-
     !,
     div(A1...A2, B1...B2, Res).
 
-% Todo: This shouldn't be needed, see (<)/2 above 
+int_hook(_..._ / _, []).
 int_hook(A1...A2 / B, Res, _) :-
     !,
     div(A1...A2, B...B, Res).
 
-% same
+int_hook(_ / _..._, []).
 int_hook(A / B1...B2, Res, _) :-
     !,
     div(A...A, B1...B2, Res).
 
-% same
+int_hook(_ / _, []).
 int_hook(A / B, Res, _) :-
     Res is A / B.
 
@@ -443,7 +441,7 @@ div(A...B, C...D, Res),
 mono(sqrt/1, [+]).
 
 % sqrt1/1: crops negative part of interval at 0
-int_hook(sqrt1/1, []).
+int_hook(sqrt1(_..._), []).
 int_hook(sqrt1(A...B), Res, _) :-
     strictneg(A, B),
     !,
@@ -463,11 +461,9 @@ int_hook(sqrt1(X), Res, Opt) :-
     interval(sqrt(X), Res, Opt).
 
 % Power
-int_hook((^)/2, []).
-int_hook(Base^Exp, Res, Opt) :-
-    interval(Base, Base1, Opt), % MG: shouldn't be needed
-    interval(Exp, Exp1, Opt),   % MG: shouldn't be needed
-    power(Base1, Exp1, Res).
+int_hook(_..._^_, []).
+int_hook(Base^Exp, Res, _) :-
+    power(Base, Exp, Res).
 
 % Even exponent with negative base
 power(L...U, Exp, Res),
@@ -475,7 +471,9 @@ power(L...U, Exp, Res),
     integer(Exp),
     Exp >= 0,
     Exp mod 2 =:= 0
- => eval(U^Exp, L^Exp, Res).
+ => eval(L^Exp, A),
+    eval(U^Exp, B),
+    Res = B...A.
 
 % Even exponent with mixed base
 power(L...U, Exp, Res),
@@ -490,10 +488,12 @@ power(L...U, Exp, Res),
 power(L...U, Exp, Res),
     integer(Exp),
     Exp >= 0
- => eval(L^Exp, U^Exp, Res).
+ => eval(L^Exp, A),
+    eval(U^Exp, B),
+    Res = A...B.
 
 % Absolute value
-int_hook(abs/1, []).
+int_hook(abs(_..._), []).
 int_hook(abs(A...B), Res, _) :-
     positive(A, B),
     !,
@@ -512,7 +512,7 @@ int_hook(abs(A...B), Res, _) :-
     Res = L...U.
 
 % Round interval
-int_hook(round/1, []).
+int_hook(round(_..._), []).
 int_hook(round(A...B), Res, Opt) :-
     option(digit(Dig), Opt, 2),
     eval(floor(A, Dig), A1),
@@ -526,8 +526,3 @@ eval_hook(floor(A, Dig), Res) :-
 eval_hook(ceiling(A, Dig), Res) :-
     Mul is 10^Dig,
     Res is ceiling(A * Mul) / Mul.
-
-% For convenience % MG: I think this predicate is not used.
-eval(Expr1, Expr2, L ... U) :-
-    interval:eval(Expr1, L),
-    interval:eval(Expr2, U).
