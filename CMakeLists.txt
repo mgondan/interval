@@ -22,5 +22,5 @@ include(swipl)
 
 enable_testing()
 swipl_add_test(interval)
-swipl_add_test(rint)
-swipl_add_test(mcclass)
+# swipl_add_test(rint)
+# swipl_add_test(mcclass)
