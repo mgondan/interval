@@ -15,7 +15,7 @@
 %
 % This module adds interval arithemtic to Prolog. 
 % An interval is represented as L...U, where L stands for the lower bound and 
-% U the upper bound. If the upper bound is a negative number, it has to be written with 
+% U for the upper bound. If the upper bound is a negative number, it has to be written with 
 % an additional space, e.g., 1... -2, or in the infix notation, ...(1, -2).  
 % The interval/2 parses and evaluates the arithemtic expression with such intervals
 % to a result.
@@ -24,12 +24,12 @@
 %   Evalutes an expression to an interval. If the first argument is already an interval, no evaluation is performed.
 %   Supported operations: 
 %     - Basic arithemtic: addition '+', subtraction '-', division '/', multiplication '*'
-%     - Square root: 'interval(sqrt(X), Res)'
-%     - Power: 'interval(X^N, Res)' with N being a natural number
+%     - Square root for positive interval: 'interval(sqrt(X), Res)'
+%     - Square root for negative or mixed interval: 'interval(sqrt1(X), Res)'
+%     - Power: 'interval(X^atomic(N), Res)' with N being a natural number
 %     - Absolute value: 'interval(abs(X), Res)'
-%     - Comparison: '>', '<', '>=', '=<'
-%     - Rounding: 'interval(round(1.356...1.634), Res, [digit(2)])' 
-%                  with digit(Dig) as third argument and Dig = number of digits after the comma.
+%     - Comparison: '>', '<', '>=', '=<', '=\=', '=:='
+%     - Rounding: 'interval(round(1.356...1.634, atomic(2)), Res)' 
 %   
 %   @arg A is the expression to be evaluted.
 %   @arg Res is the result.
@@ -214,7 +214,7 @@ great_eq(_...A2, B1..._, Res) :-
 great_eq(_..._, _..._, false).
 
 
-int_hook(=/=, not_eq(..., ...)).
+int_hook(=\=, not_eq(..., ...)).
 not_eq(A...B, C...D, Res) :-
     (   less2(A...B, C...D, true)
     ;   great(A...B, C...D, true)
@@ -461,65 +461,43 @@ div(A...B, C...D, Res),
 %
 mono(sqrt/1, [+]).
 
-int_hook(sqrt, sqrt1(atomic)).
-sqrt1(atomic(X), Res) :-
-    eval(sqrt(X), Res).
-
-int_hook(sqrt, sqrt2(...)).
-sqrt2(A...B, Res) :-
+int_hook(sqrt1, sqrt1(...)).
+sqrt1(A...B, Res) :-
     strictneg(A, B),
     !,
     Res = 1.5NaN.
 
-sqrt2(A...B, Res) :-
+sqrt1(A...B, Res) :-
     zeroneg(A, B),
     !,
-    Res = 1.5NaN...0.0.
+    Res = 0.0.
 
-sqrt2(A...B, Res) :-
-    zeropos(A, B),
-    !,
-    eval(sqrt(B), U),
-    Res = 0.0...U.
-
-sqrt2(A...B, Res) :-
-    strictpos(A, B),
-    !,
-    eval(sqrt(A), L),
-    eval(sqrt(B), U),
-    Res = L...U.
-
-sqrt2(A...B, Res) :-
+sqrt1(A...B, Res) :-
     mixed(A, B),
     !,
     eval(sqrt(B), U),
-    Res = 1.5NaN...U.
+    Res = 0.0...U.
 %
 % Power
 %
-int_hook((^)/2, []).
-int_hook(Base^Exp, Res) :-
-    interval(Base, Base1),
-    interval(Exp, Exp1),
-    power(Base1, Exp1, Res).
-
 % Even exponent with negative base
-power(L...U, Exp, Res),
+int_hook((^), pow(..., atomic)).
+pow(L...U, atomic(Exp), Res),
     negative(L, U),
-    natural(Exp),
-    even(Exp)
+    even(Exp),
+    natural(Exp)
  => eval(U^Exp, L^Exp, Res).
 
 % Even exponent with mixed base
-power(L...U, Exp, Res),
+pow(L...U, atomic(Exp), Res),
     mixed(L, U),
-    natural(Exp),
-    even(Exp)
+    even(Exp),
+    natural(Exp)
  => eval(max(L^Exp, U^Exp), Upper),
     Res = 0...Upper.
 
 % General case
-power(L...U, Exp, Res),
+pow(L...U, atomic(Exp), Res),
     natural(Exp)
  => eval(L^Exp, U^Exp, Res).
 
@@ -534,13 +512,13 @@ natural(A) :-
 %
 % Absolute value
 %
-int_hook(abs/1, []).
-int_hook(abs(A...B), Res) :-
+int_hook(abs, abs1(...)).
+abs1(A...B, Res) :-
     positive(A, B),
     !,
     Res = A...B.
 
-int_hook(abs(A...B), Res) :-
+abs1(A...B, Res) :-
     negative(A, B),
     !,
     eval(abs(A), U),
@@ -548,7 +526,7 @@ int_hook(abs(A...B), Res) :-
     Res = L...U.
 
 % mixed
-int_hook(abs(A...B), Res) :-
+abs1(A...B, Res) :-
     !,
     L = 0.0,
     U is max(abs(A), abs(B)),
@@ -557,9 +535,8 @@ int_hook(abs(A...B), Res) :-
 %
 % round interval
 %
-int_hook(round/1, []).
-int_hook(round(A...B), Res) :-
-    option(digit(Dig), _Opt, 2),
+int_hook(round, round1(..., atomic)).
+round1(A...B, atomic(Dig), Res) :-
     eval(floor(A, Dig), A1),
     eval(ceiling(B, Dig), B1),
     Res = A1...B1.
