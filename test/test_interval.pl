@@ -23,6 +23,46 @@ test(=<) :-
     B = 2...4,
     interval(A =< B, true).
 
+test(=<) :-
+    A = 1...3,
+    B = 1...3,
+    interval(A =< B, true).
+
+test(>) :-
+    A = 3...4,
+    B = 1...2,
+    interval(A > B, true).
+
+test(>=) :-
+    A = 3...4,
+    B = 1...2,
+    interval(A >= B, true).
+
+test(>=) :-
+    A = 3...4,
+    B = 3...4,
+    interval(A >= B, true).
+
+test(=\=) :-
+    A = 3...4,
+    B = 1...2,
+    interval(A =\= B, true).
+
+test(=\=) :-
+    A = 1...2,
+    B = 1...2,
+    interval(A =\= B, false).
+
+test(=:=) :-
+    A = 3...4,
+    B = 1...2,
+    interval(A =:= B, false).
+
+test(=:=) :-
+    A = 1...2,
+    B = 1...2,
+    interval(A =:= B, true).
+
 :- end_tests(comparison).
 
 :- begin_tests(division).
@@ -212,21 +252,21 @@ test(dividend_strictneg_divisor_negative) :-
 test(dividend_interval_divisor_number) :-
     A = -2... -1,
     B is 2,
-   interval(A / B, L...U),
+   interval(A / atomic(B), L...U),
     L is -1,
     U is -0.5.
 
 test(dividend_number_divisor_interval) :-
     A = 2,
     B = -2... -1,
-    interval(A / B, L...U),
+    interval(atomic(A) / B, L...U),
     L is -2,
     U is -1.
 
 test(dividend_number_divisor_number) :-
     A = 1,
     B = 2,
-    interval(A / B, Res),
+    interval(atomic(A) / atomic(B), Res),
     Res is 0.5.
 
 :- end_tests(division).
@@ -263,12 +303,12 @@ test(sqrt4) :-
 
 test(sqrt5) :-
     A = -2... -1,
-    interval(sqrt(A), X),
-    X = 1.5NaN...1.5NaN.
+    interval(sqrt1(A), X),
+    X = 1.5NaN.
 
 test(sqrt6) :-
     A = 1...2,
-    interval(sqrt1(A), L...U),
+    interval(sqrt(A), L...U),
     L > 0.99999,
     L < 1.00001,
     U > 1.41421,
@@ -276,7 +316,7 @@ test(sqrt6) :-
 
 test(sqrt7) :-
     A = 0...2,
-    interval(sqrt1(A), L...U),
+    interval(sqrt(A), L...U),
     L = 0.0,
     U > 1.41421,
     U < 1.41422.
@@ -304,42 +344,42 @@ test(sqrt10) :-
 
 test(power_pos_base_even_expon) :-
     Base = 2...3,
-    Exp = 2,
+    Exp = atomic(2),
     interval(Base ^ Exp, L...U),
     L is 4,
     U is 9.
 
 test(power_pos_base_odd_expon) :-
     Base = 2...3,
-    Exp = 3,
+    Exp = atomic(3),
     interval(Base ^ Exp, L...U),
     L is 8,
     U is 27.
 
 test(power_neg_base_even_expon) :-
     Base = -3... -2,
-    Exp = 2,
+    Exp = atomic(2),
     interval(Base ^ Exp, L...U),
     L is 4,
     U is 9.
 
 test(power_neg_base_odd_expon) :-
     Base = -3... -2,
-    Exp = 3,
+    Exp = atomic(3),
     interval(Base ^ Exp, L...U),
     L is -27,
     U is -8.
 
 test(power_mixed_base_even_expon) :-
     Base = -3...2,
-    Exp = 2,
+    Exp = atomic(2),
     interval(Base ^ Exp, L...U),
     L is 0,
     U is 9.
 
 test(power_mixed_base_odd_expon) :-
     Base = -3...2,
-    Exp = 3,
+    Exp = atomic(3),
     interval(Base ^ Exp, L...U),
     L is -27,
     U is 8.
@@ -384,7 +424,8 @@ test(abs4) :-
 
 test(round1) :-
     A = 2.71828...3.14159,
-    interval(round(A), L...U),
+    Dig = atomic(2),
+    interval(round(A, Dig), L...U),
     L = 2.71,
     U = 3.15.
 
