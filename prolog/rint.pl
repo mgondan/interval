@@ -1,4 +1,4 @@
-:- module(rint, []).
+:- module(rint, [pbinom/5]).
 
 :- multifile r_hook/1.
 
@@ -11,23 +11,22 @@ This module expands the 'interval' module with R functions.
 For general information on the use of interval/2 and interval/3, refer to that module. 
  */
 
-%   Additional operations: 
-%     - Binomial distribution: 
-%           - Cumulated density lower-tail: interval(pbinom(X, N, P, true), Res)
-%           - Cumulated density upper-tail: interval(pbinom(X, N, P, false), Res)
-%           - Quantile: interval(qbinom(Alpha, N, P, true), Res)
-%           - Density: interval(dbinom(X, N, P), Res)
-%     - Normal distribution:
-%           - Cumulated density: interval(pnorm(X, Mu, Sigma), Res)
-%           - Quantile: interval(qnorm(P, Mu, Sigma), Res)
-%           - Density: interval(dnorm(X, Mu, Sigma), Res)
-
+% Binomial distribution
+% - Cumulated density lower-tail: interval(pbinom(X, N, P, true), Res)
+% - Cumulated density upper-tail: interval(pbinom(X, N, P, false), Res)
+% - Quantile: interval(qbinom(Alpha, N, P, true), Res)
+% - Density: interval(dbinom(X, N, P), Res)
+%
+% Normal distribution
+% - Cumulated density: interval(pnorm(X, Mu, Sigma), Res)
+% - Quantile: interval(qnorm(P, Mu, Sigma), Res)
+% - Density: interval(dnorm(X, Mu, Sigma), Res)
 
 %
 % Skip R vectors
 %
-interval:int_hook((:)/2, []).
-interval:int_hook(A:B, A:B, _).
+interval:int_hook(:, colon(_, _)).
+colon(A, A).
 
 %
 % Obtain atoms or functions from R
@@ -51,25 +50,25 @@ r_hook(false).
 %
 % Binomial distribution
 %
-interval:int_hook(pbinom/4, []).
+interval:int_hook(pbinom, pbinom(..., ..., ..., atomic)).
 
 % lower tail
-interval:int_hook(pbinom(X, N, P, true), Res, Opt) :-
+pbinom(X, N, P, atomic(true), Res) :-
     !,
-    interval(pbinom0(X, N, P), Res, Opt).
+    interval(pbinom0(X, N, P), Res).
+
+% upper tail
+pbinom(X, N, P, atomic(false), Res) :-
+    interval(pbinom1(X, N, P), Res).
 
 r_hook(pbinom0/3).
 interval:mono(pbinom0/3, [+, -, -]).
-
-% upper tail
-interval:int_hook(pbinom(X, N, P, false), Res, Opt) :-
-    interval(pbinom1(X, N, P), Res, Opt).
 
 r_hook(pbinom1/3).
 interval:mono(pbinom1/3, [-, +, +]).
 
 %
-% Quantile function
+% Quantile function - hier weiter
 %
 interval:int_hook(qbinom/4, []).
 
