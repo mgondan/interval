@@ -72,7 +72,7 @@ interval(Expr, Res),
 
 instantiate(atomic, atomic(_)).
 instantiate(..., _..._).
-
+instantiate(ci, ci(_, _)).
 %
 % Monotonically behaving functions
 %
