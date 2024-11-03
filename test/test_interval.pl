@@ -267,7 +267,8 @@ test(dividend_number_divisor_number) :-
     A = 1,
     B = 2,
     interval(atomic(A) / atomic(B), Res),
-    Res is 0.5.
+    Res is 0.5,
+    !.
 
 :- end_tests(division).
 

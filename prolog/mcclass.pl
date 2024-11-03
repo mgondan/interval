@@ -36,23 +36,17 @@ interval:pval(A...B, Res) :-
 %
 % Forget parts of an expression
 %
-/*interval:int_hook(omit_left/1, [evaluate(false)]).
-interval:int_hook(omit_left(Expr), Res, Opt) :-
+interval:int_hook(omit_left, omit_left(expr)).
+interval:int_hook_opt(omit_left, [evaluate(false)]).
+interval:omit_left(expr(Expr), Res) :-
     Expr =.. [_Op, _L, R],
-    interval(R, Res, Opt).*/
-interval:int_hook(omit_left, omit_left(_)).
-interval:omit_left(Expr, Res) :-
-    Expr =.. [_Op, _L, R],
-    interval(R, Res).
+    Res = R.
 
-/*interval:int_hook(omit_right/1, [evaluate(false)]).
-interval:int_hook(omit_right(Expr), Res, Opt) :-
+interval:int_hook(omit_right, omit_right(expr)).
+interval:int_hook_opt(omit_right, [evaluate(false)]).
+interval:omit_right(expr(Expr), Res) :-
     Expr =.. [_Op, L, _R],
-    interval(L, Res, Opt).*/
-interval:int_hook(omit_right, omit_right(_)).
-interval:omit_right(Expr, Res) :-
-    Expr =.. [_Op, L, _R],
-    interval(L, Res).
+    Res = L.
 
 %
 % Multiply
@@ -66,11 +60,10 @@ interval:dot(A, B, Res) :-
 %
 interval:int_hook(available, avail1(atomic)).
 interval:avail1(atomic(A), Res) :-
-    avail2(A, _),
+    avail2(atomic(A), _),
     !,
     Res = true;
     Res = false.
-
 
 avail2(atomic(A), Res),
    integer(A)

@@ -1,6 +1,7 @@
 :- module(interval, [interval/2, op(150, xfx, ...)]).
 
 :- multifile int_hook/2.
+:- multifile int_hook_opt/2.
 :- multifile eval_hook/2.
 :- multifile mono/2.
 
@@ -63,6 +64,24 @@ interval(atomic(A), Res)
 interval(Expr, Res),
     compound(Expr),
     compound_name_arguments(Expr, Name, Args),
+    int_hook_opt(Name, Opt),
+    option(evaluate(false), Opt, true),
+    int_hook(Name, Mask),
+    compound_name_arguments(Mask, Fun, Args1),
+    maplist(instantiate, Args1, Args2),
+    maplist(instantiate2, Args, Args2, Args3)
+ => compound_name_arguments(Goal, Fun, Args3),
+    call(Goal, Res).
+
+instantiate2(A, atomic(_), atomic(A)).
+instantiate2(L...U, _..._, L...U).
+instantiate2(A, expr(_), expr(A)).
+instantiate2(ci(A, B), ci(_, _), ci(A, B)).
+
+
+interval(Expr, Res),
+    compound(Expr),
+    compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask),
     compound_name_arguments(Mask, Fun, Args1),
     maplist(instantiate, Args1, Args2),
@@ -72,7 +91,9 @@ interval(Expr, Res),
 
 instantiate(atomic, atomic(_)).
 instantiate(..., _..._).
+instantiate(expr, expr(_)).
 instantiate(ci, ci(_, _)).
+
 %
 % Monotonically behaving functions
 %
@@ -254,6 +275,10 @@ div3(atomic(A), B1...B2, Res) :-
 int_hook(/, div4(atomic, atomic)).
 div4(atomic(A), atomic(B), Res) :-
     Res is A / B.
+
+div4(atomic(A), atomic(B), atomic(Res)) :-
+    Res is A / B.
+
 
 % Hickey Figure 1
 mixed(L, U) :-
