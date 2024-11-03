@@ -58,9 +58,11 @@ interval(atomic(A), Res)
 %    Args specify the type of the arguments, ... for interval and atomic for numbers.
 % 2. Calculate result with interval:pred_name(Args, Res)
 %    Args are the argument types as defined in the hook with variable names.
-% 
+% 3. Define interval:int_hook_opt(Name, [evaluate(false)]). to skip evaluation of arguments.
 %
 % see below example for (/)/2.
+
+% Skipping evaluation of arguments
 interval(Expr, Res),
     compound(Expr),
     compound_name_arguments(Expr, Name, Args),
@@ -77,7 +79,6 @@ instantiate2(A, atomic(_), atomic(A)).
 instantiate2(L...U, _..._, L...U).
 instantiate2(A, expr(_), expr(A)).
 instantiate2(ci(A, B), ci(_, _), ci(A, B)).
-
 
 interval(Expr, Res),
     compound(Expr),
@@ -278,7 +279,6 @@ div4(atomic(A), atomic(B), Res) :-
 
 div4(atomic(A), atomic(B), atomic(Res)) :-
     Res is A / B.
-
 
 % Hickey Figure 1
 mixed(L, U) :-
