@@ -27,42 +27,33 @@ test(dfrac) :-
 
 :- begin_tests(number_digit).
 
-% ToDo: adjust expected results after implementation of option evaluation 
 test(tstat) :-
     A = 1...5,
     B = 3...6,
     interval(tstat(A / B), L...U),
-    L > 0.1666,
-    L < 0.1667,
-    U > 1.6666,
-    U < 1.6667.
+    L is 0.16,
+    U is 1.67.
 
 test(hdrs) :-
     A = 1...5,
     B = 3...6,
     interval(hdrs(A / B), L...U),
-    L > 0.1666,
-    L < 0.1667,
-    U > 1.6666,
-    U < 1.6667.
+    L is 0.1,
+    U is 1.7.
 
 test(chi2ratio) :-
     A = 1...5,
     B = 3...6,
     interval(chi2ratio(A / B), L...U),
-    L > 0.1666,
-    L < 0.1667,
-    U > 1.6666,
-    U < 1.6667.
+    L is 0.16,
+    U is 1.67.
 
 test(pval) :-
     A = 1...5,
     B = 3...6,
     interval(pval(A / B), L...U),
-    L > 0.1666,
-    L < 0.1667,
-    U > 1.6666,
-    U < 1.6667.
+    L is 0.166,
+    U is 1.667.
 
 :- end_tests(number_digit).
 
