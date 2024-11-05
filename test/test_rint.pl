@@ -33,28 +33,28 @@ test(dbinom3) :-
     U < 0.18781.
 
 test(qbinom_lowertail) :-
-    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, true), L...U),
+    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, atomic(true)), L...U),
     L > 11.99999,
     L < 12.00001,
     U > 14.99999,
     U < 15.00001.
 
 test(qbinom_uppertail) :-
-    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, false), L...U),
+    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, atomic(false)), L...U),
     L > 10.99999,
     L < 11.00001,
     U > 14.99999,
     U < 15.00001.
 
 test(pbinom_lowertail) :-
-    interval(pbinom(10...11, 20...21, 0.6...0.7, true), L...U),
+    interval(pbinom(10...11, 20...21, 0.6...0.7, atomic(true)), L...U),
     L > 0.02638,
     L < 0.02639,
     U > 0.40440,
     U < 0.40441.
 
 test(pbinom_uppertail) :-
-    interval(pbinom(10...11, 20...21, 0.6...0.7, false), L...U),
+    interval(pbinom(10...11, 20...21, 0.6...0.7, atomic(false)), L...U),
     L > 0.59559,
     L < 0.59560,
     U > 0.97361,
