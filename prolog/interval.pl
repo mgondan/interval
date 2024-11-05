@@ -42,10 +42,11 @@ interval(L...U, Res)
  => Res = L...U.
 
 % Force translation of atom to interval
-/* interval(atomic(A), L...U)
+interval(A, L...U),
+    atomic(A)
  => eval(A, Res),
     L = Res,
-    U = Res. */
+    U = Res. 
 
 interval(atomic(A), Res)
  => eval(A, R),
