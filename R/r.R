@@ -34,3 +34,18 @@ dbinom2 = function(k1, k2, N1, N2, p1, p2)
 pnorm0 <- pnorm
 qnorm0 <- qnorm
 dnorm0 <- dnorm1 <- dnorm2 <- dnorm
+
+pt0 <- pt1 <- function(...){
+  pt(..., lower.tail=TRUE)
+}
+
+pt2 <- pt3 <- function(...){
+  pt(..., lower.tail=FALSE)
+}
+
+qt0 <- qt
+dt0 <- dt1 <- dt
+
+atomic <- function(A){
+  return(A)
+}
