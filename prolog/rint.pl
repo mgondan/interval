@@ -21,7 +21,12 @@ For general information on the use of interval/2 and interval/3, refer to that m
 % - Cumulated density: interval(pnorm(X, Mu, Sigma), Res)
 % - Quantile: interval(qnorm(P, Mu, Sigma), Res)
 % - Density: interval(dnorm(X, Mu, Sigma), Res)
-
+%
+% T distribution
+% - Cumulated density lower-tail: interval(pt(X, Df, true), Res)
+% - Cumulated density upper-tail: interval(pt(X, Df, false), Res)
+% - Quantile: interval(qt(P, Df), Res)
+% - Density: interval(dt(X, Df), Res)
 %
 % Skip R vectors
 %
@@ -167,3 +172,57 @@ interval:dnorm0(A...B, Res) :-
     Max is max(abs(A), B),
     interval(dnorm2(0...Max), Res).
 
+%
+% t distribution
+%
+interval:int_hook(pt, pt(..., atomic, atomic)).
+
+% lower tail
+interval:pt(X, atomic(Df), atomic(true), Res) :-
+    !,
+    interval(pt0(X, Df), Res).
+
+% upper tail
+interval:pt(X, atomic(Df), atomic(false), Res) :-
+     interval(pt1(X, Df), Res).
+
+r_hook(pt0/2).
+interval:mono(pt0/2, [+,+]).
+
+r_hook(pt1/2).
+interval:mono(pt1/2, [-,-]).
+
+%
+% Quantile function
+%
+r_hook(qt0/2).
+interval:mono(qt0/2, [+,-]).
+
+interval:int_hook(qt, qt(..., atomic)).
+interval:qt(P, atomic(Df), Res) :-
+     interval(qt0(P, Df), Res).
+
+%
+% Density
+%
+r_hook(dt0/2).
+interval:mono(dt0/2, [+,+]).
+
+r_hook(dt1/2).
+interval:mono(dt1/2, [-,+]).
+
+interval:int_hook(dt, dt(..., atomic)).
+interval:dt(L...U, atomic(Df), Res) :-
+    U =< 0,
+    !,
+    interval(dt0(L...U, Df), Res).
+
+interval:dt(L...U, atomic(Df), Res) :-
+    L >= 0,
+    !,
+    interval(dt1(L...U, Df), Res).
+
+% mixed
+interval:dt(L...U, atomic(Df), Res) :-
+    Max is max(abs(L), U),
+    interval(dt1(0...Max, Df), Res). 

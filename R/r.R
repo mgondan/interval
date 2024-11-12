@@ -34,3 +34,14 @@ dbinom2 = function(k1, k2, N1, N2, p1, p2)
 pnorm0 <- pnorm
 qnorm0 <- qnorm
 dnorm0 <- dnorm1 <- dnorm2 <- dnorm
+
+pt0 <- function(x, df){
+  pt(x, df, lower.tail=TRUE)
+}
+
+pt1 <- function(x, df){
+  pt(x, df, lower.tail=FALSE)
+}
+
+qt0 <- qt
+dt0 <- dt1 <- dt

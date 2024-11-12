@@ -5,7 +5,7 @@
 :- use_module(library(rint)).
 
 test_rint :-
-    run_tests([binom, normal]).
+    run_tests([binom, normal, t]).
 
 :- begin_tests(binom).
 
@@ -100,3 +100,37 @@ test(dnorm_z_mixed) :-
     U < 0.03990.
 
 :- end_tests(normal).
+
+:- begin_tests(t).
+
+test(pt_lowertail) :-
+    interval(pt(0.5...1, atomic(5), atomic(true)), L...U),
+    L > 0.6808,
+    U < 0.8184.
+
+test(pt_uppertail) :-
+    interval(pt(0.5...1, atomic(5), atomic(false)), L...U),
+    L > 0.1816,
+    U < 0.3192.
+
+test(qt) :-
+    interval(qt(0.4...0.6, atomic(5)), L...U),
+    L > -0.2672,
+    U < 0.2672.
+
+test(dt_neg) :-
+    interval(dt(-0.5... -0.4, atomic(5)), L...U),
+    L > -0.3280,
+    U < 0.3454.
+
+test(dt_pos) :-
+    interval(dt(0.4...0.5, atomic(5)), L...U),
+    L > 0.3279,
+    U < 0.3454.
+
+test(dt_mixed) :-
+    interval(dt(-0.4... 0.5, atomic(5)), L...U),
+    L > 0.3279,
+    U < 0.3797.
+
+:- end_tests(t).
