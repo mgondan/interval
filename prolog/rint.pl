@@ -55,15 +55,15 @@ r_hook(false).
 %
 % Binomial distribution
 %
-interval:int_hook(pbinom, pbinom(..., ..., ..., atomic)).
+interval:int_hook(pbinom, pbinom(atomic, atomic, ..., atomic)).
 
 % lower tail
-interval:pbinom(X, N, P, atomic(true), Res) :-
+interval:pbinom(atomic(X), atomic(N), P, atomic(true), Res) :-
     !,
     interval(pbinom0(X, N, P), Res).
 
 % upper tail
-interval:pbinom(X, N, P, atomic(false), Res) :-
+interval:pbinom(atomic(X), atomic(N), P, atomic(false), Res) :-
     interval(pbinom1(X, N, P), Res).
 
 r_hook(pbinom0/3).

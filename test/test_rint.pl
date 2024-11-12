@@ -32,12 +32,12 @@ test(qbinom_uppertail) :-
     equal(Res, 11...15).
 
 test(pbinom_lowertail) :-
-    interval(pbinom(10...11, 20...21, 0.6...0.7, true), Res),
-    equal(Res, 0.0263...0.4045).
+    interval(pbinom(10, 20, 0.6...0.7, true), Res),
+    equal(Res, 0.0479...0.2447).
 
 test(pbinom_uppertail) :-
-    interval(pbinom(10...11, 20...21, 0.6...0.7, false), Res),
-    equal(Res, 0.5955...0.9737).
+    interval(pbinom(10, 20, 0.6...0.7, false), Res),
+    equal(Res, 0.7553...0.9521).
 
 :- end_tests(binom).
 
@@ -115,4 +115,4 @@ test(dt_df_interval) :-
 
 % Helper predicate to check equality
 equal(Res0, Res) :-
-    interval:interval(round(Res0, atomic(4)), Res).
+    interval:interval(round(Res0, 4), Res).

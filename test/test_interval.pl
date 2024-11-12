@@ -252,21 +252,21 @@ test(dividend_strictneg_divisor_negative) :-
 test(dividend_interval_divisor_number) :-
     A = -2... -1,
     B is 2,
-   interval(A / atomic(B), L...U),
+   interval(A / B, L...U),
     L is -1,
     U is -0.5.
 
 test(dividend_number_divisor_interval) :-
     A = 2,
     B = -2... -1,
-    interval(atomic(A) / B, L...U),
+    interval(A / B, L...U),
     L is -2,
     U is -1.
 
 test(dividend_number_divisor_number) :-
     A = 1,
     B = 2,
-    interval(atomic(A) / atomic(B), Res),
+    interval(A / B, Res),
     Res is 0.5,
     !.
 
@@ -345,42 +345,42 @@ test(sqrt10) :-
 
 test(power_pos_base_even_expon) :-
     Base = 2...3,
-    Exp = atomic(2),
+    Exp = 2,
     interval(Base ^ Exp, L...U),
     L is 4,
     U is 9.
 
 test(power_pos_base_odd_expon) :-
     Base = 2...3,
-    Exp = atomic(3),
+    Exp = 3,
     interval(Base ^ Exp, L...U),
     L is 8,
     U is 27.
 
 test(power_neg_base_even_expon) :-
     Base = -3... -2,
-    Exp = atomic(2),
+    Exp = 2,
     interval(Base ^ Exp, L...U),
     L is 4,
     U is 9.
 
 test(power_neg_base_odd_expon) :-
     Base = -3... -2,
-    Exp = atomic(3),
+    Exp = 3,
     interval(Base ^ Exp, L...U),
     L is -27,
     U is -8.
 
 test(power_mixed_base_even_expon) :-
     Base = -3...2,
-    Exp = atomic(2),
+    Exp = 2,
     interval(Base ^ Exp, L...U),
     L is 0,
     U is 9.
 
 test(power_mixed_base_odd_expon) :-
     Base = -3...2,
-    Exp = atomic(3),
+    Exp = 3,
     interval(Base ^ Exp, L...U),
     L is -27,
     U is 8.
@@ -425,7 +425,7 @@ test(abs4) :-
 
 test(round1) :-
     A = 2.71828...3.14159,
-    Dig = atomic(2),
+    Dig = 2,
     interval(round(A, Dig), L...U),
     L = 2.71,
     U = 3.15.

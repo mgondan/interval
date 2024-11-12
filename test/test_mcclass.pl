@@ -105,7 +105,7 @@ test(available_float) :-
     Res = true.
 
 test(not_available_nan) :-
-    interval(available(atomic(0) / atomic(0)), Res),
+    interval(available(0 / 0), Res),
     Res = false.
 
 :- end_tests(available).

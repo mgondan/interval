@@ -5,7 +5,7 @@
 :- multifile eval_hook/2.
 :- multifile mono/2.
 
-:- discontiguous interval/2.
+:- discontiguous interval_/2.
 :- discontiguous int_hook/2.
 
 :- set_prolog_flag(float_overflow, infinity).
@@ -35,28 +35,20 @@
 %   @arg A is the expression to be evaluted.
 %   @arg Res is the result.
 
-%
-% If 1st argument already is an interval, do not do anything
-%
-interval(L...U, Res)
+interval(Expr, Res) :-
+    clean(Expr, Expr1),
+    interval_(Expr1, Res).
+
+clean(L...U, Res)
  => Res = L...U.
 
-% Force translation of atom to interval
-interval(A, Res),
-    atomic(A),
-    number(A)
- => eval(A, Res0),
-    Res = Res0...Res0.
+clean(Expr, Expr1),
+    compound(Expr)
+ => mapargs(clean, Expr, Expr1).
 
-interval(atomic(A), Res)
- => eval(A, R),
-    Res = atomic(R).
-
-interval(A, Res),
+clean(A, A1),
     atomic(A)
- => Res = atomic(A).
-
-
+ => A1 = atomic(A).
 
 %
 % Hook for custom interval functions
@@ -69,9 +61,21 @@ interval(A, Res),
 %
 % see below example for (/)/2.
 
+interval_(atomic(A), Res),
+    Res = L...U
+ => L = A,
+    U = A.
+
+interval_(atomic(A), Res)
+ => Res = atomic(A).
+
+interval_(L...U, Res)
+ => Res = L...U.
+
+
+
 % Skipping evaluation of arguments
-interval(Expr, Res),
-    compound(Expr),
+interval_(Expr, Res),
     compound_name_arguments(Expr, Name, Args),
     int_hook_opt(Name, Opt),
     option(evaluate(false), Opt, true),
@@ -87,13 +91,12 @@ instantiate2(L...U, _..._, L...U).
 instantiate2(A, expr(_), expr(A)).
 instantiate2(ci(A, B), ci(_, _), ci(A, B)).
 
-interval(Expr, Res),
-    compound(Expr),
+interval_(Expr, Res),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask),
     compound_name_arguments(Mask, Fun, Args1),
     maplist(instantiate, Args1, Args2),
-    maplist(interval, Args, Args2)
+    maplist(interval_, Args, Args2)
  => compound_name_arguments(Goal, Fun, Args2),
     call(Goal, Res).
 
@@ -118,24 +121,24 @@ mono((*)/2, **).
 mono((^)/2, [*, /]).
 
 % special case: multiplication ([*, *], commutative)
-interval(Expr, Res),
+interval_(Expr, Res),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, **)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval, Args, Args1),
+    maplist(interval_, Args, Args1),
     findall(R, both(Name, Args1, R), Bounds),
     min_list(Bounds, L),
     max_list(Bounds, U),
     Res = L...U.
 
 % general case
-interval(Expr, Res),
+interval_(Expr, Res),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, Dir)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval, Args, Args1),
+    maplist(interval_, Args, Args1),
     findall(R, lower(Dir, Name, Args1, R), Lower),
     min_list(Lower, L),
     findall(R, upper(Dir, Name, Args1, R), Upper),
