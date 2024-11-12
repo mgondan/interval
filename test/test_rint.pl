@@ -68,36 +68,48 @@ test(dnorm_z_mixed) :-
 :- begin_tests(t).
 
 test(pt_lowertail_neg) :-
-    interval(pt(-0.5... -0.2, atomic(5), atomic(true)), Res),
+    interval(pt(-0.5... -0.2, 5, atomic(true)), Res),
     equal(Res, 0.3191...0.4247).
 
 test(pt_lowertail_pos) :-
-    interval(pt(0.5...1, atomic(5), atomic(true)), Res),
+    interval(pt(0.5...1, 5, atomic(true)), Res),
     equal(Res, 0.6808...0.8184).
 
 test(pt_uppertail_neg) :-
-    interval(pt(-0.5... -0.2, atomic(5), atomic(false)), Res),
+    interval(pt(-0.5... -0.2, 5, atomic(false)), Res),
     equal(Res, 0.5753...0.6809).
 
 test(pt_uppertail_pos) :-
-    interval(pt(0.5...1, atomic(5), atomic(false)), Res),
+    interval(pt(0.5...1, 5, atomic(false)), Res),
     equal(Res, 0.1816...0.3192).
 
+test(pt_df_interval) :-
+    interval(pt(0.5...1, 2...5, atomic(false)), Res),
+    equal(Res, 0.1816...0.3334).
+
 test(qt) :-
-    interval(qt(0.4...0.6, atomic(5)), Res),
+    interval(qt(0.4...0.6, 5), Res),
     equal(Res, -0.2672...0.2672).
 
+test(qt_df_interval) :-
+    interval(qt(0.4...0.6, 2...5), Res),
+    equal(Res, -0.2672...0.2887).
+
 test(dt_neg) :-
-    interval(dt(-0.5... -0.4, atomic(5)), Res),
+    interval(dt(-0.5... -0.4, 5), Res),
     equal(Res, 0.3279...0.3454).
 
 test(dt_pos) :-
-    interval(dt(0.4...0.5, atomic(5)), Res),
+    interval(dt(0.4...0.5, 5), Res),
     equal(Res, 0.3279...0.3454).
 
 test(dt_mixed) :-
-    interval(dt(-0.4... 0.5, atomic(5)), Res),
+    interval(dt(-0.4... 0.5, 5), Res),
     equal(Res, 0.3279...0.3797).
+
+test(dt_df_interval) :-
+    interval(dt(-0.5... -0.4, 2...5), Res),
+    equal(Res, 0.2962...0.3454).
 
 :- end_tests(t).
 
