@@ -177,20 +177,47 @@ interval:dnorm0(A...B, Res) :-
 %
 interval:int_hook(pt, pt(..., atomic, atomic)).
 
-% lower tail
-interval:pt(X, atomic(Df), atomic(true), Res) :-
-    !,
-    interval(pt0(X, Df), Res).
-
-% upper tail
-interval:pt(X, atomic(Df), atomic(false), Res) :-
-     interval(pt1(X, Df), Res).
-
 r_hook(pt0/2).
-interval:mono(pt0/2, [+,+]).
+interval:mono(pt0/2, [+,-]).
 
 r_hook(pt1/2).
-interval:mono(pt1/2, [-,-]).
+interval:mono(pt1/2, [+,+]).
+
+r_hook(pt2/2).
+interval:mono(pt2/2, [-,+]).
+
+r_hook(pt3/2).
+interval:mono(pt3/2, [-,-]).
+
+% lower tail
+interval:pt(L...U, atomic(Df), atomic(true), Res) :-
+    U =< 0,
+    !,
+    interval(pt0(L...U, Df), Res).
+
+interval:pt(L...U, atomic(Df), atomic(true), Res) :-
+    L >= 0,
+    !,
+    interval(pt1(L...U, Df), Res).
+
+interval:pt(L...U, atomic(Df), atomic(true), Res) :-
+    Max is max(abs(L), U), 
+    interval(pt1(0...Max, Df), Res).
+
+% upper tail
+interval:pt(L...U, atomic(Df), atomic(false), Res) :-
+    U =< 0,
+    !, 
+    interval(pt2(L...U, Df), Res).
+
+interval:pt(L...U, atomic(Df), atomic(false), Res) :-
+    L >= 0,
+    !, 
+    interval(pt3(L...U, Df), Res).
+
+interval:pt(L...U, atomic(Df), atomic(false), Res) :-
+    Max is max(abs(L), U), 
+    interval(pt3(0...Max, Df), Res).
 
 %
 % Quantile function
