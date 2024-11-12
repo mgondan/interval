@@ -39,6 +39,9 @@ interval(Expr, Res) :-
     clean(Expr, Expr1),
     interval_(Expr1, Res).
 
+clean(atomic(A), Res)
+ => Res = atomic(A).
+
 clean(L...U, Res)
  => Res = L...U.
 
@@ -170,7 +173,7 @@ lower(-, _...A, L)
 lower(*, A...B, L)
  => L = A ; L = B.
 
-lower(_, A, L) % either / or A not interval
+lower(_, atomic(A), L)
  => L = A.
 
 upper(+, _...B, U)
@@ -182,7 +185,7 @@ upper(-, A..._, U)
 upper(*, A...B, U)
  => U = A ; U = B.
 
-upper(_, A, U)
+upper(_, atomic(A), U)
  => U = A.
 
 %
@@ -268,27 +271,24 @@ eq(_..._, _..._, false).
 %
 % Division
 %
+int_hook(/, div4(atomic, atomic)).
+div4(atomic(A), atomic(B), atomic(Res)) :-
+    Res is A / B.
+
 int_hook(/, div1(..., ...)).
 div1(A...B, C...D, Res) :-
     !,
     div(A...B, C...D, Res).
 
-int_hook(/, div2(..., atomic)).
-div2(A1...A2, atomic(B), Res) :-
-    !,
-    div(A1...A2, B...B, Res).
-
-int_hook(/, div3(atomic, ...)).
-div3(atomic(A), B1...B2, Res) :-
-    !,
-    div(A...A, B1...B2, Res).
-
-int_hook(/, div4(atomic, atomic)).
-div4(atomic(A), atomic(B), Res) :-
-    Res is A / B.
-
-div4(atomic(A), atomic(B), atomic(Res)) :-
-    Res is A / B.
+%int_hook(/, div2(..., atomic)).
+%div2(A1...A2, atomic(B), Res) :-
+%    !,
+%    div(A1...A2, B...B, Res).
+%
+%int_hook(/, div3(atomic, ...)).
+%div3(atomic(A), B1...B2, Res) :-
+%    !,
+%    div(A...A, B1...B2, Res).
 
 % Hickey Figure 1
 mixed(L, U) :-
@@ -316,6 +316,43 @@ zeroneg(L, U) :-
 
 strictneg(_, U) :-
     U < 0.
+
+zero(L, U) :-
+    L =:= 0,
+    U =:= 0.
+
+%
+% atomic 0 in numerator or denominator
+%
+div(A...B, C...D, Res),
+    zero(A, B),
+    (   negative(C, D)
+    ;   mixed(C, D) 
+    ;   positive(C, D)
+    )
+ => Res = atomic(0).
+
+div(A...B, C...D, Res),
+    zero(C, D),
+    zeropos(A, B)
+ => Res = atomic(1.0Inf).
+
+div(A...B, C...D, Res),
+    zero(C, D),
+    zeroneg(A, B)
+ => Res = atomic(-1.0Inf).
+
+div(A...B, C...D, Res),
+    zero(C, D),
+    mixed(A, B)
+ => (   Res = atomic(-1.0Inf)
+    ;   Res = atomic(1.0Inf)
+    ).
+
+div(A...B, C...D, Res),
+    zero(A, B),
+    zero(C, D)
+ => Res = atomic(1.5NaN).
 
 %
 % Hickey Theorem 8 and Figure 4
