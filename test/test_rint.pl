@@ -24,19 +24,19 @@ test(dbinom3) :-
     equal(Res, 0.0349...0.1879).
 
 test(qbinom_lowertail) :-
-    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, atomic(true)), Res),
+    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, true), Res),
     equal(Res, 12...15).
 
 test(qbinom_uppertail) :-
-    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, atomic(false)), Res),
+    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, false), Res),
     equal(Res, 11...15).
 
 test(pbinom_lowertail) :-
-    interval(pbinom(10...11, 20...21, 0.6...0.7, atomic(true)), Res),
+    interval(pbinom(10...11, 20...21, 0.6...0.7, true), Res),
     equal(Res, 0.0263...0.4045).
 
 test(pbinom_uppertail) :-
-    interval(pbinom(10...11, 20...21, 0.6...0.7, atomic(false)), Res),
+    interval(pbinom(10...11, 20...21, 0.6...0.7, false), Res),
     equal(Res, 0.5955...0.9737).
 
 :- end_tests(binom).
@@ -68,23 +68,23 @@ test(dnorm_z_mixed) :-
 :- begin_tests(t).
 
 test(pt_lowertail_neg) :-
-    interval(pt(-0.5... -0.2, 5, atomic(true)), Res),
+    interval(pt(-0.5... -0.2, 5, true), Res),
     equal(Res, 0.3191...0.4247).
 
 test(pt_lowertail_pos) :-
-    interval(pt(0.5...1, 5, atomic(true)), Res),
+    interval(pt(0.5...1, 5, true), Res),
     equal(Res, 0.6808...0.8184).
 
 test(pt_uppertail_neg) :-
-    interval(pt(-0.5... -0.2, 5, atomic(false)), Res),
+    interval(pt(-0.5... -0.2, 5, false), Res),
     equal(Res, 0.5753...0.6809).
 
 test(pt_uppertail_pos) :-
-    interval(pt(0.5...1, 5, atomic(false)), Res),
+    interval(pt(0.5...1, 5, false), Res),
     equal(Res, 0.1816...0.3192).
 
 test(pt_df_interval) :-
-    interval(pt(0.5...1, 2...5, atomic(false)), Res),
+    interval(pt(0.5...1, 2...5, false), Res),
     equal(Res, 0.1816...0.3334).
 
 test(qt) :-

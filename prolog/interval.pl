@@ -43,13 +43,20 @@ interval(L...U, Res)
 
 % Force translation of atom to interval
 interval(A, Res),
-atomic(A)
-=> eval(A, Res0),
-Res = Res0...Res0.
+    atomic(A),
+    number(A)
+ => eval(A, Res0),
+    Res = Res0...Res0.
 
 interval(atomic(A), Res)
  => eval(A, R),
     Res = atomic(R).
+
+interval(A, Res),
+    atomic(A)
+ => Res = atomic(A).
+
+
 
 %
 % Hook for custom interval functions
