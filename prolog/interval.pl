@@ -1,12 +1,11 @@
 :- module(interval, [interval/2, op(150, xfx, ...)]).
 
-:- multifile int_hook/2.
-:- multifile int_hook_opt/2.
+:- multifile int_hook/3.
 :- multifile eval_hook/2.
 :- multifile mono/2.
 
 :- discontiguous interval_/2.
-:- discontiguous int_hook/2.
+:- discontiguous int_hook/3.
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -17,7 +16,7 @@
 % This module adds interval arithemtic to Prolog. 
 % An interval is represented as L...U, where L stands for the lower bound and 
 % U for the upper bound. If the upper bound is a negative number, it has to be written with 
-% an additional space, e.g., 1... -2, or in the infix notation, ...(1, -2).  
+% an additional space, e.g., -3... -2, or in the infix notation, ...(-3, -2).  
 % The interval/2 parses and evaluates the arithemtic expression with such intervals
 % to a result.
 
@@ -35,9 +34,10 @@
 %   @arg A is the expression to be evaluted.
 %   @arg Res is the result.
 
-interval(Expr, Res) :-
+interval(Expr, Res1) :-
     clean(Expr, Expr1),
-    interval_(Expr1, Res).
+    interval_(Expr1, Res0),
+    unwrap(Res0, Res1).
 
 clean(atomic(A), Res)
  => Res = atomic(A).
@@ -53,14 +53,20 @@ clean(A, A1),
     atomic(A)
  => A1 = atomic(A).
 
+unwrap(atomic(A), Res)
+ => Res = A.
+
+unwrap(A, Res)
+ => Res = A.
+
 %
 % Hook for custom interval functions
 %
-% 1. Declare function with interval:int_hook(Name, pred_name(Args))
-%    Args specify the type of the arguments, ... for interval and atomic for numbers.
+% 1. Declare function with interval:int_hook(Name, pred_name(Args), [Options])
+%    'Args' specify the type of the arguments, '...' for intervals and 'atomic' for numbers and logical values.
+%    Add 'evaluate(false)' to 'Options' list to skip evaluation of arguments.
 % 2. Calculate result with interval:pred_name(Args, Res)
-%    Args are the argument types as defined in the hook with variable names.
-% 3. Define interval:int_hook_opt(Name, [evaluate(false)]). to skip evaluation of arguments.
+%    'Args' are the argument types as defined in the hook with variable names, e.g., 'L...U', 'atomic(A)'.
 %
 % see below example for (/)/2.
 
@@ -75,14 +81,27 @@ interval_(atomic(A), Res)
 interval_(L...U, Res)
  => Res = L...U.
 
+interval_(Expr, Res),
+    compound_name_arguments(Expr, Name, Args),
+    int_hook(Name, Mask, Opt),
+    option(evaluate(true), Opt, true),
+    compound_name_arguments(Mask, Fun, Args1),
+    maplist(instantiate, Args1, Args2),
+    maplist(interval_, Args, Args2)
+ => compound_name_arguments(Goal, Fun, Args2),
+    call(Goal, Res).
 
+
+instantiate(atomic, atomic(_)).
+instantiate(..., _..._).
+instantiate(expr, expr(_)).
+instantiate(ci, ci(_, _)).
 
 % Skipping evaluation of arguments
 interval_(Expr, Res),
     compound_name_arguments(Expr, Name, Args),
-    int_hook_opt(Name, Opt),
-    option(evaluate(false), Opt, true),
-    int_hook(Name, Mask),
+    int_hook(Name, Mask, Opt),
+    option(evaluate(false), Opt, false),
     compound_name_arguments(Mask, Fun, Args1),
     maplist(instantiate, Args1, Args2),
     maplist(instantiate2, Args, Args2, Args3)
@@ -93,20 +112,6 @@ instantiate2(A, atomic(_), atomic(A)).
 instantiate2(L...U, _..._, L...U).
 instantiate2(A, expr(_), expr(A)).
 instantiate2(ci(A, B), ci(_, _), ci(A, B)).
-
-interval_(Expr, Res),
-    compound_name_arguments(Expr, Name, Args),
-    int_hook(Name, Mask),
-    compound_name_arguments(Mask, Fun, Args1),
-    maplist(instantiate, Args1, Args2),
-    maplist(interval_, Args, Args2)
- => compound_name_arguments(Goal, Fun, Args2),
-    call(Goal, Res).
-
-instantiate(atomic, atomic(_)).
-instantiate(..., _..._).
-instantiate(expr, expr(_)).
-instantiate(ci, ci(_, _)).
 
 %
 % Monotonically behaving functions
@@ -203,7 +208,7 @@ eval(X, Res)
 %
 % Comparison
 %
-int_hook(<, less1(atomic, atomic)).
+int_hook(<, less1(atomic, atomic), []).
 
 less1(atomic(A), atomic(B), Res) :-
     A < B,
@@ -214,7 +219,7 @@ less1(atomic(_) < atomic(_), Res) :-
     !,
     Res = false.
 
-int_hook(<, less2(..., ...)).
+int_hook(<, less2(..., ...), []).
 
 less2(_...A2, B1..._, Res) :-
     A2 < B1,
@@ -223,7 +228,7 @@ less2(_...A2, B1..._, Res) :-
 
 less2(_..._, _..._, false2).
 
-int_hook(=<, less_eq(..., ...)).
+int_hook(=<, less_eq(..., ...), []).
 
 less_eq(A1..._, _...B2, Res) :-
     A1 =< B2,
@@ -232,7 +237,7 @@ less_eq(A1..._, _...B2, Res) :-
 
 less_eq(_..._, _..._, false).
 
-int_hook(>, great(..., ...)).
+int_hook(>, great(..., ...), []).
 great(A1..._, _...B2, Res) :-
     A1 > B2,
     !,
@@ -240,7 +245,7 @@ great(A1..._, _...B2, Res) :-
 
 great(_..._, _..._, false).
 
-int_hook(>=, great_eq(..., ...)).
+int_hook(>=, great_eq(..., ...), []).
 great_eq(_...A2, B1..._, Res) :-
     A2 >= B1,
     !,
@@ -249,7 +254,7 @@ great_eq(_...A2, B1..._, Res) :-
 great_eq(_..._, _..._, false).
 
 
-int_hook(=\=, not_eq(..., ...)).
+int_hook(=\=, not_eq(..., ...), []).
 not_eq(A...B, C...D, Res) :-
     (   less2(A...B, C...D, true)
     ;   great(A...B, C...D, true)
@@ -259,7 +264,7 @@ not_eq(A...B, C...D, Res) :-
 not_eq(_..._, _..._, false).
 
 
-int_hook(=:=, eq(..., ...)).
+int_hook(=:=, eq(..., ...), []).
 eq(A...B, C...D, Res) :-
     less_eq(A...B, C...D, true),
     great_eq(A...B, C...D, true),
@@ -271,24 +276,14 @@ eq(_..._, _..._, false).
 %
 % Division
 %
-int_hook(/, div4(atomic, atomic)).
-div4(atomic(A), atomic(B), atomic(Res)) :-
+int_hook(/, div1(atomic, atomic), []).
+div1(atomic(A), atomic(B), atomic(Res)) :-
     Res is A / B.
 
-int_hook(/, div1(..., ...)).
-div1(A...B, C...D, Res) :-
+int_hook(/, div2(..., ...), []).
+div2(A...B, C...D, Res) :-
     !,
     div(A...B, C...D, Res).
-
-%int_hook(/, div2(..., atomic)).
-%div2(A1...A2, atomic(B), Res) :-
-%    !,
-%    div(A1...A2, B...B, Res).
-%
-%int_hook(/, div3(atomic, ...)).
-%div3(atomic(A), B1...B2, Res) :-
-%    !,
-%    div(A...A, B1...B2, Res).
 
 % Hickey Figure 1
 mixed(L, U) :-
@@ -533,7 +528,7 @@ div(A...B, C...D, Res),
 %
 mono(sqrt/1, [+]).
 
-int_hook(sqrt1, sqrt1(...)).
+int_hook(sqrt1, sqrt1(...), []).
 sqrt1(A...B, Res) :-
     strictneg(A, B),
     !,
@@ -553,7 +548,7 @@ sqrt1(A...B, Res) :-
 % Power
 %
 % Even exponent with negative base
-int_hook((^), pow(..., atomic)).
+int_hook((^), pow(..., atomic), []).
 pow(L...U, atomic(Exp), Res),
     negative(L, U),
     even(Exp),
@@ -584,7 +579,7 @@ natural(A) :-
 %
 % Absolute value
 %
-int_hook(abs, abs1(...)).
+int_hook(abs, abs1(...), []).
 abs1(A...B, Res) :-
     positive(A, B),
     !,
@@ -607,7 +602,7 @@ abs1(A...B, Res) :-
 %
 % round interval
 %
-int_hook(round, round1(..., atomic)).
+int_hook(round, round1(..., atomic), []).
 round1(A...B, atomic(Dig), Res) :-
     eval(floor(A, Dig), A1),
     eval(ceiling(B, Dig), B1),

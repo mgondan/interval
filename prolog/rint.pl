@@ -8,7 +8,7 @@
 /** <module> Use intervals in R functions.
 
 This module expands the 'interval' module with R functions.
-For general information on the use of interval/2 and interval/3, refer to that module. 
+For general information on the use of interval/2, please refer to that module. 
  */
 
 % Binomial distribution
@@ -30,7 +30,7 @@ For general information on the use of interval/2 and interval/3, refer to that m
 %
 % Skip R vectors
 %
-interval:int_hook(:, colon(_, _)).
+interval:int_hook(:, colon(_, _), []).
 colon(A, A).
 
 %
@@ -55,16 +55,16 @@ r_hook(false).
 %
 % Binomial distribution
 %
-interval:int_hook(pbinom, pbinom(atomic, atomic, ..., atomic)).
+interval:int_hook(pbinom, pbinom(atomic, atomic, ..., atomic), []).
 
 % lower tail
 interval:pbinom(atomic(X), atomic(N), P, atomic(true), Res) :-
     !,
-    interval(pbinom0(X, N, P), Res).
+    interval:interval_(pbinom0(atomic(X), atomic(N), P), Res).
 
 % upper tail
 interval:pbinom(atomic(X), atomic(N), P, atomic(false), Res) :-
-    interval(pbinom1(X, N, P), Res).
+    interval:interval_(pbinom1(atomic(X), atomic(N), P), Res).
 
 r_hook(pbinom0/3).
 interval:mono(pbinom0/3, [+, -, -]).
@@ -75,16 +75,16 @@ interval:mono(pbinom1/3, [-, +, +]).
 %
 % Quantile function - hier weiter
 %
-interval:int_hook(qbinom, qbinom(..., ..., ..., atomic)).
+interval:int_hook(qbinom, qbinom(..., ..., ..., atomic), []).
 
 % lower tail
 interval:qbinom(Alpha, N, P, atomic(true), Res) :-
     !,
-    interval(qbinom0(Alpha, N, P), Res).
+    interval:interval_(qbinom0(Alpha, N, P), Res).
 
 % upper tail
 interval:qbinom(Alpha, N, P, atomic(false), Res) :-
-    interval(qbinom1(Alpha, N, P), Res).
+    interval:interval_(qbinom1(Alpha, N, P), Res).
 
 r_hook(qbinom0/3).
 interval:mono(qbinom0/3, [+, +, +]).
@@ -95,19 +95,19 @@ interval:mono(qbinom1/3, [-, +, +]).
 %
 % Density
 %
-interval:int_hook(dbinom, dbinom(..., ..., ...)).
+interval:int_hook(dbinom, dbinom(..., ..., ...), []).
 
 % left to X / N
 interval:dbinom(X1...X2, N1...N2, P1...P2, Res) :-
     X2 < N1 * P1,
     !,
-    interval(dbinom0(X1...X2, N1...N2, P1...P2), Res).
+    interval:interval_(dbinom0(X1...X2, N1...N2, P1...P2), Res).
 
 % right to X / N
 interval:dbinom(X1...X2, N1...N2, P1...P2, Res) :-
     X1 > N2 * P2,
     !,
-    interval(dbinom1(X1...X2, N1...N2, P1...P2), Res).
+    interval:interval_(dbinom1(X1...X2, N1...N2, P1...P2), Res).
 
 % otherwise
 interval:dbinom(X1...X2, N1...N2, P1...P2, Res) :-
@@ -126,10 +126,10 @@ interval:mono(dbinom1/3, [-, +, +]).
 r_hook(pnorm0/1).
 interval:mono(pnorm0/1, [+]).
 
-interval:int_hook(pnorm, pnorm(..., ..., ...)).
+interval:int_hook(pnorm, pnorm(..., ..., ...), []).
 interval:pnorm(X, Mu, Sigma, Res) :-
-     interval((X - Mu)/Sigma, Z),
-     interval(pnorm0(Z), Res).
+     interval:interval_((X - Mu)/Sigma, Z),
+     interval:interval_(pnorm0(Z), Res).
 
 %
 % Quantile function
@@ -137,10 +137,10 @@ interval:pnorm(X, Mu, Sigma, Res) :-
 r_hook(qnorm0/1).
 interval:mono(qnorm0/1, [+]).
 
-interval:int_hook(qnorm, qnorm(..., ..., ...)).
+interval:int_hook(qnorm, qnorm(..., ..., ...), []).
 interval:qnorm(P, Mu, Sigma, Res) :-
-     interval(qnorm0(P), Z),
-     interval(Mu + Z * Sigma, Res).
+     interval:interval_(qnorm0(P), Z),
+     interval:interval_(Mu + Z * Sigma, Res).
 
 %
 % Density
@@ -151,31 +151,31 @@ interval:mono(dnorm1/1, [+]).
 r_hook(dnorm2/1).
 interval:mono(dnorm2/1, [-]).
 
-interval:int_hook(dnorm, dnorm(..., ..., ...)).
+interval:int_hook(dnorm, dnorm(..., ..., ...), []).
 interval:dnorm(X, Mu, Sigma, Res) :-
-    interval((X - Mu)/Sigma, Z),
-    interval(1/Sigma * dnorm0(Z), Res).
+    interval:interval_((X - Mu)/Sigma, Z),
+    interval:interval_(atomic(1)/Sigma * dnorm0(Z), Res).
 
-interval:int_hook(dnorm0, dnorm0(...)).
+interval:int_hook(dnorm0, dnorm0(...), []).
 interval:dnorm0(A...B, Res) :-
     B =< 0,
     !,
-    interval(dnorm1(A...B), Res).
+    interval:interval_(dnorm1(A...B), Res).
 
 interval:dnorm0(A...B, Res) :-
     A >= 0,
     !,
-    interval(dnorm2(A...B), Res).
+    interval:interval_(dnorm2(A...B), Res).
 
 % mixed
 interval:dnorm0(A...B, Res) :-
     Max is max(abs(A), B),
-    interval(dnorm2(0...Max), Res).
+    interval:interval_(dnorm2(0...Max), Res).
 
 %
 % t distribution
 %
-interval:int_hook(pt, pt(..., ..., atomic)).
+interval:int_hook(pt, pt(..., ..., atomic), []).
 
 r_hook(pt0/2).
 interval:mono(pt0/2, [+,-]).
@@ -193,31 +193,31 @@ interval:mono(pt3/2, [-,-]).
 interval:pt(L...U, Df, atomic(true), Res) :-
     U =< 0,
     !,
-    interval(pt0(L...U, Df), Res).
+    interval:interval_(pt0(L...U, Df), Res).
 
 interval:pt(L...U, Df, atomic(true), Res) :-
     L >= 0,
     !,
-    interval(pt1(L...U, Df), Res).
+    interval:interval_(pt1(L...U, Df), Res).
 
 interval:pt(L...U, Df, atomic(true), Res) :-
     Max is max(abs(L), U), 
-    interval(pt1(0...Max, Df), Res).
+    interval:interval_(pt1(0...Max, Df), Res).
 
 % upper tail
 interval:pt(L...U, Df, atomic(false), Res) :-
     U =< 0,
     !, 
-    interval(pt2(L...U, Df), Res).
+    interval:interval_(pt2(L...U, Df), Res).
 
 interval:pt(L...U, Df, atomic(false), Res) :-
     L >= 0,
     !, 
-    interval(pt3(L...U, Df), Res).
+    interval:interval_(pt3(L...U, Df), Res).
 
 interval:pt(L...U, Df, atomic(false), Res) :-
     Max is max(abs(L), U), 
-    interval(pt3(0...Max, Df), Res).
+    interval:interval_(pt3(0...Max, Df), Res).
 
 %
 % Quantile function
@@ -225,9 +225,9 @@ interval:pt(L...U, Df, atomic(false), Res) :-
 r_hook(qt0/2).
 interval:mono(qt0/2, [+,-]).
 
-interval:int_hook(qt, qt(..., ...)).
+interval:int_hook(qt, qt(..., ...), []).
 interval:qt(P, Df, Res) :-
-     interval(qt0(P, Df), Res).
+    interval:interval_(qt0(P, Df), Res).
 
 %
 % Density
@@ -238,18 +238,18 @@ interval:mono(dt0/2, [+,+]).
 r_hook(dt1/2).
 interval:mono(dt1/2, [-,+]).
 
-interval:int_hook(dt, dt(..., ...)).
+interval:int_hook(dt, dt(..., ...), []).
 interval:dt(L...U, Df, Res) :-
     U =< 0,
     !,
-    interval(dt0(L...U, Df), Res).
+    interval:interval_(dt0(L...U, Df), Res).
 
 interval:dt(L...U, Df, Res) :-
     L >= 0,
     !,
-    interval(dt1(L...U, Df), Res).
+    interval:interval_(dt1(L...U, Df), Res).
 
 % mixed
 interval:dt(L...U, Df, Res) :-
     Max is max(abs(L), U),
-    interval(dt1(0...Max, Df), Res). 
+    interval:interval_(dt1(0...Max, Df), Res). 
