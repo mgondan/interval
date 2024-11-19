@@ -2,7 +2,7 @@
 
 :- use_module(library(plunit)).
 :- use_module(library(debug)).
-:- use_module('/home/julian/interval/interval/prolog/rint.pl').
+:- use_module(library(rint)).
 
 test_rint :-
     run_tests([binom, normal, t]).
