@@ -16,7 +16,7 @@ test_interval :-
 test(<) :-
     A = 1...2,
     B = 3...4,
-    interval(A < B, true).
+    interval(A < B, false).
 
 test(=<) :-
     A = 1...3,
