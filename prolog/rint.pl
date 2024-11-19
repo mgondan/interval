@@ -317,3 +317,4 @@ interval:dchisq(L...U, atomic(Df), Res):-
 % for df>2
 interval:dchisq(L...U, Df, Res):-
     interval:interval_(dchisq1(L...U, atomic(Df)), Res).
+    
