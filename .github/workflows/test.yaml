@@ -5,7 +5,7 @@ on:
     branches: [main, master]
 
 name: test
-
+ 
 jobs:
   run-tests:
     runs-on: ${{ matrix.os }}-latest
@@ -13,7 +13,46 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS]
+        os: [ubuntu]
     steps:
       - uses: actions/checkout@v2
-      - uses: royratcliffe/swi-prolog-pack-cover@main
+      - name: Install R
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install -y r-base
+          mkdir -p $HOME/Rlibs 
+          R -e "install.packages('RInside', lib='$HOME/Rlibs'); install.packages('Rcpp', lib='$HOME/Rlibs')"
+          echo "R_LIBS=$HOME/Rlibs" >> ~/.Renviron
+          R -e "library(RInside); library(Rcpp)"
+          echo "R_LIBS_USER=$HOME/Rlibs" >> $GITHUB_ENV
+
+      - name: Install SWI-Prolog on Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-add-repository ppa:swi-prolog/devel
+          sudo apt-get update
+          sudo apt-get install swi-prolog
+        shell: bash
+
+      - name: Check installation
+        run: swipl -t check_installation
+        shell: bash
+
+      - name: Install rologp
+        run: |
+          export R_LIBS_USER=$HOME/Rlibs
+          swipl -t "pack_install(rologp, [interactive(false)])"
+        shell: bash
+
+      - name: Move rologpp.so to foreign directory
+        run: |
+          mkdir -p ~/.local/share/swi-prolog/pack/rologpp/foreign
+          cp ~/.local/share/swi-prolog/pack/rologpp/lib/x86_64-linux/rologpp.so ~/.local/share/swi-prolog/pack/rologpp/foreign/
+
+      - name: Install pack
+        run: |
+          export R_LIBS_USER=$HOME/Rlibs
+          REPO_URL="https://github.com/$GITHUB_REPOSITORY.git"
+          swipl -t "pack_install('$REPO_URL', [interactive(false), link(false)])"
+        shell: bash
