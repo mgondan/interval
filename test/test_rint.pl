@@ -113,6 +113,42 @@ test(dt_df_interval) :-
 
 :- end_tests(t).
 
+:- begin_tests(chisq).
+
+test(pchisq_lower) :-
+    interval(pchisq(0.3...0.4, 5, true), Res),
+    equal(Res, 0.0023...0.0047).
+
+test(pchisq_upper) :-
+    interval(pchisq(0.3...0.4, 5, false), Res),
+    equal(Res, 0.9953...0.9976).
+
+test(qchisq_lower) :-
+    interval(qchisq(0.3...0.4, 5, true), Res),
+    equal(Res, 2.9999...3.6555).
+    
+test(qchisq_upper) :-
+    interval(qchisq(0.3...0.4, 5, false), Res),
+    equal(Res, 5.1319...6.0644).
+
+test(dchisq_df_lower2) :-
+    interval(dchisq(0.3...0.4, 2), Res),
+    equal(Res, 0.4094...0.4304).
+
+test(dchisq_df_below_mode) :-
+    interval(dchisq(1.3...1.4, 4), Res),
+    equal(Res, 0.1697...0.1738).
+
+test(dchisq_df_above_mode) :-
+    interval(dchisq(1.3...1.4, 3), Res),
+    equal(Res, 0.2344...0.2374).
+
+test(dchisq_df_mixed) :-
+    interval(dchisq(0.9...1.1, 3), Res),
+    equal(Res, 0.2413...0.2420).
+
+:- end_tests(chisq).
+
 % Helper predicate to check equality
 equal(Res0, Res) :-
     interval:interval(round(Res0, 4), Res).

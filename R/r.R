@@ -46,6 +46,26 @@ pt2 <- pt3 <- function(...){
 qt0 <- qt
 dt0 <- dt1 <- dt
 
+
+# chisquare test with/without corretion
+pchisq0 <- function(...) {
+  pchisq(..., lower.tail=TRUE)
+}
+
+pchisq1 <- function(...) {
+  pchisq(..., lower.tail=FALSE)
+}
+
+qchisq0 <- function(...) {
+  qchisq(..., lower.tail=TRUE)
+}
+
+qchisq1 <- function(...) {
+  qchisq(..., lower.tail=FALSE)
+}
+
+dchisq0 <- dchisq1 <-dchisq
+
 atomic <- function(A){
   return(A)
 }

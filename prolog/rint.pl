@@ -253,3 +253,87 @@ interval:dt(L...U, Df, Res) :-
 interval:dt(L...U, Df, Res) :-
     Max is max(abs(L), U),
     interval:interval_(dt1(0...Max, Df), Res). 
+
+%
+% chisq
+%
+
+interval:int_hook(pchisq, pchisq(..., atomic, atomic), []).
+
+r_hook(pchisq0/2).
+interval:mono(pchisq0/2, [+,-]).
+
+r_hook(pchisq1/2).
+interval:mono(pchisq1/2, [-,+]).
+
+% lower tail
+interval:pchisq(L...U, Df, atomic(true), Res):-
+    !,
+    interval:interval_(pchisq0(L...U, Df), Res).
+
+% upper tail
+interval:pchisq(L...U, Df, atomic(false), Res):-
+    !,
+    interval:interval_(pchisq1(L...U, Df), Res).
+
+%
+% quantile function
+%
+interval:int_hook(qchisq, qchisq(..., atomic, atomic), []).
+
+r_hook(qchisq0/2).
+interval:mono(qchisq0/2, [+,+]).
+
+r_hook(qchisq1/2).
+interval:mono(qchisq1/2, [-,+]).
+
+interval:qchisq(L...U, Df, atomic(true), Res):-
+    !,
+    interval:interval_(qchisq0(L...U, Df), Res).
+
+interval:qchisq(L...U, Df, atomic(false), Res):-
+    interval:interval_(qchisq1(L...U, Df), Res).
+
+%
+% density
+%
+interval:int_hook(dchisq, dchisq(..., atomic), []).
+
+r_hook(dchisq0/2).
+interval:mono(dchisq0/2, [-,/]).
+
+r_hook(dchisq1/2).
+interval:mono(dchisq1/2, [+,/]).
+
+% for df<=2
+interval:dchisq(L...U, atomic(Df), Res):-
+    Df =< 2,
+    !,
+    interval:interval_(dchisq0(L...U, atomic(Df)), Res).
+
+% for df>2
+interval:dchisq(L...U, atomic(Df), Res):-
+    interval:dchisq_A(L...U, atomic(Df), Res).
+
+% for x < mode
+interval:dchisq_A(L...U, atomic(Df), Res) :-
+    Mode is Df - 2,
+    U =< Mode,
+    !,
+    interval:interval_(dchisq1(L...U, atomic(Df)), Res).
+
+% for x > mode
+interval:dchisq_A(L...U, atomic(Df), Res) :-
+    Mode is Df - 2,
+    L >= Mode,
+    !,
+    interval:interval_(dchisq0(L...U, atomic(Df)), Res).
+
+% for L < mode, U > mode
+interval:dchisq_A(L...U, atomic(Df), Res) :-
+    interval:interval_(dchisq(atomic(L), atomic(Df)), X1..._),
+    interval:interval_(dchisq(atomic(U), atomic(Df)), X3..._),
+    L1 is min(X1, X3),
+    Mode is Df - 2,
+    interval:interval_(dchisq(atomic(Mode), atomic(Df)), U1..._),
+    Res = L1...U1.
