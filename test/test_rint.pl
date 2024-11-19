@@ -2,7 +2,7 @@
 
 :- use_module(library(plunit)).
 :- use_module(library(debug)).
-:- use_module(library(rint)).
+:- use_module('/home/julian/interval/interval/prolog/rint.pl').
 
 test_rint :-
     run_tests([binom, normal, t]).
@@ -112,6 +112,34 @@ test(dt_df_interval) :-
     equal(Res, 0.2962...0.3454).
 
 :- end_tests(t).
+
+:- begin_tests(chisq).
+
+test(pchisq_lower) :-
+    interval(pchisq(0.3...0.4, 5, true), Res),
+    equal(Res, 0.0023...0.0047).
+
+test(pchisq_upper) :-
+    interval(pchisq(0.3...0.4, 5, false), Res),
+    equal(Res, 0.9953...0.9976).
+
+test(qchisq_lower) :-
+    interval(qchisq(0.3...0.4, 5, true), Res),
+    equal(Res, 2.9999...3.6555).
+    
+test(qchisq_upper) :-
+    interval(qchisq(0.3...0.4, 5, false), Res),
+    equal(Res, 5.1319...6.0644).
+
+test(dchisq_df1) :-
+    interval(dchisq(0.3...0.4, 2), Res),
+    equal(Res, 0.4094...0.4304).
+
+test(dchisq_df2) :-
+    interval(dchisq(1.3...1.4, 3), Res),
+    equal(Res, 0.2344...0.2374).
+
+:- end_tests(chisq).
 
 % Helper predicate to check equality
 equal(Res0, Res) :-

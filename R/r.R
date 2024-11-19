@@ -64,9 +64,7 @@ qchisq1 <- function(...) {
   qchisq(..., lower.tail=FALSE)
 }
 
-dchisq0 <- function(...) {
-  dchisq(...)
-}
+dchisq0 <- dchisq1 <- dchisq2 <- dchisq3 <-dchisq
 
 atomic <- function(A){
   return(A)
