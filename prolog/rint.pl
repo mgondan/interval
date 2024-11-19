@@ -312,6 +312,28 @@ interval:dchisq(L...U, atomic(Df), Res):-
     interval:interval_(dchisq0(L...U, atomic(Df)), Res).
 
 % for df>2
-interval:dchisq(L...U, Df, Res):-
+interval:dchisq(L...U, atomic(Df), Res):-
+    interval:dchisq_A(L...U, atomic(Df), Res).
+
+% for x < mode
+interval:dchisq_A(L...U, atomic(Df), Res) :-
+    Mode is Df - 2,
+    U =< Mode,
+    !,
     interval:interval_(dchisq1(L...U, atomic(Df)), Res).
 
+% for x > mode
+interval:dchisq_A(L...U, atomic(Df), Res) :-
+    Mode is Df - 2,
+    L >= Mode,
+    !,
+    interval:interval_(dchisq0(L...U, atomic(Df)), Res).
+
+% for L < mode, U > mode
+interval:dchisq_A(L...U, atomic(Df), Res) :-
+    interval:interval_(dchisq(atomic(L), atomic(Df)), X1..._),
+    interval:interval_(dchisq(atomic(U), atomic(Df)), X3..._),
+    L1 is min(X1, X3),
+    Mode is Df - 2,
+    interval:interval_(dchisq(atomic(Mode), atomic(Df)), U1..._),
+    Res = L1...U1.

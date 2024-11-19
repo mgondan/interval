@@ -131,13 +131,21 @@ test(qchisq_upper) :-
     interval(qchisq(0.3...0.4, 5, false), Res),
     equal(Res, 5.1319...6.0644).
 
-test(dchisq_df1) :-
+test(dchisq_df_lower2) :-
     interval(dchisq(0.3...0.4, 2), Res),
     equal(Res, 0.4094...0.4304).
 
-test(dchisq_df2) :-
+test(dchisq_df_below_mode) :-
+    interval(dchisq(1.3...1.4, 4), Res),
+    equal(Res, 0.1697...0.1738).
+
+test(dchisq_df_above_mode) :-
     interval(dchisq(1.3...1.4, 3), Res),
     equal(Res, 0.2344...0.2374).
+
+test(dchisq_df_mixed) :-
+    interval(dchisq(0.9...1.1, 3), Res),
+    equal(Res, 0.2413...0.2420).
 
 :- end_tests(chisq).
 
