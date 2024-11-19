@@ -5,9 +5,6 @@
 :- reexport(interval).
 :- reexport(r), r_initialize.
 
-:- discontiguous interval:dchisq/3.
-:- discontiguous interval:dchisq_B/3.
-
 /** <module> Use intervals in R functions.
 
 This module expands the 'interval' module with R functions.
@@ -317,4 +314,4 @@ interval:dchisq(L...U, atomic(Df), Res):-
 % for df>2
 interval:dchisq(L...U, Df, Res):-
     interval:interval_(dchisq1(L...U, atomic(Df)), Res).
-    
+
