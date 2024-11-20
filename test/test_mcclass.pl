@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, number_digit, omit, multiply, available]).
+    run_tests([fractions, number_digit, omit, multiply, available, equality]).
 
 :- begin_tests(fractions).
 
@@ -109,3 +109,59 @@ test(not_available_nan) :-
     Res = false.
 
 :- end_tests(available).
+
+:- begin_tests(equality).
+
+test(equality_atomic1) :-
+    interval(5 =@= 5, true).
+
+test(equality_atomic2) :-
+    interval(5 =@= 4, false).
+
+test(equality_interval1) :-
+    A = 1...2,
+    B = 2...3,
+    interval(A =@= B, true).
+
+test(equality_interval1) :-
+    A = 1...2,
+    B = 3...4,
+    interval(A =@= B, false).
+
+test(equality_ci1) :-
+    A = 1...2,
+    B = 3...4,
+    C = 1.5...2,
+    D = 3.5...4,
+    CI_A = ci(A, B),
+    CI_B = ci(C, D),
+    interval(CI_A =@= CI_B, true).
+
+test(equality_ci2) :-
+    A = 1...2,
+    B = 3...4,
+    C = 2.5...3,
+    D = 3.5...4,
+    CI_A = ci(A, B),
+    CI_B = ci(C, D),
+    interval(CI_A =@= CI_B, false).
+
+test(equality_ci3) :-
+    A = 1...2,
+    B = 3...4,
+    C = 1.5...3,
+    D = 4.5...5,
+    CI_A = ci(A, B),
+    CI_B = ci(C, D),
+    interval(CI_A =@= CI_B, false).
+
+test(equality_ci4) :-
+    A = 1...2,
+    B = 1...4,
+    C = 2.5...3,
+    D = 4.5...5,
+    CI_A = ci(A, B),
+    CI_B = ci(C, D),
+    interval(CI_A =@= CI_B, false).
+
+:- end_tests(equality).

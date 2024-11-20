@@ -81,6 +81,9 @@ interval_(atomic(A), Res)
 interval_(L...U, Res)
  => Res = L...U.
 
+interval_(ci(A, B), Res)
+ => Res = ci(A, B).
+
 interval_(Expr, Res),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask, Opt),
