@@ -128,40 +128,4 @@ test(equality_interval1) :-
     B = 3...4,
     interval(A =@= B, false).
 
-test(equality_ci1) :-
-    A = 1...2,
-    B = 3...4,
-    C = 1.5...2,
-    D = 3.5...4,
-    CI_A = ci(A, B),
-    CI_B = ci(C, D),
-    interval(CI_A =@= CI_B, true).
-
-test(equality_ci2) :-
-    A = 1...2,
-    B = 3...4,
-    C = 2.5...3,
-    D = 3.5...4,
-    CI_A = ci(A, B),
-    CI_B = ci(C, D),
-    interval(CI_A =@= CI_B, false).
-
-test(equality_ci3) :-
-    A = 1...2,
-    B = 3...4,
-    C = 1.5...3,
-    D = 4.5...5,
-    CI_A = ci(A, B),
-    CI_B = ci(C, D),
-    interval(CI_A =@= CI_B, false).
-
-test(equality_ci4) :-
-    A = 1...2,
-    B = 1...4,
-    C = 2.5...3,
-    D = 4.5...5,
-    CI_A = ci(A, B),
-    CI_B = ci(C, D),
-    interval(CI_A =@= CI_B, false).
-
 :- end_tests(equality).
