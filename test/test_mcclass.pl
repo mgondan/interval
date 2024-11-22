@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, number_digit, omit, multiply, available]).
+    run_tests([fractions, number_digit, omit, multiply, available, equality]).
 
 :- begin_tests(fractions).
 
@@ -109,3 +109,23 @@ test(not_available_nan) :-
     Res = false.
 
 :- end_tests(available).
+
+:- begin_tests(equality).
+
+test(equality_atomic1) :-
+    interval(5 =@= 5, true).
+
+test(equality_atomic2) :-
+    interval(5 =@= 4, false).
+
+test(equality_interval1) :-
+    A = 1...2,
+    B = 2...3,
+    interval(A =@= B, true).
+
+test(equality_interval1) :-
+    A = 1...2,
+    B = 3...4,
+    interval(A =@= B, false).
+
+:- end_tests(equality).

@@ -94,3 +94,7 @@ interval:avail4(ci(A, B), Res)
    !,
    Res = true;
    Res = false.
+
+interval:int_hook(=@=, equal1(..., ...), []).
+interval:equal1(A, B, Res) :-
+    interval:interval_(A =:= B, Res).
