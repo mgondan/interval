@@ -657,14 +657,6 @@ interval:sin(L...U, Res) :-
 interval:sin(L...U, Res) :-
     L1 is sin(L),
     U1 is sin(U),
-    L1 =< U1,
-    !,
-    Res = L1...U1.
-
-% default falling
-interval:sin(L...U, Res) :-
-    L1 is sin(L),
-    U1 is sin(U),
-    U1 =< L1,
-    !,
-    Res = U1...L1.
+    (L1 =< U1
+    -> Res = L1...U1;
+    Res = U1...L1).
