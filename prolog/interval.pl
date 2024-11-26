@@ -620,3 +620,51 @@ eval_hook(ceiling(A, Dig), Res) :-
 eval(Expr1, Expr2, L ... U) :-
     interval:eval(Expr1, L),
     interval:eval(Expr2, U).
+
+%
+% sine
+%
+
+interval:int_hook(sin, sin(...), []).
+
+% interval extends over more than 2 max/mins
+interval:sin(L...U, Res) :-
+    L1 is L/pi-1/2,
+    U1 is U/pi-1/2,
+    U1 >= ceiling(L1) + 1,
+    !,
+    Res = -1...1.
+
+% interval extends over 1 max
+interval:sin(L...U, Res) :-
+    L1 is (L+pi/2)/(2*pi),
+    U1 is (U+pi/2)/(2*pi),
+    U1 >= ceiling(L1),
+    !,
+    Res_L is min(sin(L1), sin(U1)),
+    Res = Res_L...1.
+
+% interval extends over 1 min
+interval:sin(L...U, Res) :-
+    L1 is (L-pi/2)/(2*pi),
+    U1 is (U-pi/2)/(2*pi),
+    U1 >= ceiling(L1),
+    !,
+    Res_U is max(sin(L1), sin(U1)),
+    Res = -1...Res_U.
+
+% default rising
+interval:sin(L...U, Res) :-
+    L1 is sin(L),
+    U1 is sin(U),
+    L1 =< U1,
+    !,
+    Res = L1...U1.
+
+% default falling
+interval:sin(L...U, Res) :-
+    L1 is sin(L),
+    U1 is sin(U),
+    U1 =< L1,
+    !,
+    Res = U1...L1.
