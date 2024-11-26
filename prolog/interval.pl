@@ -637,20 +637,20 @@ interval:sin(L...U, Res) :-
 
 % interval extends over 1 max
 interval:sin(L...U, Res) :-
-    L1 is (L+pi/2)/(2*pi),
-    U1 is (U+pi/2)/(2*pi),
-    U1 >= ceiling(L1),
-    !,
-    Res_L is min(sin(L1), sin(U1)),
-    Res = Res_L...1.
-
-% interval extends over 1 min
-interval:sin(L...U, Res) :-
     L1 is (L-pi/2)/(2*pi),
     U1 is (U-pi/2)/(2*pi),
     U1 >= ceiling(L1),
     !,
-    Res_U is max(sin(L1), sin(U1)),
+    Res_L is min(sin(L), sin(U)),
+    Res = Res_L...1.
+
+% interval extends over 1 min
+interval:sin(L...U, Res) :-
+    L1 is (L+pi/2)/(2*pi),
+    U1 is (U+pi/2)/(2*pi),
+    U1 >= ceiling(L1),
+    !,
+    Res_U is max(sin(L), sin(U)),
     Res = -1...Res_U.
 
 % default rising

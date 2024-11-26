@@ -434,22 +434,22 @@ test(round1) :-
 :- begin_tests(sin).
 
 test(sin_2max) :-
-    L = 1,
-    U = 5,
+    L = 2,
+    U = 9,
     interval(sin(L...U), Res),
     Res = -1...1.
 
 test(sin_max) :-
-    L = 4.2,
-    U = 5.2,
+    L = 1,
+    U = 3,
     interval(sin(L...U), Res),
-    equal(Res, 0.7946...1).
+    equal(Res, 0.1411...1).
 
 test(sin_min) :-
-    L = 1.2,
-    U = 2.2,
+    L = 4,
+    U = 5,
     interval(sin(L...U), Res),
-    equal(Res, -1...0.1000).
+    equal(Res, -1... -0.7568).
 
 test(sin_rising) :-
     L = 1,
