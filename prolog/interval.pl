@@ -625,38 +625,37 @@ eval(Expr1, Expr2, L ... U) :-
 % sine
 %
 
-interval:int_hook(sin, sin(...), []).
+int_hook(sin, sin(...), []).
 
 % interval extends over more than 2 max/mins
-interval:sin(L...U, Res) :-
-    L1 is L/pi-1/2,
-    U1 is U/pi-1/2,
-    U1 >= ceiling(L1) + 1,
+sin(A...B, Res) :-
+    A1 is A/pi - 1/2,
+    B1 is B/pi - 1/2,
+    B1 >= ceiling(A1) + 1,
     !,
     Res = -1...1.
 
 % interval extends over 1 max
-interval:sin(L...U, Res) :-
-    L1 is (L-pi/2)/(2*pi),
-    U1 is (U-pi/2)/(2*pi),
-    U1 >= ceiling(L1),
+sin(A...B, Res) :-
+    A1 is A / (2*pi) - 1/4,
+    B1 is B / (2*pi) - 1/4,
+    B1 >= ceiling(A1),
     !,
-    Res_L is min(sin(L), sin(U)),
-    Res = Res_L...1.
+    L is min(sin(A), sin(B)),
+    Res = L...1.
 
 % interval extends over 1 min
-interval:sin(L...U, Res) :-
-    L1 is (L+pi/2)/(2*pi),
-    U1 is (U+pi/2)/(2*pi),
-    U1 >= ceiling(L1),
+sin(A...B, Res) :-
+    A1 is A / (2*pi) + 1/4,
+    B1 is B / (2*pi) + 1/4,
+    B1 >= ceiling(A1),
     !,
-    Res_U is max(sin(L), sin(U)),
-    Res = -1...Res_U.
+    U is max(sin(A), sin(B)),
+    Res = -1...U.
 
 % default rising
-interval:sin(L...U, Res) :-
-    L1 is sin(L),
-    U1 is sin(U),
-    (L1 =< U1
-    -> Res = L1...U1;
-    Res = U1...L1).
+sin(A...B, Res) :-
+    A1 is sin(A),
+    B1 is sin(B),
+    sort([A1, B1], [L, U]),
+    Res = L...U.
