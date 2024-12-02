@@ -36,15 +36,15 @@ interval:pval(A...B, Res) :-
 %
 % Forget parts of an expression
 %
-interval:int_hook(omit_left, omit_left(expr), [evaluate(false)]).
-interval:omit_left(expr(Expr), Res) :-
+interval:int_hook(omit_left, omit_left(_), [evaluate(false)]).
+interval:omit_left(Expr, Res) :-
     Expr =.. [_Op, _L, R],
-    Res = R.
+    interval:interval_(R, Res).
 
-interval:int_hook(omit_right, omit_right(expr), [evaluate(false)]).
-interval:omit_right(expr(Expr), Res) :-
+interval:int_hook(omit_right, omit_right(_), [evaluate(false)]).
+interval:omit_right(Expr, Res) :-
     Expr =.. [_Op, L, _R],
-    Res = L.
+    interval:interval_(L, Res).
 
 %
 % Multiply

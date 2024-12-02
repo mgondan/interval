@@ -62,20 +62,16 @@ test(pval) :-
 test(omit_left) :-
     A = 11...12,
     B = 20...21,
-    interval(omit_left(A - B), L...U),
-    L > 19.9999,
-    L < 20.0001,
-    U > 20.9999,
-    U < 21.0001.
+    C = 10...11,
+    interval(omit_left(A - (B - C)), Res),
+    Res = 9...11.
 
 test(omit_right) :-
     A = 11...12,
     B = 20...21,
-    interval(omit_right(A - B), L...U),
-    L > 10.9999,
-    L < 11.0001,
-    U > 11.9999,
-    U < 12.0001.
+    C = 10...11,
+    interval(omit_right((B - C), A), Res),
+    Res = 9...11.
 
 :- end_tests(omit).
 
