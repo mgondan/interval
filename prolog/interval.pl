@@ -101,17 +101,10 @@ instantiate(ci, ci(_, _)).
 interval_(Expr, Res),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask, Opt),
-    option(evaluate(false), Opt, false),
-    compound_name_arguments(Mask, Fun, Args1),
-    maplist(instantiate, Args1, Args2),
-    maplist(instantiate2, Args, Args2, Args3)
- => compound_name_arguments(Goal, Fun, Args3),
+    option(evaluate(false), Opt, false)
+ => compound_name_arguments(Mask, Fun, Args),
+    compound_name_arguments(Goal, Fun, Args),
     call(Goal, Res).
-
-instantiate2(A, atomic(_), atomic(A)).
-instantiate2(L...U, _..._, L...U).
-instantiate2(A, expr(_), expr(A)).
-instantiate2(ci(A, B), ci(_, _), ci(A, B)).
 
 %
 % Monotonically behaving functions
