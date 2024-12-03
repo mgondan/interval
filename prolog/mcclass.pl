@@ -10,7 +10,8 @@ interval:int_hook(frac, frac(_, _, atomic), []).
 interval:frac(A, B, atomic(Dig), Res) :-
     interval:round(A, atomic(Dig), A1),
     interval:round(B, atomic(Dig), B1),
-    interval:interval_(A1 / B1, Res).
+    !,
+    interval:interval(A1 / B1, Res).
  
 interval:int_hook(dfrac, dfrac(_, _), []).
 interval:dfrac(A, B, Res) :-
