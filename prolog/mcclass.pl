@@ -6,10 +6,13 @@
 %
 % Fractions, i.e., numerator, line, and denominator
 %
-interval:int_hook(frac, frac(_, _), []).
-interval:frac(A, B, Res) :-
-    interval:interval_(A / B, Res).
-
+interval:int_hook(frac, frac(_, _, atomic), []).
+interval:frac(A, B, atomic(Dig), Res) :-
+    interval:round(A, atomic(Dig), A1),
+    interval:round(B, atomic(Dig), B1),
+    !,
+    interval:interval(A1 / B1, Res).
+ 
 interval:int_hook(dfrac, dfrac(_, _), []).
 interval:dfrac(A, B, Res) :-
     interval:interval_(A / B, Res).
@@ -19,19 +22,19 @@ interval:dfrac(A, B, Res) :-
 %
 interval:int_hook(tstat, tstat(...), []).
 interval:tstat(A...B, Res) :-
-    interval:round1(A...B, atomic(2), Res).
+    interval:round(A...B, atomic(2), Res).
 
 interval:int_hook(hdrs, hdrs(...), []).
 interval:hdrs(A...B, Res) :-
-    interval:round1(A...B, atomic(1), Res).
+    interval:round(A...B, atomic(1), Res).
 
 interval:int_hook(chi2ratio, chi2ratio(...), []).
 interval:chi2ratio(A...B, Res) :-
-    interval:round1(A...B, atomic(2), Res).
+    interval:round(A...B, atomic(2), Res).
 
 interval:int_hook(pval, pval(...), []).
 interval:pval(A...B, Res) :-
-    interval:round1(A...B, atomic(3), Res).
+    interval:round(A...B, atomic(3), Res).
 
 %
 % Forget parts of an expression
