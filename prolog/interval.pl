@@ -593,10 +593,15 @@ abs1(A...B, Res) :-
     Res = L...U.
 
 %
-% round interval
+% round
 %
-int_hook(round, round1(..., atomic), []).
-round1(A...B, atomic(Dig), Res) :-
+int_hook(round, round(_, atomic), []).
+round(A, atomic(Dig), Res) :-
+    (round1(A, Dig, Res)
+    ;
+    round2(A, Dig, Res)).
+%interval
+round1(A...B, Dig, Res) :-
     eval(floor(A, Dig), A1),
     eval(ceiling(B, Dig), B1),
     Res = A1...B1.
@@ -608,6 +613,10 @@ eval_hook(floor(A, Dig), Res) :-
 eval_hook(ceiling(A, Dig), Res) :-
     Mul is 10^Dig,
     Res is ceiling(A * Mul) / Mul.
+% atomic
+round2(atomic(A), Dig, Res) :-
+    Mul is 10^Dig,
+    Res is round(A*Mul) / Mul.
 
 % For convenience
 eval(Expr1, Expr2, L ... U) :-
