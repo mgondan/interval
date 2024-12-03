@@ -6,10 +6,12 @@
 %
 % Fractions, i.e., numerator, line, and denominator
 %
-interval:int_hook(frac, frac(_, _), []).
-interval:frac(A, B, Res) :-
-    interval:interval_(A / B, Res).
-
+interval:int_hook(frac, frac(..., ..., atomic), []).
+interval:frac(A, B, atomic(Dig), Res) :-
+    interval:round1(A, atomic(Dig), A1),
+    interval:round1(B, atomic(Dig), B1),
+    interval:interval_(A1 / B1, Res).
+ 
 interval:int_hook(dfrac, dfrac(_, _), []).
 interval:dfrac(A, B, Res) :-
     interval:interval_(A / B, Res).
@@ -98,3 +100,8 @@ interval:avail4(ci(A, B), Res)
 interval:int_hook(=@=, equal1(..., ...), []).
 interval:equal1(A, B, Res) :-
     interval:interval_(A =:= B, Res).
+
+
+interval:int_hook(juli, juli(_, atomic), []).
+interval:juli(A, atomic(Dig), Res) :-
+    interval:round1(A, atomic(Dig), Res).
