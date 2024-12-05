@@ -16,7 +16,7 @@ interval:frac(A, B, Res, Flags) :-
  
 interval:int_hook(dfrac, dfrac(_, _), []).
 interval:dfrac(A, B, Res, Flags) :-
-    interval:interval_(A / B, Res, Flags).
+    interval(frac(A, B), Res, Flags).
 
 %
 % Reasonable number of digits
