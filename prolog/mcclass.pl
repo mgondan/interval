@@ -6,8 +6,9 @@
 %
 % Fractions, i.e., numerator, line, and denominator
 %
-interval:int_hook(frac, frac(_, _, atomic), []).
-interval:frac(A, B, atomic(Dig), Res, Flags) :-
+interval:int_hook(frac, frac(_, _), []).
+interval:frac(A, B, Res, Flags) :-
+    option(digits(Dig), Flags, _),
     interval:interval_(round(A, atomic(Dig)), A1, Flags),
     interval:interval_(round(B, atomic(Dig)), B1, Flags),
     !,

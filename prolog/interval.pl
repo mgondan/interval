@@ -11,6 +11,8 @@
 :- set_prolog_flag(float_undefined, nan).
 :- set_prolog_flag(float_zero_div, infinity).
 
+:- nb_setval(digits, 2).
+
 %% <module> Perform arithmetic operations with intervals.
 %
 % This module adds interval arithemtic to Prolog. 
@@ -38,9 +40,13 @@ interval(Expr, Res) :-
 
 interval(Expr, Res1, Flags) :-
     clean(Expr, Expr1),
-    option(digits(Dig), Flags, 2),
+    default_digits(Dig, Flags),
     interval_(Expr1, Res0, [digits(Dig) | Flags]),
     unwrap(Res0, Res1).
+
+default_digits(Dig, Flags) 
+ => nb_getval(digits, Dig1),
+    option(digits(Dig), Flags, Dig1).
 
 clean(atomic(A), Res)
  => Res = atomic(A).
@@ -96,7 +102,6 @@ interval_(Expr, Res, Flags),
 
 interval__(Flags, A, Res) :-
     interval_(A, Res, Flags).
-
 
 instantiate(atomic, atomic(_)).
 instantiate(..., _..._).
@@ -250,7 +255,6 @@ great_eq(_...A2, B1..._, Res, _Flags) :-
 
 great_eq(_..._, _..._, false, _Flags).
 
-
 int_hook(=\=, not_eq(..., ...), []).
 not_eq(A...B, C...D, Res, Flags) :-
     (   less2(A...B, C...D, true, Flags)
@@ -259,7 +263,6 @@ not_eq(A...B, C...D, Res, Flags) :-
     Res = true.
 
 not_eq(_..._, _..._, false, _Flags).
-
 
 int_hook(=:=, eq(..., ...), []).
 eq(A...B, C...D, Res, Flags) :-
