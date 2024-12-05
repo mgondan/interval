@@ -1,15 +1,17 @@
-:- module(interval, [interval/2, op(150, xfx, ...)]).
+:- module(interval, [interval/2, interval/3, op(150, xfx, ...)]).
 
 :- multifile int_hook/3.
 :- multifile eval_hook/2.
 :- multifile mono/2.
 
-:- discontiguous interval_/2.
+:- discontiguous interval_/3.
 :- discontiguous int_hook/3.
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
 :- set_prolog_flag(float_zero_div, infinity).
+
+:- nb_setval(digits, 2).
 
 %% <module> Perform arithmetic operations with intervals.
 %
@@ -33,11 +35,18 @@
 %   
 %   @arg A is the expression to be evaluted.
 %   @arg Res is the result.
+interval(Expr, Res) :-
+    interval(Expr, Res, []).
 
-interval(Expr, Res1) :-
+interval(Expr, Res1, Flags) :-
     clean(Expr, Expr1),
-    interval_(Expr1, Res0),
+    default_digits(Dig, Flags),
+    interval_(Expr1, Res0, [digits(Dig) | Flags]),
     unwrap(Res0, Res1).
+
+default_digits(Dig, Flags) 
+ => nb_getval(digits, Dig1),
+    option(digits(Dig), Flags, Dig1).
 
 clean(atomic(A), Res)
  => Res = atomic(A).
@@ -70,39 +79,41 @@ unwrap(A, Res)
 %
 % see below example for (/)/2.
 
-interval_(atomic(A), Res),
+interval_(atomic(A), Res, _Flags),
     Res = L...U
  => L = A,
     U = A.
 
-interval_(atomic(A), Res)
+interval_(atomic(A), Res, _Flags)
  => Res = atomic(A).
 
-interval_(L...U, Res)
+interval_(L...U, Res, _Flags)
  => Res = L...U.
 
-interval_(Expr, Res),
+interval_(Expr, Res, Flags),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask, Opt),
     option(evaluate(true), Opt, true),
     compound_name_arguments(Mask, Fun, Args1),
     maplist(instantiate, Args1, Args2),
-    maplist(interval_, Args, Args2)
- => compound_name_arguments(Goal, Fun, Args2),
-    call(Goal, Res).
+    maplist(interval__(Flags), Args, Args2)
+=> compound_name_arguments(Goal, Fun, Args2),
+    call(Goal, Res, Flags).
 
+interval__(Flags, A, Res) :-
+    interval_(A, Res, Flags).
 
 instantiate(atomic, atomic(_)).
 instantiate(..., _..._).
 
 % Skipping evaluation of arguments
-interval_(Expr, Res),
+interval_(Expr, Res, Flags),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask, Opt),
     option(evaluate(false), Opt, false)
  => compound_name_arguments(Mask, Fun, Args),
     compound_name_arguments(Goal, Fun, Args),
-    call(Goal, Res).
+    call(Goal, Res, Flags).
 
 %
 % Monotonically behaving functions
@@ -120,24 +131,24 @@ mono((*)/2, **).
 mono((^)/2, [*, /]).
 
 % special case: multiplication ([*, *], commutative)
-interval_(Expr, Res),
+interval_(Expr, Res, Flags),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, **)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval_, Args, Args1),
+    maplist(interval__(Flags), Args, Args1),
     findall(R, both(Name, Args1, R), Bounds),
     min_list(Bounds, L),
     max_list(Bounds, U),
     Res = L...U.
 
 % general case
-interval_(Expr, Res),
+interval_(Expr, Res, Flags),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, Dir)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval_, Args, Args1),
+    maplist(interval__(Flags), Args, Args1),
     findall(R, lower(Dir, Name, Args1, R), Lower),
     min_list(Lower, L),
     findall(R, upper(Dir, Name, Args1, R), Upper),
@@ -201,80 +212,78 @@ eval(X, Res)
 %
 int_hook(<, less1(atomic, atomic), []).
 
-less1(atomic(A), atomic(B), Res) :-
+less1(atomic(A), atomic(B), Res, _Flags) :-
     A < B,
     !,
     Res = true.
 
-less1(atomic(_) < atomic(_), Res) :-
+less1(atomic(_) < atomic(_), Res, _Flags) :-
     !,
     Res = false.
 
 int_hook(<, less2(..., ...), []).
 
-less2(_...A2, B1..._, Res) :-
+less2(_...A2, B1..._, Res, _Flags) :-
     A2 < B1,
     !,
     Res = true.
 
-less2(_..._, _..._, false2).
+less2(_..._, _..._, false2, _Flags).
 
 int_hook(=<, less_eq(..., ...), []).
 
-less_eq(A1..._, _...B2, Res) :-
+less_eq(A1..._, _...B2, Res, _Flags) :-
     A1 =< B2,
     !,
     Res = true.
 
-less_eq(_..._, _..._, false).
+less_eq(_..._, _..._, false, _Flags).
 
 int_hook(>, great(..., ...), []).
-great(A1..._, _...B2, Res) :-
+great(A1..._, _...B2, Res, _Flags) :-
     A1 > B2,
     !,
     Res = true.
 
-great(_..._, _..._, false).
+great(_..._, _..._, false, _Flags).
 
 int_hook(>=, great_eq(..., ...), []).
-great_eq(_...A2, B1..._, Res) :-
+great_eq(_...A2, B1..._, Res, _Flags) :-
     A2 >= B1,
     !,
     Res = true.
 
-great_eq(_..._, _..._, false).
-
+great_eq(_..._, _..._, false, _Flags).
 
 int_hook(=\=, not_eq(..., ...), []).
-not_eq(A...B, C...D, Res) :-
-    (   less2(A...B, C...D, true)
-    ;   great(A...B, C...D, true)
+not_eq(A...B, C...D, Res, Flags) :-
+    (   less2(A...B, C...D, true, Flags)
+    ;   great(A...B, C...D, true, Flags)
     ), !,
     Res = true.
 
-not_eq(_..._, _..._, false).
-
+not_eq(_..._, _..._, false, _Flags).
 
 int_hook(=:=, eq(..., ...), []).
-eq(A...B, C...D, Res) :-
-    less_eq(A...B, C...D, true),
-    great_eq(A...B, C...D, true),
+eq(A...B, C...D, Res, Flags) :-
+    less_eq(A...B, C...D, true, Flags),
+    great_eq(A...B, C...D, true, Flags),
     !,
     Res = true.
 
-eq(_..._, _..._, false). 
+eq(_..._, _..._, false, _Flags). 
 
 %
 % Division
 %
 int_hook(/, div1(atomic, atomic), []).
-div1(atomic(A), atomic(B), atomic(Res)) :-
+div1(atomic(A), atomic(B), atomic(Res), _Flags) :-
     Res is A / B.
 
 int_hook(/, div2(..., ...), []).
-div2(A...B, C...D, Res) :-
+div2(A...B, C...D, Res, Flags) :-
     !,
-    div(A...B, C...D, Res).
+    div(A...B, C...D, Res, Flags).
 
 % Hickey Figure 1
 mixed(L, U) :-
@@ -310,7 +319,7 @@ zero(L, U) :-
 %
 % atomic 0 in numerator or denominator
 %
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zero(A, B),
     (   negative(C, D)
     ;   mixed(C, D) 
@@ -318,24 +327,24 @@ div(A...B, C...D, Res),
     )
  => Res = atomic(0).
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zero(C, D),
     zeropos(A, B)
  => Res = atomic(1.0Inf).
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zero(C, D),
     zeroneg(A, B)
  => Res = atomic(-1.0Inf).
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zero(C, D),
     mixed(A, B)
  => (   Res = atomic(-1.0Inf)
     ;   Res = atomic(1.0Inf)
     ).
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zero(A, B),
     zero(C, D)
  => Res = atomic(1.5NaN).
@@ -344,13 +353,13 @@ div(A...B, C...D, Res),
 % Hickey Theorem 8 and Figure 4
 %
 % P1 / P (special case, then general case)
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     strictpos(A, B),
     zeropos(C, D)
  => eval(A / D, L),
     Res = L...1.0Inf.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     strictpos(A, B),
     positive(C, D)
  => eval(A / D, L),
@@ -358,24 +367,24 @@ div(A...B, C...D, Res),
     Res = L...U.
 
 % P0 / P
-div(A...B, 0.0...D, Res),
+div(A...B, 0.0...D, Res, _Flags),
     zeropos(A, B),
     positive(0.0, D)
  => Res = 0.0...1.0Inf.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zeropos(A, B),
     positive(C, D)
  => eval(B / C, U),
     Res = 0.0...U.
 
 % M / P
-div(A...B, 0.0...D, Res),
+div(A...B, 0.0...D, Res, _Flags),
     mixed(A, B),
     positive(0.0, D)
  => Res = -1.0Inf...1.0Inf.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     mixed(A, B),
     positive(C, D)
  => eval(A / C, L),
@@ -383,25 +392,25 @@ div(A...B, C...D, Res),
     Res = L...U.
 
 % N0 / P
-div(A...B, 0.0...D, Res),
+div(A...B, 0.0...D, Res, _Flags),
     zeroneg(A, B),
     positive(0.0, D)
  => Res = -1.0Inf...0.0.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zeroneg(A, B),
     positive(C, D)
  => eval(A / C, L),
     Res = L...0.0.
 
 % N1 / P
-div(A...B, 0.0...D, Res),
+div(A...B, 0.0...D, Res, _Flags),
     strictneg(A, B),
     positive(0.0, D)
  => eval(B / D, U),
     Res = -1.0Inf...U.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     strictneg(A, B),
     positive(C, D)
  => eval(A / C, L),
@@ -409,7 +418,7 @@ div(A...B, C...D, Res),
     Res = L...U.
 
 % P1 / M (2 solutions)
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     strictpos(A, B),
     mixed(C, D)
  => (   eval(A / C, U),
@@ -419,25 +428,25 @@ div(A...B, C...D, Res),
     ).
 
 % P0 / M
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zeropos(A, B),
     mixed(C, D)
  => Res = -1.0Inf...1.0Inf.
 
 % M / M
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     mixed(A, B),
     mixed(C, D)
  => Res = -1.0Inf...1.0Inf.
 
 % N0 / M
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zeroneg(A, B),
     mixed(C, D)
  => Res = -1.0Inf...1.0Inf.
 
 % N1 / M (2 solutions)
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     strictneg(A, B),
     mixed(C, D)
  => (   eval(B / D, U),
@@ -447,13 +456,13 @@ div(A...B, C...D, Res),
     ).
 
 % P1 / N
-div(A...B, C...0.0, Res),
+div(A...B, C...D, Res, _Flags),
     strictpos(A, B),
-    negative(C, 0.0)
+    zeroneg(C, D)
  => eval(A / C, U),
     Res = -1.0Inf...U.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     strictpos(A, B),
     negative(C, D)
  => eval(B / D, L),
@@ -461,24 +470,24 @@ div(A...B, C...D, Res),
     Res = L...U.
 
 % P0 / N
-div(A...B, C...0.0, Res),
+div(A...B, C...D, Res, _Flags),
     zeropos(A, B),
-    negative(C, 0.0)
+    zeroneg(C, D)
  => Res = -1.0Inf...0.0.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zeropos(A, B),
     negative(C, D)
  => eval(B / D, L),
     Res = L...0.0.
 
 % M / N
-div(A...B, C...0.0, Res),
+div(A...B, C...D, Res, _Flags),
     mixed(A, B),
-    negative(C, 0.0)
+    zeroneg(C, D)
  => Res = -1.0Inf...1.0Inf.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     mixed(A, B),
     negative(C, D)
  => eval(B / D, L),
@@ -486,25 +495,25 @@ div(A...B, C...D, Res),
     Res = L...U.
 
 % N0 / N
-div(A...B, C...0.0, Res),
+div(A...B, C...D, Res, _Flags),
     zeroneg(A, B),
-    negative(C, 0.0)
+    zeroneg(C, D)
  => Res = 0.0...1.0Inf.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     zeroneg(A, B),
     negative(C, D)
  => eval(A / D, U),
     Res = 0.0...U.
 
 % N1 / N
-div(A...B, C...0.0, Res),
+div(A...B, C...D, Res, _Flags),
     strictneg(A, B),
-    negative(C, 0.0)
+    zeroneg(C, D)
  => eval(B / C, L),
     Res = L...1.0Inf.
 
-div(A...B, C...D, Res),
+div(A...B, C...D, Res, _Flags),
     strictneg(A, B),
     negative(C, D)
  => eval(B / C, L),
@@ -520,17 +529,17 @@ div(A...B, C...D, Res),
 mono(sqrt/1, [+]).
 
 int_hook(sqrt1, sqrt1(...), []).
-sqrt1(A...B, Res) :-
+sqrt1(A...B, Res, _Flags) :-
     strictneg(A, B),
     !,
     Res = 1.5NaN.
 
-sqrt1(A...B, Res) :-
+sqrt1(A...B, Res, _Flags) :-
     zeroneg(A, B),
     !,
     Res = 0.0.
 
-sqrt1(A...B, Res) :-
+sqrt1(A...B, Res, _Flags) :-
     mixed(A, B),
     !,
     eval(sqrt(B), U),
@@ -540,14 +549,14 @@ sqrt1(A...B, Res) :-
 %
 % Even exponent with negative base
 int_hook((^), pow(..., atomic), []).
-pow(L...U, atomic(Exp), Res),
+pow(L...U, atomic(Exp), Res, _Flags),
     negative(L, U),
     even(Exp),
     natural(Exp)
  => eval(U^Exp, L^Exp, Res).
 
 % Even exponent with mixed base
-pow(L...U, atomic(Exp), Res),
+pow(L...U, atomic(Exp), Res, _Flags),
     mixed(L, U),
     even(Exp),
     natural(Exp)
@@ -555,7 +564,7 @@ pow(L...U, atomic(Exp), Res),
     Res = 0...Upper.
 
 % General case
-pow(L...U, atomic(Exp), Res),
+pow(L...U, atomic(Exp), Res, _Flags),
     natural(Exp)
  => eval(L^Exp, U^Exp, Res).
 
@@ -571,12 +580,12 @@ natural(A) :-
 % Absolute value
 %
 int_hook(abs, abs1(...), []).
-abs1(A...B, Res) :-
+abs1(A...B, Res, _Flags) :-
     positive(A, B),
     !,
     Res = A...B.
 
-abs1(A...B, Res) :-
+abs1(A...B, Res, _Flags) :-
     negative(A, B),
     !,
     eval(abs(A), U),
@@ -584,7 +593,7 @@ abs1(A...B, Res) :-
     Res = L...U.
 
 % mixed
-abs1(A...B, Res) :-
+abs1(A...B, Res, _Flags) :-
     !,
     L = 0.0,
     U is max(abs(A), abs(B)),
@@ -593,16 +602,19 @@ abs1(A...B, Res) :-
 %
 % round
 %
-int_hook(round, round(_, atomic), []).
-round(A, atomic(Dig), Res) :-
-    (round1(A, Dig, Res)
-    ;
-    round2(A, Dig, Res)).
-%interval
-round1(A...B, Dig, Res) :-
+int_hook(round, round1(atomic, atomic), []).
+round1(atomic(A), atomic(Dig), Res, _Flags) :-
+    Mul is 10^Dig,
+    Res is round(A*Mul) / Mul.
+    
+int_hook(round, round2(..., atomic), []).
+round2(A...B, atomic(Dig), Res, _Flags) :-
     eval(floor(A, Dig), A1),
     eval(ceiling(B, Dig), B1),
     Res = A1...B1.
+
+int_hook(round, round3(_, atomic), []).
+round3(A, _Dig, A, _Flags).
 
 eval_hook(floor(A, Dig), Res) :-
     Mul is 10^Dig,
@@ -611,10 +623,6 @@ eval_hook(floor(A, Dig), Res) :-
 eval_hook(ceiling(A, Dig), Res) :-
     Mul is 10^Dig,
     Res is ceiling(A * Mul) / Mul.
-% atomic
-round2(atomic(A), Dig, Res) :-
-    Mul is 10^Dig,
-    Res is round(A*Mul) / Mul.
 
 % For convenience
 eval(Expr1, Expr2, L ... U) :-
@@ -628,7 +636,7 @@ eval(Expr1, Expr2, L ... U) :-
 int_hook(sin, sin(...), []).
 
 % interval extends over more than 2 max/mins
-sin(A...B, Res) :-
+sin(A...B, Res, _Flags) :-
     A1 is A/pi - 1/2,
     B1 is B/pi - 1/2,
     B1 >= ceiling(A1) + 1,
@@ -636,7 +644,7 @@ sin(A...B, Res) :-
     Res = -1...1.
 
 % interval extends over 1 max
-sin(A...B, Res) :-
+sin(A...B, Res, _Flags) :-
     A1 is A / (2*pi) - 1/4,
     B1 is B / (2*pi) - 1/4,
     B1 >= ceiling(A1),
@@ -645,7 +653,7 @@ sin(A...B, Res) :-
     Res = L...1.
 
 % interval extends over 1 min
-sin(A...B, Res) :-
+sin(A...B, Res, _Flags) :-
     A1 is A / (2*pi) + 1/4,
     B1 is B / (2*pi) + 1/4,
     B1 >= ceiling(A1),
@@ -654,7 +662,7 @@ sin(A...B, Res) :-
     Res = -1...U.
 
 % default rising
-sin(A...B, Res) :-
+sin(A...B, Res, _Flags) :-
     A1 is sin(A),
     B1 is sin(B),
     sort([A1, B1], [L, U]),

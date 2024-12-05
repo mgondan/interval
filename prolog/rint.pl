@@ -58,13 +58,13 @@ r_hook(false).
 interval:int_hook(pbinom, pbinom(atomic, atomic, ..., atomic), []).
 
 % lower tail
-interval:pbinom(atomic(X), atomic(N), P, atomic(true), Res) :-
+interval:pbinom(atomic(X), atomic(N), P, atomic(true), Res, Flags) :-
     !,
-    interval:interval_(pbinom0(atomic(X), atomic(N), P), Res).
+    interval:interval_(pbinom0(atomic(X), atomic(N), P), Res, Flags).
 
 % upper tail
-interval:pbinom(atomic(X), atomic(N), P, atomic(false), Res) :-
-    interval:interval_(pbinom1(atomic(X), atomic(N), P), Res).
+interval:pbinom(atomic(X), atomic(N), P, atomic(false), Res, Flags) :-
+    interval:interval_(pbinom1(atomic(X), atomic(N), P), Res, Flags).
 
 r_hook(pbinom0/3).
 interval:mono(pbinom0/3, [+, -, -]).
@@ -78,13 +78,13 @@ interval:mono(pbinom1/3, [-, +, +]).
 interval:int_hook(qbinom, qbinom(..., ..., ..., atomic), []).
 
 % lower tail
-interval:qbinom(Alpha, N, P, atomic(true), Res) :-
+interval:qbinom(Alpha, N, P, atomic(true), Res, Flags) :-
     !,
-    interval:interval_(qbinom0(Alpha, N, P), Res).
+    interval:interval_(qbinom0(Alpha, N, P), Res, Flags).
 
 % upper tail
-interval:qbinom(Alpha, N, P, atomic(false), Res) :-
-    interval:interval_(qbinom1(Alpha, N, P), Res).
+interval:qbinom(Alpha, N, P, atomic(false), Res, Flags) :-
+    interval:interval_(qbinom1(Alpha, N, P), Res, Flags).
 
 r_hook(qbinom0/3).
 interval:mono(qbinom0/3, [+, +, +]).
@@ -98,19 +98,19 @@ interval:mono(qbinom1/3, [-, +, +]).
 interval:int_hook(dbinom, dbinom(..., ..., ...), []).
 
 % left to X / N
-interval:dbinom(X1...X2, N1...N2, P1...P2, Res) :-
+interval:dbinom(X1...X2, N1...N2, P1...P2, Res, Flags) :-
     X2 < N1 * P1,
     !,
-    interval:interval_(dbinom0(X1...X2, N1...N2, P1...P2), Res).
+    interval:interval_(dbinom0(X1...X2, N1...N2, P1...P2), Res, Flags).
 
 % right to X / N
-interval:dbinom(X1...X2, N1...N2, P1...P2, Res) :-
+interval:dbinom(X1...X2, N1...N2, P1...P2, Res, Flags) :-
     X1 > N2 * P2,
     !,
-    interval:interval_(dbinom1(X1...X2, N1...N2, P1...P2), Res).
+    interval:interval_(dbinom1(X1...X2, N1...N2, P1...P2), Res, Flags).
 
 % otherwise
-interval:dbinom(X1...X2, N1...N2, P1...P2, Res) :-
+interval:dbinom(X1...X2, N1...N2, P1...P2, Res, _Flags) :-
     r(dbinom2(X1, X2, N1, N2, P1, P2), #(L, U)),
     Res = L...U.
 
@@ -127,9 +127,9 @@ r_hook(pnorm0/1).
 interval:mono(pnorm0/1, [+]).
 
 interval:int_hook(pnorm, pnorm(..., ..., ...), []).
-interval:pnorm(X, Mu, Sigma, Res) :-
-     interval:interval_((X - Mu)/Sigma, Z),
-     interval:interval_(pnorm0(Z), Res).
+interval:pnorm(X, Mu, Sigma, Res, Flags) :-
+     interval:interval_((X - Mu)/Sigma, Z, Flags),
+     interval:interval_(pnorm0(Z), Res, Flags).
 
 %
 % Quantile function
@@ -138,9 +138,9 @@ r_hook(qnorm0/1).
 interval:mono(qnorm0/1, [+]).
 
 interval:int_hook(qnorm, qnorm(..., ..., ...), []).
-interval:qnorm(P, Mu, Sigma, Res) :-
-     interval:interval_(qnorm0(P), Z),
-     interval:interval_(Mu + Z * Sigma, Res).
+interval:qnorm(P, Mu, Sigma, Res, Flags) :-
+     interval:interval_(qnorm0(P), Z, Flags),
+     interval:interval_(Mu + Z * Sigma, Res, Flags).
 
 %
 % Density
@@ -152,25 +152,25 @@ r_hook(dnorm2/1).
 interval:mono(dnorm2/1, [-]).
 
 interval:int_hook(dnorm, dnorm(..., ..., ...), []).
-interval:dnorm(X, Mu, Sigma, Res) :-
-    interval:interval_((X - Mu)/Sigma, Z),
-    interval:interval_(atomic(1)/Sigma * dnorm0(Z), Res).
+interval:dnorm(X, Mu, Sigma, Res, Flags) :-
+    interval:interval_((X - Mu)/Sigma, Z, Flags),
+    interval:interval_(atomic(1)/Sigma * dnorm0(Z), Res, Flags).
 
 interval:int_hook(dnorm0, dnorm0(...), []).
-interval:dnorm0(A...B, Res) :-
+interval:dnorm0(A...B, Res, Flags) :-
     B =< 0,
     !,
-    interval:interval_(dnorm1(A...B), Res).
+    interval:interval_(dnorm1(A...B), Res, Flags).
 
-interval:dnorm0(A...B, Res) :-
+interval:dnorm0(A...B, Res, Flags) :-
     A >= 0,
     !,
-    interval:interval_(dnorm2(A...B), Res).
+    interval:interval_(dnorm2(A...B), Res, Flags).
 
 % mixed
-interval:dnorm0(A...B, Res) :-
+interval:dnorm0(A...B, Res, Flags) :-
     Max is max(abs(A), B),
-    interval:interval_(dnorm2(0...Max), Res).
+    interval:interval_(dnorm2(0...Max), Res, Flags).
 
 %
 % t distribution
@@ -190,34 +190,34 @@ r_hook(pt3/2).
 interval:mono(pt3/2, [-,-]).
 
 % lower tail
-interval:pt(L...U, Df, atomic(true), Res) :-
+interval:pt(L...U, Df, atomic(true), Res, Flags) :-
     U =< 0,
     !,
-    interval:interval_(pt0(L...U, Df), Res).
+    interval:interval_(pt0(L...U, Df), Res, Flags).
 
-interval:pt(L...U, Df, atomic(true), Res) :-
+interval:pt(L...U, Df, atomic(true), Res, Flags) :-
     L >= 0,
     !,
-    interval:interval_(pt1(L...U, Df), Res).
+    interval:interval_(pt1(L...U, Df), Res, Flags).
 
-interval:pt(L...U, Df, atomic(true), Res) :-
+interval:pt(L...U, Df, atomic(true), Res, Flags) :-
     Max is max(abs(L), U), 
-    interval:interval_(pt1(0...Max, Df), Res).
+    interval:interval_(pt1(0...Max, Df), Res, Flags).
 
 % upper tail
-interval:pt(L...U, Df, atomic(false), Res) :-
+interval:pt(L...U, Df, atomic(false), Res, Flags) :-
     U =< 0,
     !, 
-    interval:interval_(pt2(L...U, Df), Res).
+    interval:interval_(pt2(L...U, Df), Res, Flags).
 
-interval:pt(L...U, Df, atomic(false), Res) :-
+interval:pt(L...U, Df, atomic(false), Res, Flags) :-
     L >= 0,
     !, 
-    interval:interval_(pt3(L...U, Df), Res).
+    interval:interval_(pt3(L...U, Df), Res, Flags).
 
-interval:pt(L...U, Df, atomic(false), Res) :-
+interval:pt(L...U, Df, atomic(false), Res, Flags) :-
     Max is max(abs(L), U), 
-    interval:interval_(pt3(0...Max, Df), Res).
+    interval:interval_(pt3(0...Max, Df), Res, Flags).
 
 %
 % Quantile function
@@ -226,8 +226,8 @@ r_hook(qt0/2).
 interval:mono(qt0/2, [+,-]).
 
 interval:int_hook(qt, qt(..., ...), []).
-interval:qt(P, Df, Res) :-
-    interval:interval_(qt0(P, Df), Res).
+interval:qt(P, Df, Res, Flags) :-
+    interval:interval_(qt0(P, Df), Res, Flags).
 
 %
 % Density
@@ -239,20 +239,20 @@ r_hook(dt1/2).
 interval:mono(dt1/2, [-,+]).
 
 interval:int_hook(dt, dt(..., ...), []).
-interval:dt(L...U, Df, Res) :-
+interval:dt(L...U, Df, Res, Flags) :-
     U =< 0,
     !,
-    interval:interval_(dt0(L...U, Df), Res).
+    interval:interval_(dt0(L...U, Df), Res, Flags).
 
-interval:dt(L...U, Df, Res) :-
+interval:dt(L...U, Df, Res, Flags) :-
     L >= 0,
     !,
-    interval:interval_(dt1(L...U, Df), Res).
+    interval:interval_(dt1(L...U, Df), Res, Flags).
 
 % mixed
-interval:dt(L...U, Df, Res) :-
+interval:dt(L...U, Df, Res, Flags) :-
     Max is max(abs(L), U),
-    interval:interval_(dt1(0...Max, Df), Res). 
+    interval:interval_(dt1(0...Max, Df), Res, Flags). 
 
 %
 % chisq
@@ -267,14 +267,14 @@ r_hook(pchisq1/2).
 interval:mono(pchisq1/2, [-,+]).
 
 % lower tail
-interval:pchisq(L...U, Df, atomic(true), Res):-
+interval:pchisq(L...U, Df, atomic(true), Res, Flags):-
     !,
-    interval:interval_(pchisq0(L...U, Df), Res).
+    interval:interval_(pchisq0(L...U, Df), Res, Flags).
 
 % upper tail
-interval:pchisq(L...U, Df, atomic(false), Res):-
+interval:pchisq(L...U, Df, atomic(false), Res, Flags):-
     !,
-    interval:interval_(pchisq1(L...U, Df), Res).
+    interval:interval_(pchisq1(L...U, Df), Res, Flags).
 
 %
 % quantile function
@@ -287,12 +287,12 @@ interval:mono(qchisq0/2, [+,+]).
 r_hook(qchisq1/2).
 interval:mono(qchisq1/2, [-,+]).
 
-interval:qchisq(L...U, Df, atomic(true), Res):-
+interval:qchisq(L...U, Df, atomic(true), Res, Flags):-
     !,
-    interval:interval_(qchisq0(L...U, Df), Res).
+    interval:interval_(qchisq0(L...U, Df), Res, Flags).
 
-interval:qchisq(L...U, Df, atomic(false), Res):-
-    interval:interval_(qchisq1(L...U, Df), Res).
+interval:qchisq(L...U, Df, atomic(false), Res, Flags):-
+    interval:interval_(qchisq1(L...U, Df), Res, Flags).
 
 %
 % density
@@ -306,34 +306,34 @@ r_hook(dchisq1/2).
 interval:mono(dchisq1/2, [+,/]).
 
 % for df<=2
-interval:dchisq(L...U, atomic(Df), Res):-
+interval:dchisq(L...U, atomic(Df), Res, Flags):-
     Df =< 2,
     !,
-    interval:interval_(dchisq0(L...U, atomic(Df)), Res).
+    interval:interval_(dchisq0(L...U, atomic(Df)), Res, Flags).
 
 % for df>2
-interval:dchisq(L...U, atomic(Df), Res):-
-    interval:dchisq_A(L...U, atomic(Df), Res).
+interval:dchisq(L...U, atomic(Df), Res, Flags):-
+    interval:dchisq_A(L...U, atomic(Df), Res, Flags).
 
 % for x < mode
-interval:dchisq_A(L...U, atomic(Df), Res) :-
+interval:dchisq_A(L...U, atomic(Df), Res, Flags) :-
     Mode is Df - 2,
     U =< Mode,
     !,
-    interval:interval_(dchisq1(L...U, atomic(Df)), Res).
+    interval:interval_(dchisq1(L...U, atomic(Df)), Res, Flags).
 
 % for x > mode
-interval:dchisq_A(L...U, atomic(Df), Res) :-
+interval:dchisq_A(L...U, atomic(Df), Res, Flags) :-
     Mode is Df - 2,
     L >= Mode,
     !,
-    interval:interval_(dchisq0(L...U, atomic(Df)), Res).
+    interval:interval_(dchisq0(L...U, atomic(Df)), Res, Flags).
 
 % for L < mode, U > mode
-interval:dchisq_A(L...U, atomic(Df), Res) :-
-    interval:interval_(dchisq(atomic(L), atomic(Df)), X1..._),
-    interval:interval_(dchisq(atomic(U), atomic(Df)), X3..._),
+interval:dchisq_A(L...U, atomic(Df), Res, Flags) :-
+    interval:interval_(dchisq(atomic(L), atomic(Df)), X1..._, Flags),
+    interval:interval_(dchisq(atomic(U), atomic(Df)), X3..._, Flags),
     L1 is min(X1, X3),
     Mode is Df - 2,
-    interval:interval_(dchisq(atomic(Mode), atomic(Df)), U1..._),
+    interval:interval_(dchisq(atomic(Mode), atomic(Df)), U1..._, Flags),
     Res = L1...U1.

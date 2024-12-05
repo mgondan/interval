@@ -12,7 +12,7 @@ test_mcclass :-
 test(frac) :-
     A = 1...2,
     B = 2...4,
-    interval(frac(A, B, 0), L...U),
+    interval(frac(A, B), L...U),
     L is 0.25,
     U is 1.
 
