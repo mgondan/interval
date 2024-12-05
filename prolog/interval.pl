@@ -100,8 +100,6 @@ interval__(Flags, A, Res) :-
 
 instantiate(atomic, atomic(_)).
 instantiate(..., _..._).
-instantiate(expr, expr(_)).
-instantiate(ci, ci(_, _)).
 
 % Skipping evaluation of arguments
 interval_(Expr, Res, Flags),
