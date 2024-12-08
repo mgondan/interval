@@ -30,7 +30,7 @@ For general information on the use of interval/2, please refer to that module.
 %
 % Skip R vectors
 %
-interval:int_hook(:, colon(_, _), []).
+interval:int_hook(:, colon(_, _), _, []).
 colon(A, A).
 
 %
@@ -55,7 +55,7 @@ r_hook(false).
 %
 % Binomial distribution
 %
-interval:int_hook(pbinom, pbinom(atomic, atomic, ..., atomic), []).
+interval:int_hook(pbinom, pbinom(atomic, atomic, ..., atomic), ..., []).
 
 % lower tail
 interval:pbinom(atomic(X), atomic(N), P, atomic(true), Res, Flags) :-
@@ -75,7 +75,7 @@ interval:mono(pbinom1/3, [-, +, +]).
 %
 % Quantile function - hier weiter
 %
-interval:int_hook(qbinom, qbinom(..., ..., ..., atomic), []).
+interval:int_hook(qbinom, qbinom(..., ..., ..., atomic), ..., []).
 
 % lower tail
 interval:qbinom(Alpha, N, P, atomic(true), Res, Flags) :-
@@ -95,7 +95,7 @@ interval:mono(qbinom1/3, [-, +, +]).
 %
 % Density
 %
-interval:int_hook(dbinom, dbinom(..., ..., ...), []).
+interval:int_hook(dbinom, dbinom(..., ..., ...), ..., []).
 
 % left to X / N
 interval:dbinom(X1...X2, N1...N2, P1...P2, Res, Flags) :-
@@ -126,7 +126,7 @@ interval:mono(dbinom1/3, [-, +, +]).
 r_hook(pnorm0/1).
 interval:mono(pnorm0/1, [+]).
 
-interval:int_hook(pnorm, pnorm(..., ..., ...), []).
+interval:int_hook(pnorm, pnorm(..., ..., ...), ..., []).
 interval:pnorm(X, Mu, Sigma, Res, Flags) :-
      interval:interval_((X - Mu)/Sigma, Z, Flags),
      interval:interval_(pnorm0(Z), Res, Flags).
@@ -137,7 +137,7 @@ interval:pnorm(X, Mu, Sigma, Res, Flags) :-
 r_hook(qnorm0/1).
 interval:mono(qnorm0/1, [+]).
 
-interval:int_hook(qnorm, qnorm(..., ..., ...), []).
+interval:int_hook(qnorm, qnorm(..., ..., ...), ..., []).
 interval:qnorm(P, Mu, Sigma, Res, Flags) :-
      interval:interval_(qnorm0(P), Z, Flags),
      interval:interval_(Mu + Z * Sigma, Res, Flags).
@@ -151,12 +151,12 @@ interval:mono(dnorm1/1, [+]).
 r_hook(dnorm2/1).
 interval:mono(dnorm2/1, [-]).
 
-interval:int_hook(dnorm, dnorm(..., ..., ...), []).
+interval:int_hook(dnorm, dnorm(..., ..., ...), ..., []).
 interval:dnorm(X, Mu, Sigma, Res, Flags) :-
     interval:interval_((X - Mu)/Sigma, Z, Flags),
     interval:interval_(atomic(1)/Sigma * dnorm0(Z), Res, Flags).
 
-interval:int_hook(dnorm0, dnorm0(...), []).
+interval:int_hook(dnorm0, dnorm0(...), ..., []).
 interval:dnorm0(A...B, Res, Flags) :-
     B =< 0,
     !,
@@ -175,7 +175,7 @@ interval:dnorm0(A...B, Res, Flags) :-
 %
 % t distribution
 %
-interval:int_hook(pt, pt(..., ..., atomic), []).
+interval:int_hook(pt, pt(..., ..., atomic), ..., []).
 
 r_hook(pt0/2).
 interval:mono(pt0/2, [+,-]).
@@ -225,7 +225,7 @@ interval:pt(L...U, Df, atomic(false), Res, Flags) :-
 r_hook(qt0/2).
 interval:mono(qt0/2, [+,-]).
 
-interval:int_hook(qt, qt(..., ...), []).
+interval:int_hook(qt, qt(..., ...), ..., []).
 interval:qt(P, Df, Res, Flags) :-
     interval:interval_(qt0(P, Df), Res, Flags).
 
@@ -233,12 +233,12 @@ interval:qt(P, Df, Res, Flags) :-
 % Density
 %
 r_hook(dt0/2).
-interval:mono(dt0/2, [+,+]).
+interval:mono(dt0/2, [+, +]).
 
 r_hook(dt1/2).
-interval:mono(dt1/2, [-,+]).
+interval:mono(dt1/2, [-, +]).
 
-interval:int_hook(dt, dt(..., ...), []).
+interval:int_hook(dt, dt(..., ...), ..., []).
 interval:dt(L...U, Df, Res, Flags) :-
     U =< 0,
     !,
@@ -258,7 +258,7 @@ interval:dt(L...U, Df, Res, Flags) :-
 % chisq
 %
 
-interval:int_hook(pchisq, pchisq(..., atomic, atomic), []).
+interval:int_hook(pchisq, pchisq(..., atomic, atomic), ..., []).
 
 r_hook(pchisq0/2).
 interval:mono(pchisq0/2, [+,-]).
@@ -279,7 +279,7 @@ interval:pchisq(L...U, Df, atomic(false), Res, Flags):-
 %
 % quantile function
 %
-interval:int_hook(qchisq, qchisq(..., atomic, atomic), []).
+interval:int_hook(qchisq, qchisq(..., atomic, atomic), ..., []).
 
 r_hook(qchisq0/2).
 interval:mono(qchisq0/2, [+,+]).
@@ -297,7 +297,7 @@ interval:qchisq(L...U, Df, atomic(false), Res, Flags):-
 %
 % density
 %
-interval:int_hook(dchisq, dchisq(..., atomic), []).
+interval:int_hook(dchisq, dchisq(..., atomic), ..., []).
 
 r_hook(dchisq0/2).
 interval:mono(dchisq0/2, [-,/]).
