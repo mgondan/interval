@@ -1,11 +1,10 @@
 :- module(interval, [interval/2, interval/3, op(150, xfx, ...)]).
 
-:- multifile int_hook/3.
+:- multifile int_hook/4.
 :- multifile eval_hook/2.
 :- multifile mono/2.
 
 :- discontiguous interval_/3.
-:- discontiguous int_hook/3.
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -71,14 +70,17 @@ unwrap(A, Res)
 %
 % Hook for custom interval functions
 %
-% 1. Declare function with interval:int_hook(Name, pred_name(Args), [Options])
-%    'Args' specify the type of the arguments, '...' for intervals and 'atomic' for numbers and logical values.
+% 1. Declare function
+%    with interval:int_hook(Name, pred_name(Args), Ret, [Options]).
+%    'Args' specify the type of the arguments, '...' for intervals and 'atomic'
+%    for numbers and logical values. Same for 'Ret'.
 %    Add 'evaluate(false)' to 'Options' list to skip evaluation of arguments.
 % 2. Calculate result with interval:pred_name(Args, Res)
-%    'Args' are the argument types as defined in the hook with variable names, e.g., 'L...U', 'atomic(A)'.
+%    'Args' are the argument types as defined in the hook with variable names,
+%    e.g., 'L...U', 'atomic(A)'.
 %
-% see below example for (/)/2.
-
+% See example below for (/)/2.
+%
 interval_(atomic(A), Res, _Flags),
     Res = L...U
  => L = A,
@@ -92,12 +94,13 @@ interval_(L...U, Res, _Flags)
 
 interval_(Expr, Res, Flags),
     compound_name_arguments(Expr, Name, Args),
-    int_hook(Name, Mask, Opt),
+    int_hook(Name, Mask, Res0, Opt),
     option(evaluate(true), Opt, true),
+    instantiate(Res0, Res),
     compound_name_arguments(Mask, Fun, Args1),
     maplist(instantiate, Args1, Args2),
     maplist(interval__(Flags), Args, Args2)
-=> compound_name_arguments(Goal, Fun, Args2),
+ => compound_name_arguments(Goal, Fun, Args2),
     call(Goal, Res, Flags).
 
 interval__(Flags, A, Res) :-
@@ -109,8 +112,9 @@ instantiate(..., _..._).
 % Skipping evaluation of arguments
 interval_(Expr, Res, Flags),
     compound_name_arguments(Expr, Name, Args),
-    int_hook(Name, Mask, Opt),
-    option(evaluate(false), Opt, false)
+    int_hook(Name, Mask, Res0, Opt),
+    option(evaluate(false), Opt, false),
+    instantiate(Res0, Res)
  => compound_name_arguments(Mask, Fun, Args),
     compound_name_arguments(Goal, Fun, Args),
     call(Goal, Res, Flags).
@@ -196,6 +200,12 @@ upper(_, atomic(A), U)
  => U = A.
 
 %
+% Default case
+%
+interval_(_, _, _Flags)
+ => fail.
+
+%
 % Arithmetic functions for single numbers
 %
 % Define hooks for R functions etc.
@@ -210,7 +220,7 @@ eval(X, Res)
 %
 % Comparison
 %
-int_hook(<, less1(atomic, atomic), []).
+int_hook(<, less1(atomic, atomic), atomic, []).
 
 less1(atomic(A), atomic(B), Res, _Flags) :-
     A < B,
@@ -221,7 +231,7 @@ less1(atomic(_) < atomic(_), Res, _Flags) :-
     !,
     Res = false.
 
-int_hook(<, less2(..., ...), []).
+int_hook(<, less2(..., ...), atomic, []).
 
 less2(_...A2, B1..._, Res, _Flags) :-
     A2 < B1,
@@ -230,7 +240,7 @@ less2(_...A2, B1..._, Res, _Flags) :-
 
 less2(_..._, _..._, false2, _Flags).
 
-int_hook(=<, less_eq(..., ...), []).
+int_hook(=<, less_eq(..., ...), atomic, []).
 
 less_eq(A1..._, _...B2, Res, _Flags) :-
     A1 =< B2,
@@ -239,7 +249,7 @@ less_eq(A1..._, _...B2, Res, _Flags) :-
 
 less_eq(_..._, _..._, false, _Flags).
 
-int_hook(>, great(..., ...), []).
+int_hook(>, great(..., ...), atomic, []).
 great(A1..._, _...B2, Res, _Flags) :-
     A1 > B2,
     !,
@@ -247,7 +257,7 @@ great(A1..._, _...B2, Res, _Flags) :-
 
 great(_..._, _..._, false, _Flags).
 
-int_hook(>=, great_eq(..., ...), []).
+int_hook(>=, great_eq(..., ...), atomic, []).
 great_eq(_...A2, B1..._, Res, _Flags) :-
     A2 >= B1,
     !,
@@ -255,7 +265,7 @@ great_eq(_...A2, B1..._, Res, _Flags) :-
 
 great_eq(_..._, _..._, false, _Flags).
 
-int_hook(=\=, not_eq(..., ...), []).
+int_hook(=\=, not_eq(..., ...), atomic, []).
 not_eq(A...B, C...D, Res, Flags) :-
     (   less2(A...B, C...D, true, Flags)
     ;   great(A...B, C...D, true, Flags)
@@ -264,7 +274,7 @@ not_eq(A...B, C...D, Res, Flags) :-
 
 not_eq(_..._, _..._, false, _Flags).
 
-int_hook(=:=, eq(..., ...), []).
+int_hook(=:=, eq(..., ...), atomic, []).
 eq(A...B, C...D, Res, Flags) :-
     less_eq(A...B, C...D, true, Flags),
     great_eq(A...B, C...D, true, Flags),
@@ -276,11 +286,11 @@ eq(_..._, _..._, false, _Flags).
 %
 % Division
 %
-int_hook(/, div1(atomic, atomic), []).
+int_hook(/, div1(atomic, atomic), atomic, []).
 div1(atomic(A), atomic(B), atomic(Res), _Flags) :-
     Res is A / B.
 
-int_hook(/, div2(..., ...), []).
+int_hook(/, div2(..., ...), ..., []).
 div2(A...B, C...D, Res, Flags) :-
     !,
     div(A...B, C...D, Res, Flags).
@@ -528,7 +538,7 @@ div(A...B, C...D, Res, _Flags),
 %
 mono(sqrt/1, [+]).
 
-int_hook(sqrt1, sqrt1(...), []).
+int_hook(sqrt1, sqrt1(...), _, []).
 sqrt1(A...B, Res, _Flags) :-
     strictneg(A, B),
     !,
@@ -548,7 +558,7 @@ sqrt1(A...B, Res, _Flags) :-
 % Power
 %
 % Even exponent with negative base
-int_hook((^), pow(..., atomic), []).
+int_hook((^), pow(..., atomic), ..., []).
 pow(L...U, atomic(Exp), Res, _Flags),
     negative(L, U),
     even(Exp),
@@ -579,7 +589,7 @@ natural(A) :-
 %
 % Absolute value
 %
-int_hook(abs, abs1(...), []).
+int_hook(abs, abs1(...), ..., []).
 abs1(A...B, Res, _Flags) :-
     positive(A, B),
     !,
@@ -602,18 +612,18 @@ abs1(A...B, Res, _Flags) :-
 %
 % round
 %
-int_hook(round, round1(atomic, atomic), []).
+int_hook(round, round1(atomic, atomic), atomic, []).
 round1(atomic(A), atomic(Dig), Res, _Flags) :-
     Mul is 10^Dig,
     Res is round(A*Mul) / Mul.
     
-int_hook(round, round2(..., atomic), []).
+int_hook(round, round2(..., atomic), ..., []).
 round2(A...B, atomic(Dig), Res, _Flags) :-
     eval(floor(A, Dig), A1),
     eval(ceiling(B, Dig), B1),
     Res = A1...B1.
 
-int_hook(round, round3(_, atomic), []).
+int_hook(round, round3(_, atomic), _, []).
 round3(A, _Dig, A, _Flags).
 
 eval_hook(floor(A, Dig), Res) :-
@@ -633,7 +643,7 @@ eval(Expr1, Expr2, L ... U) :-
 % sine
 %
 
-int_hook(sin, sin(...), []).
+int_hook(sin, sin(...), ..., []).
 
 % interval extends over more than 2 max/mins
 sin(A...B, Res, _Flags) :-
