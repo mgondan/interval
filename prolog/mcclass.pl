@@ -3,8 +3,17 @@
 :- reexport(interval).
 :- reexport(rint).
 
-interval:int_hook(plus, plus(..., ...), ..., []).
-interval:plus(A, B, Res, Flags) :-
+%
+% Addition (for testing)
+%
+interval:int_hook(plus, plus1(atomic, atomic), atomic, []).
+interval:plus1(atomic(A), atomic(B), atomic(Res), _Flags) :-
+    !,
+    writeln(+),
+    Res is A + B.
+
+interval:int_hook(plus, plus2(..., ...), ..., []).
+interval:plus2(A, B, Res, Flags) :-
     !,
     writeln(+),
     interval:interval_(A + B, Res, Flags).
@@ -66,7 +75,7 @@ interval:dot(A, B, Res, Flags) :-
 %
 % Available: not NA
 %
-interval:int_hook(available, avail1(atomic), atomic, []).
+interval:int_hook(available, avail1(atomic), _, []).
 interval:avail1(atomic(A), Res, _Flags) :-
     avail2(atomic(A), Res),
     !,
@@ -87,7 +96,7 @@ avail2(atomic(A), Res)
 => interval:eval(A, A1),
    avail2(A1, Res).
 
-interval:int_hook(available, avail3(...), atomic, []).
+interval:int_hook(available, avail3(...), _, []).
 interval:avail3(A ... B, Res, _Flags)
 => avail2(atomic(A), A1),
    avail2(atomic(B), B1),
@@ -96,6 +105,6 @@ interval:avail3(A ... B, Res, _Flags)
    Res = true;
    Res = false.
 
-interval:int_hook(=@=, equal1(..., ...), ..., []).
+interval:int_hook(=@=, equal1(..., ...), _, []).
 interval:equal1(A, B, Res, Flags) :-
     interval:interval_(A =:= B, Res, Flags).
