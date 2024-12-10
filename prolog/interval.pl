@@ -106,8 +106,16 @@ interval_(Expr, Res, Flags),
 interval__(Flags, A, Res) :-
     interval_(A, Res, Flags).
 
-instantiate(atomic, atomic(_)).
-instantiate(..., _..._).
+instantiate(A, Res), 
+    A = atomic
+ => Res = atomic(_).
+
+instantiate(A, Res), 
+    A = ...
+ => Res = _..._.
+
+instantiate(A, Res) 
+ => Res = A.
 
 % Skipping evaluation of arguments
 interval_(Expr, Res, Flags),
@@ -220,7 +228,7 @@ eval(X, Res)
 %
 % Comparison
 %
-int_hook(<, less1(atomic, atomic), atomic, []).
+int_hook(<, less1(atomic, atomic), _, []).
 
 less1(atomic(A), atomic(B), Res, _Flags) :-
     A < B,
@@ -231,7 +239,7 @@ less1(atomic(_) < atomic(_), Res, _Flags) :-
     !,
     Res = false.
 
-int_hook(<, less2(..., ...), atomic, []).
+int_hook(<, less2(..., ...), _, []).
 
 less2(_...A2, B1..._, Res, _Flags) :-
     A2 < B1,
@@ -240,7 +248,7 @@ less2(_...A2, B1..._, Res, _Flags) :-
 
 less2(_..._, _..._, false2, _Flags).
 
-int_hook(=<, less_eq(..., ...), atomic, []).
+int_hook(=<, less_eq(..., ...), _, []).
 
 less_eq(A1..._, _...B2, Res, _Flags) :-
     A1 =< B2,
@@ -249,7 +257,7 @@ less_eq(A1..._, _...B2, Res, _Flags) :-
 
 less_eq(_..._, _..._, false, _Flags).
 
-int_hook(>, great(..., ...), atomic, []).
+int_hook(>, great(..., ...), _, []).
 great(A1..._, _...B2, Res, _Flags) :-
     A1 > B2,
     !,
@@ -257,7 +265,7 @@ great(A1..._, _...B2, Res, _Flags) :-
 
 great(_..._, _..._, false, _Flags).
 
-int_hook(>=, great_eq(..., ...), atomic, []).
+int_hook(>=, great_eq(..., ...), _, []).
 great_eq(_...A2, B1..._, Res, _Flags) :-
     A2 >= B1,
     !,
@@ -265,7 +273,7 @@ great_eq(_...A2, B1..._, Res, _Flags) :-
 
 great_eq(_..._, _..._, false, _Flags).
 
-int_hook(=\=, not_eq(..., ...), atomic, []).
+int_hook(=\=, not_eq(..., ...), _, []).
 not_eq(A...B, C...D, Res, Flags) :-
     (   less2(A...B, C...D, true, Flags)
     ;   great(A...B, C...D, true, Flags)
@@ -274,7 +282,7 @@ not_eq(A...B, C...D, Res, Flags) :-
 
 not_eq(_..._, _..._, false, _Flags).
 
-int_hook(=:=, eq(..., ...), atomic, []).
+int_hook(=:=, eq(..., ...), _, []).
 eq(A...B, C...D, Res, Flags) :-
     less_eq(A...B, C...D, true, Flags),
     great_eq(A...B, C...D, true, Flags),
