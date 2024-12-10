@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, number_digit, omit, multiply, available, equality]).
+    run_tests([fractions, number_digit, omit, multiply, available, equality, plus]).
 
 :- begin_tests(fractions).
 
@@ -123,3 +123,19 @@ test(equality_interval1) :-
     interval(A =@= B, false).
 
 :- end_tests(equality).
+
+:- begin_tests(plus).
+
+test(plus1) :-
+    A = 1,
+    B = 2,
+    interval(plus(A, B), Res),
+    Res is 3.
+
+test(plus2) :-
+    A = 1...2,
+    B = 2...3,
+    interval(plus(A, B), Res),
+    Res = 3...5.
+
+:- end_tests(plus).
