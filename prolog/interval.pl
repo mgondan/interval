@@ -64,6 +64,9 @@ clean(A, A1),
 unwrap(atomic(A), Res)
  => Res = A.
 
+unwrap(A...A, Res)
+ => Res = A.
+
 unwrap(A, Res)
  => Res = A.
 
@@ -621,7 +624,7 @@ abs1(A...B, Res, _Flags) :-
 % round
 %
 int_hook(round, round1(atomic, atomic), atomic, []).
-round1(atomic(A), atomic(Dig), Res, _Flags) :-
+round1(atomic(A), atomic(Dig), atomic(Res), _Flags) :-
     Mul is 10^Dig,
     Res is round(A*Mul) / Mul.
     
