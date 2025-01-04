@@ -36,21 +36,21 @@ interval:dfrac(A, B, Res, Flags) :-
 %
 % Reasonable number of digits
 %
-interval:int_hook(tstat, tstat(...), ..., []).
-interval:tstat(A...B, Res, Flags) :-
-    interval:interval_(round(A...B, atomic(2)), Res, Flags).
+interval:int_hook(tstat, tstat(_), _, []).
+interval:tstat(A, Res, Flags) :-
+    interval:interval_(round(A, atomic(2)), Res, Flags).
 
-interval:int_hook(hdrs, hdrs(...), ..., []).
-interval:hdrs(A...B, Res, Flags) :-
-    interval:interval_(round(A...B, atomic(1)), Res, Flags).
+interval:int_hook(hdrs, hdrs(_), _, []).
+interval:hdrs(A, Res, Flags) :-
+    interval:interval_(round(A, atomic(1)), Res, Flags).
 
-interval:int_hook(chi2ratio, chi2ratio(...), ..., []).
-interval:chi2ratio(A...B, Res, Flags) :-
-    interval:interval_(round(A...B, atomic(2)), Res, Flags).
+interval:int_hook(chi2ratio, chi2ratio(_), _, []).
+interval:chi2ratio(A, Res, Flags) :-
+    interval:interval_(round(A, atomic(2)), Res, Flags).
 
-interval:int_hook(pval, pval(...), ..., []).
-interval:pval(A...B, Res, Flags) :-
-    interval:interval_(round(A...B, atomic(3)), Res, Flags).
+interval:int_hook(pval, pval(_), _, []).
+interval:pval(A, Res, Flags) :-
+    interval:interval_(round(A, atomic(3)), Res, Flags).
 
 %
 % Forget parts of an expression
@@ -105,6 +105,6 @@ interval:avail3(A ... B, Res, _Flags)
    Res = true;
    Res = false.
 
-interval:int_hook(=@=, equal1(..., ...), _, []).
+interval:int_hook(=@=, equal1(_, _), _, []).
 interval:equal1(A, B, Res, Flags) :-
     interval:interval_(A =:= B, Res, Flags).
