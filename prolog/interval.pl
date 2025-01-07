@@ -57,15 +57,19 @@ clean(Expr, Expr1),
     compound(Expr)
  => mapargs(clean, Expr, Expr1).
 
-clean(A, A1),
+clean(A, Res),
     atomic(A)
- => A1 = atomic(A).
+ => Res = atomic(A).
 
 unwrap(atomic(A), Res)
  => Res = A.
 
 unwrap(A...A, Res)
  => Res = A.
+
+unwrap(A, Res),
+    compound(A)
+ => mapargs(unwrap, A, Res).
 
 unwrap(A, Res)
  => Res = A.
@@ -95,7 +99,13 @@ interval_(atomic(A), Res, _Flags)
 interval_(L...U, Res, _Flags)
  => Res = L...U.
 
+interval_(ci(A, B), Res, Flags)
+ => interval_(A, A1, Flags),
+    interval_(B, B1, Flags),
+    Res = ci(A1, B1).
+
 interval_(Expr, Res, Flags),
+    compound(Expr),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask, Res0, Opt),
     option(evaluate(true), Opt, true),
@@ -117,14 +127,19 @@ instantiate(A, Res),
     A = ...
  => Res = _..._.
 
+instantiate(A, Res),
+    A = ci
+ => Res = ci(_, _).
+
 instantiate(A, Res) 
  => Res = A.
 
 % Skipping evaluation of arguments
 interval_(Expr, Res, Flags),
+    compound(Expr),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask, Res0, Opt),
-    option(evaluate(false), Opt, false),
+    option(evaluate(false), Opt, true),
     instantiate(Res0, Res)
  => compound_name_arguments(Mask, Fun, Args),
     compound_name_arguments(Goal, Fun, Args),
@@ -565,6 +580,7 @@ sqrt1(A...B, Res, _Flags) :-
     !,
     eval(sqrt(B), U),
     Res = 0.0...U.
+
 %
 % Power
 %
@@ -653,7 +669,6 @@ eval(Expr1, Expr2, L ... U) :-
 %
 % sine
 %
-
 int_hook(sin, sin(...), ..., []).
 
 % interval extends over more than 2 max/mins
@@ -688,3 +703,14 @@ sin(A...B, Res, _Flags) :-
     B1 is sin(B),
     sort([A1, B1], [L, U]),
     Res = L...U.
+
+%
+% Confidence interval
+%
+int_hook(+, ciplus(ci, _), ci, []).
+
+ciplus(ci(A, B), C, Res, Flags) :-
+    interval_(A + C, A1, Flags),
+    interval_(B + C, B1, Flags),
+    Res = ci(A1, B1).
+
