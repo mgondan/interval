@@ -159,6 +159,7 @@ mono((-)/1, [-]).
 mono((-)/2, [+, -]).
 mono((*)/2, **).
 mono((^)/2, [*, /]).
+mono((exp)/1, [+]).
 
 % special case: multiplication ([*, *], commutative)
 interval_(Expr, Res, Flags),
@@ -707,10 +708,54 @@ sin(A...B, Res, _Flags) :-
 %
 % Confidence interval
 %
-int_hook(+, ciplus(ci, _), ci, []).
+int_hook(+, ciplus1(ci, _), ci, []).
 
-ciplus(ci(A, B), C, Res, Flags) :-
+ciplus1(ci(A, B), C, Res, Flags) :-
     interval_(A + C, A1, Flags),
     interval_(B + C, B1, Flags),
     Res = ci(A1, B1).
 
+int_hook(+, ciplus2(_, ci), ci, []).
+
+ciplus2(C, ci(A, B), Res, Flags) :-
+    ciplus1(ci(A, B), C, Res, Flags).
+
+int_hook(-, ciminus1(ci, _), ci, []).
+
+ciminus1(ci(A, B), C, Res, Flags) :-
+    interval_(A - C, A1, Flags),
+    interval_(B - C, B1, Flags),
+    Res = ci(A1, B1).
+
+int_hook(-, ciminus2(_, ci), ci, []).
+
+ciminus2(C, ci(A, B), Res, Flags) :-
+    interval_(C - A, A1, Flags),
+    interval_(C - B, B1, Flags),
+    Res = ci(A1, B1).
+
+int_hook(*, cimult1(ci, _), ci, []).
+
+cimult1(ci(A, B), C, Res, Flags) :-
+    interval_(A * C, A1, Flags),
+    interval_(B * C, B1, Flags),
+    Res = ci(A1, B1).
+
+int_hook(*, cimult2(_, ci), ci, []).
+
+cimult2(C, ci(A, B), Res, Flags) :-
+    cimult1(ci(A, B), C, Res, Flags).
+
+int_hook(/, cidiv(ci, _), ci, []).
+
+cidiv(ci(A, B), C, Res, Flags) :-
+    interval_(A / C, A1, Flags),
+    interval_(B / C, B1, Flags),
+    Res = ci(A1, B1).
+
+int_hook(exp, ciexp(ci), ci, []).
+
+ciexp(ci(A, B), Res, Flags) :-
+    interval_(exp(A), A1, Flags),
+    interval_(exp(B), B1, Flags),
+    Res = ci(A1, B1).

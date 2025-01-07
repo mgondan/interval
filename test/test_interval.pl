@@ -9,7 +9,7 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 test_interval :-
-    run_tests([comparison, division, sqrt, power, abs, round, sin]).
+    run_tests([comparison, division, sqrt, power, abs, round, sin, ci]).
 
 :- begin_tests(comparison).
 
@@ -464,6 +464,36 @@ test(sin_falling) :-
     equal(Res, 0.8084...0.9093).
 
 :- end_tests(sin).
+
+:- begin_tests(ci).
+
+test(ciplus1) :-
+    interval(ci(1, 2) + 3, ci(4, 5)).
+
+test(ciplus2) :-
+    interval(3 + ci(1, 2), ci(4, 5)).
+
+test(ciminus1) :-
+    interval(ci(1, 2) - 3, ci(-2, -1)).
+    
+test(ciminus2) :-
+    interval(3 - ci(1, 2), ci(2, 1)).
+
+test(cimult1) :-
+    interval(ci(1, 2) * 3, ci(3, 6)).
+
+test(cimult2) :-
+    interval(3 * ci(1, 2), ci(3, 6)).
+
+test(cidiv) :-
+    interval(ci(2, 4) / 8, ci(0.25, 0.5)).
+
+test(ciexp) :-
+    interval(exp(ci(1, 2)), ci(A, B)),
+    equal(A, 2.7183),
+    equal(B, 7.3891).
+
+:- end_tests(ci).
 
 % Helper predicate to check equality
 equal(Res0, Res) :-
