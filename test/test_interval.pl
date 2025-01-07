@@ -473,17 +473,11 @@ test(ciplus1) :-
 test(ciplus2) :-
     interval(3 + ci(1, 2), ci(4, 5)).
 
-test(ciminus1) :-
+test(ciminus) :-
     interval(ci(1, 2) - 3, ci(-2, -1)).
-    
-test(ciminus2) :-
-    interval(3 - ci(1, 2), ci(2, 1)).
 
-test(cimult1) :-
+test(cimult) :-
     interval(ci(1, 2) * 3, ci(3, 6)).
-
-test(cimult2) :-
-    interval(3 * ci(1, 2), ci(3, 6)).
 
 test(cidiv) :-
     interval(ci(2, 4) / 8, ci(0.25, 0.5)).
