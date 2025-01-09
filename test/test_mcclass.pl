@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, number_digit, omit, multiply, available, equality, plus]).
+    run_tests([fractions, number_digit, omit, multiply, available, equality, plus, ci]).
 
 :- begin_tests(fractions).
 
@@ -192,3 +192,31 @@ test(plus2) :-
     Res = 3...5.
 
 :- end_tests(plus).
+
+:- begin_tests(ci).
+
+test(ciplus1) :-
+    interval(ci(1, 2) + 3, ci(4, 5)).
+
+test(ciplus2) :-
+    interval(3 + ci(1, 2), ci(4, 5)).
+
+test(ciminus) :-
+    interval(ci(1, 2) - 3, ci(-2, -1)).
+
+test(cimult) :-
+    interval(ci(1, 2) * 3, ci(3, 6)).
+
+test(cidiv) :-
+    interval(ci(2, 4) / 8, ci(0.25, 0.5)).
+
+test(ciexp) :-
+    interval(exp(ci(1, 2)), ci(A, B)),
+    test_mcclass:equal(A, 2.7183),
+    test_mcclass:equal(B, 7.3891).
+
+:- end_tests(ci).
+
+% Helper predicate to check equality
+equal(Res0, Res) :-
+    mcint:interval(round(Res0, 4), Res).

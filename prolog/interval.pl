@@ -6,6 +6,9 @@
 
 :- discontiguous interval_/3.
 
+:- multifile instantiate/2.
+:- multifile data_type/3.
+
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
 :- set_prolog_flag(float_zero_div, infinity).
@@ -99,10 +102,9 @@ interval_(atomic(A), Res, _Flags)
 interval_(L...U, Res, _Flags)
  => Res = L...U.
 
-interval_(ci(A, B), Res, Flags)
- => interval_(A, A1, Flags),
-    interval_(B, B1, Flags),
-    Res = ci(A1, B1).
+interval_(A, Res, Flags),
+    data_type(A, Res1, Flags)
+ => Res = Res1.
 
 interval_(Expr, Res, Flags),
     compound(Expr),
@@ -128,10 +130,7 @@ instantiate(A, Res),
  => Res = _..._.
 
 instantiate(A, Res),
-    A = ci
- => Res = ci(_, _).
-
-instantiate(A, Res) 
+    var(A)
  => Res = A.
 
 % Skipping evaluation of arguments
@@ -704,46 +703,3 @@ sin(A...B, Res, _Flags) :-
     B1 is sin(B),
     sort([A1, B1], [L, U]),
     Res = L...U.
-
-%
-% Confidence interval
-%
-int_hook(+, ciplus1(ci, _), ci, []).
-
-ciplus1(ci(A, B), C, Res, Flags) :-
-    interval_(A + C, A1, Flags),
-    interval_(B + C, B1, Flags),
-    Res = ci(A1, B1).
-
-int_hook(+, ciplus2(_, ci), ci, []).
-
-ciplus2(C, ci(A, B), Res, Flags) :-
-    ciplus1(ci(A, B), C, Res, Flags).
-
-int_hook(-, ciminus(ci, _), ci, []).
-
-ciminus(ci(A, B), C, Res, Flags) :-
-    interval_(A - C, A1, Flags),
-    interval_(B - C, B1, Flags),
-    Res = ci(A1, B1).
-
-int_hook(*, cimult(ci, _), ci, []).
-
-cimult(ci(A, B), C, Res, Flags) :-
-    interval_(A * C, A1, Flags),
-    interval_(B * C, B1, Flags),
-    Res = ci(A1, B1).
-
-int_hook(/, cidiv(ci, _), ci, []).
-
-cidiv(ci(A, B), C, Res, Flags) :-
-    interval_(A / C, A1, Flags),
-    interval_(B / C, B1, Flags),
-    Res = ci(A1, B1).
-
-int_hook(exp, ciexp(ci), ci, []).
-
-ciexp(ci(A, B), Res, Flags) :-
-    interval_(exp(A), A1, Flags),
-    interval_(exp(B), B1, Flags),
-    Res = ci(A1, B1).

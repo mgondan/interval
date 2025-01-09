@@ -108,3 +108,55 @@ interval:avail3(A ... B, Res, _Flags)
 interval:int_hook(=@=, equal1(_, _), _, []).
 interval:equal1(A, B, Res, Flags) :-
     interval:interval_(A =:= B, Res, Flags).
+
+%
+% Confidence intervals
+%
+interval:data_type(C, Res, Flags) :-
+    C = ci(A, B),
+    interval:interval_(A, A1, Flags),
+    interval:interval_(B, B1, Flags),
+    Res = ci(A1, B1).
+
+interval:instantiate(A, Res),
+    A = ci
+ => Res = ci(_, _).
+
+% Addition CI
+interval:int_hook(+, ciplus1(ci, _), ci, []).
+interval:ciplus1(ci(A, B), C, Res, Flags) :-
+    interval:interval_(A + C, A1, Flags),
+    interval:interval_(B + C, B1, Flags),
+    Res = ci(A1, B1).
+
+interval:int_hook(+, ciplus2(_, ci), ci, []).
+interval:ciplus2(C, ci(A, B), Res, Flags) :-
+    interval:ciplus1(ci(A, B), C, Res, Flags).
+
+% Subtraction CI
+interval:int_hook(-, ciminus(ci, _), ci, []).
+interval:ciminus(ci(A, B), C, Res, Flags) :-
+    interval:interval_(A - C, A1, Flags),
+    interval:interval_(B - C, B1, Flags),
+    Res = ci(A1, B1).
+
+% Multiplication CI
+interval:int_hook(*, cimult(ci, _), ci, []).
+interval:cimult(ci(A, B), C, Res, Flags) :-
+    interval:interval_(A * C, A1, Flags),
+    interval:interval_(B * C, B1, Flags),
+    Res = ci(A1, B1).
+
+% Division CI
+interval:int_hook(/, cidiv(ci, _), ci, []).
+interval:cidiv(ci(A, B), C, Res, Flags) :-
+    interval:interval_(A / C, A1, Flags),
+    interval:interval_(B / C, B1, Flags),
+    Res = ci(A1, B1).
+
+% Exponential CI
+interval:int_hook(exp, ciexp(ci), ci, []).
+interval:ciexp(ci(A, B), Res, Flags) :-
+    interval:interval_(exp(A), A1, Flags),
+    interval:interval_(exp(B), B1, Flags),
+    Res = ci(A1, B1).
