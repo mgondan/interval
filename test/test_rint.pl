@@ -151,4 +151,4 @@ test(dchisq_df_mixed) :-
 
 % Helper predicate to check equality
 equal(Res0, Res) :-
-    interval:interval(round(Res0, 4), Res).
+    interval(round(Res0, 4), Res).
