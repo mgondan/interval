@@ -142,3 +142,10 @@ ciexp(ci(A, B), Res, Flags) :-
     interval_(exp(A), A1, Flags),
     interval_(exp(B), B1, Flags),
     Res = ci(A1, B1).
+
+% Plus/minus
+int_hook(pm, pm(_, _), ci, []).
+pm(A, B, Res, Flags) :-
+    interval_(A - B, A1, Flags),
+    interval_(A + B, B1, Flags),
+    Res = ci(A1, B1).
