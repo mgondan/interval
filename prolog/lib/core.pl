@@ -60,10 +60,32 @@ interval_(Expr, Res, Flags),
     compound_name_arguments(Expr, Name, Args),
     int_hook(Name, Mask, Res0, Opt),
     option(evaluate(false), Opt, true),
-    instantiate(Res0, Res)
- => compound_name_arguments(Mask, Fun, Args),
-    compound_name_arguments(Goal, Fun, Args),
+    instantiate(Res0, Res),
+    compound_name_arguments(Mask, Fun, Args1),
+    maplist(instantiate, Args1, Args2),
+    maplist(instantiate_, Args, Args2)
+ => compound_name_arguments(Goal, Fun, Args2),
     call(Goal, Res, Flags).
+
+instantiate_(atomic(A), Res),
+    Res = atomic(_)
+ => Res = atomic(A).
+
+instantiate_(atomic(A), Res),
+    Res = _..._
+ => Res = A...A.
+
+instantiate_(L...U, Res),
+    Res = _..._
+ => Res = L...U.
+
+instantiate_(ci(A, B), Res),
+    Res = ci(_, _)
+ => Res = ci(A, B).
+
+instantiate_(A, Res),
+    var(Res)
+ => Res = A.
 
 % special case: multiplication ([*, *], commutative)
 interval_(Expr, Res, Flags),
