@@ -190,7 +190,7 @@ equ(Name, A, Res, Flags) :-
 %
 % Denote
 %
-int_hook(denote, den(_, _, _), _, []).
+int_hook(denote, den(_, _, _), _, [evaluate(false)]).
 den(_Sym, A, _Text, Res, Flags) :-
     interval_(A, A1, Flags),
     Res = A1.
@@ -198,7 +198,7 @@ den(_Sym, A, _Text, Res, Flags) :-
 %
 % Color
 %
-int_hook(color, col(_, _), _, []).
+int_hook(color, col(_, _), _, [evaluate(false)]).
 col(_Col, A, Res, Flags) :-
     interval_(A, A1, Flags),
     Res = A1.

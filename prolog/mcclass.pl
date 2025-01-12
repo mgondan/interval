@@ -7,6 +7,8 @@
 :- multifile interval_/3.
 :- multifile instantiate/2.
 
+:- dynamic r_topic/2.
+
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
 :- set_prolog_flag(float_zero_div, infinity).
