@@ -1,6 +1,6 @@
 :- module(r, [r_initialize/0, r/1, r/2, r_source/2]).
 
-:- use_module(library(rologp)).
+:- use_module(library(rolog)).
 
 :- dynamic r_initialized/0.
 
