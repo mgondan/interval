@@ -146,6 +146,10 @@ lower(*, A...B, L)
 lower(_, atomic(A), L)
  => L = A.
 
+lower(_, A, L),
+    atomic(A)
+ => L = A.
+
 upper(+, _...B, U)
  => U = B.
 
@@ -156,4 +160,8 @@ upper(*, A...B, U)
  => U = A ; U = B.
 
 upper(_, atomic(A), U)
+ => U = A.
+
+upper(_, A, U),
+    atomic(A)
  => U = A.

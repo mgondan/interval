@@ -8,8 +8,11 @@ interval(Expr, Res1, Flags) :-
     unwrap(Res0, Res1).
 
 default_digits(Dig, Flags) 
- => nb_getval(digits, Dig1),
-    option(digits(Dig), Flags, Dig1).
+ => ( nb_current(digits, Dig1)
+    -> true
+    ; Dig1 = 2
+    ),
+    option(digits(Dig), Flags, Dig1). 
 
 clean(atomic(A), Res)
  => Res = atomic(A).
