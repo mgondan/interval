@@ -40,16 +40,16 @@ jobs:
         run: swipl -t check_installation
         shell: bash
 
-      - name: Install rologp
+      - name: Install rolog
         run: |
           export R_LIBS_USER=$HOME/Rlibs
-          swipl -t "pack_install(rologp, [interactive(false)])"
+          swipl -t "pack_install(rolog, [interactive(false)])"
         shell: bash
 
-      - name: Move rologpp.so to foreign directory
+      - name: Move rolog.so to foreign directory
         run: |
-          mkdir -p ~/.local/share/swi-prolog/pack/rologpp/foreign
-          cp ~/.local/share/swi-prolog/pack/rologpp/lib/x86_64-linux/rologpp.so ~/.local/share/swi-prolog/pack/rologpp/foreign/
+          mkdir -p ~/.local/share/swi-prolog/pack/rolog/foreign
+          cp ~/.local/share/swi-prolog/pack/rolog/lib/x86_64-linux/rolog.so ~/.local/share/swi-prolog/pack/rolog/foreign/
 
       - name: Install pack
         run: |
