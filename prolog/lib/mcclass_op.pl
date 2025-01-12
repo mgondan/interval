@@ -48,17 +48,46 @@ pval(A, Res, Flags) :-
     interval_(round(A, atomic(3)), Res, Flags).
 
 %
-% Forget parts of an expression
+% Bugs
 %
-int_hook(omit_left, omit_left(_), _, [evaluate(false)]).
-omit_left(Expr, Res, Flags) :-
-    Expr =.. [_Op, _L, R],
+% Forget parts of an expression
+int_hook(omit_left, left(_), _, [evaluate(false)]).
+left(A, Res, Flags) :-
+    A =.. [_Op, _L, R],
     interval_(R, Res, Flags).
 
-int_hook(omit_right, omit_right(_), _, [evaluate(false)]).
-omit_right(Expr, Res, Flags) :-
-    Expr =.. [_Op, L, _R],
+int_hook(omit_right, right(_), _, [evaluate(false)]).
+right(A, Res, Flags) :-
+    A =.. [_Op, L, _R],
     interval_(L, Res, Flags).
+
+int_hook(omit, omit(_, _), _, [evaluate(false)]).
+omit(_Bug, _Expr, na, _Flags).
+
+% Instead
+int_hook(instead, instead1(_, _, _), _, [evaluate(false)]).
+instead1(_Bug, Wrong, _Correct, Res, Flags) :-
+    interval_(Wrong, Res, Flags).
+
+int_hook(instead, instead2(_, _, _, _), _, [evaluate(false)]).
+instead2(_Bug, Wrong, _Correct, _Correct0, Res, Flags) :-
+    interval_(Wrong, Res, Flags).
+
+% Drop
+int_hook(drop_right, drop_right(_, _), _, [evaluate(false)]).
+drop_right(_Bug, A, Res, Flags) :-
+    right(A, Res, Flags).
+
+int_hook(drop_left, drop_left(_, _), _, [evaluate(false)]).
+drop_left(_Bug, A, Res, Flags) :-
+    left(A, Res, Flags).
+
+% add_left, add_right
+int_hook(add_right, add(_, _), _, [evaluate(false)]).
+add(_Bug, A, Res, Flags) :-
+    interval_(A, Res, Flags).
+
+int_hook(add_left, add(_, _), _, [evaluate(false)]).
 
 %
 % Multiply
@@ -149,3 +178,61 @@ pm(A, B, Res, Flags) :-
     interval_(A - B, A1, Flags),
     interval_(A + B, B1, Flags),
     Res = ci(A1, B1).
+
+%
+% Equation sign: named arguments in R functions (leave name unchanged)
+%
+/* int_hook(=, equ(_, _), _, []).
+equ(Name, A, Res, Flags) :-
+    interval_(A, A1, Flags),
+    Res = (Name = A1). */
+
+%
+% Denote
+%
+int_hook(denote, den(_, _, _), _, []).
+den(_Sym, A, _Text, Res, Flags) :-
+    interval_(A, A1, Flags),
+    Res = A1.
+
+%
+% Color
+%
+int_hook(color, col(_, _), _, []).
+col(_Col, A, Res, Flags) :-
+    interval_(A, A1, Flags),
+    Res = A1.
+
+%
+% Read intervals from input
+%
+int_hook(@, read(_, _), _, []).
+read(Options, A, Res, Flags) :-
+    !, append(Options, Flags, New),
+    option(digits(D), New, 1.0Inf),
+    Eps is 10^(-D)/2,
+    MEps is -Eps,
+    interval_(A + MEps...Eps, Res, New).
+
+%
+% Assignment
+%
+int_hook('<-', assign(_, _), _, [evaluate(false)]).
+assign(atomic(Var), A, Res, Flags) :-
+    interval_(A, Res, Flags),
+    ( Res = L ... _
+     -> r_mcclass:r_topic('<-'(Var, L)) % incomplete
+     ;  r_mcclass:r_topic('<-'(Var, Res))
+    ).
+
+%
+% Other
+%
+int_hook(';', or(_, _), _, []).
+or(A, B, Res, Flags) :-
+    interval_(A, _, Flags),
+    interval_(B, Res, Flags).
+
+int_hook('{}', curly(_), _, []).
+curly(A, Res, Flags) :-
+    interval_(A, Res, Flags).

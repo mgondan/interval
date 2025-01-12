@@ -5,7 +5,7 @@
 :- use_module(library(mcclass)).
 
 test_mcclass :-
-    run_tests([fractions, number_digit, omit, multiply, available, equality, plus, ci, pm]).
+    run_tests([fractions, number_digit, bugs, multiply, available, equality, plus, ci, pm, denote, color, semicolon, curly]).
 
 :- begin_tests(fractions).
 
@@ -81,7 +81,8 @@ test(pval_interval) :-
 
 :- end_tests(number_digit).
 
-:- begin_tests(omit).
+:- begin_tests(bugs).
+
 test(omit_right_atomic) :-
     A = 5,
     B = 4,
@@ -106,7 +107,52 @@ test(omit_left_interval) :-
     interval(omit_left(A - B), Res),
     Res = B.
 
-:- end_tests(omit).
+test(omit) :-
+    A = bug1,
+    B = expr,
+    interval(omit(A, B), Res),
+    Res = na.
+
+test(instead1) :-
+    Bug = bug1,
+    Wrong = 2+1,
+    Correct = 2-1,
+    interval(instead(Bug, Wrong, Correct), Res),
+    Res = 3.
+
+test(instead2) :-
+    Bug = bug1,
+    Wrong = 2+1,
+    Correct = 2-1,
+    Correct0 = 1+1,
+    interval(instead(Bug, Wrong, Correct, Correct0), Res),
+    Res = 3.
+
+test(drop_right1) :-
+    Bug = bug1,
+    A = (3+1) / (1+1),
+    interval(drop_right(Bug, A), Res),
+    Res = 4.
+
+test(drop_left1) :-
+    Bug = bug1,
+    A = (3+1) / (1+1),
+    interval(drop_left(Bug, A), Res),
+    Res = 2.  
+
+test(add_right1) :-
+    Bug = bug1,
+    A = (3+1) / (2+2),
+    interval(add_right(Bug, A), Res),
+    Res = 1.  
+
+test(add_left1) :-
+    Bug = bug1,
+    A = (3+1) / (2+2),
+    interval(add_left(Bug, A), Res),
+    Res = 1.  
+
+:- end_tests(bugs).
 
 :- begin_tests(multiply).
 
@@ -226,6 +272,56 @@ test(pm) :-
     Res = ci(-1, 1).
 
 :- end_tests(pm).
+
+/* :- begin_tests(eq).
+
+test(equ1) :-
+    Name = mean,
+    A = (1 + 2)/2,
+    interval(Name=A, Res),
+    Res = (mean=1.5). 
+
+:- end_tests(eq). */
+
+:- begin_tests(denote).
+
+test(denote1) :-
+    Sym = sd_pool,
+    A = 5 + 5,
+    Text = 'Pooled standard deviation',
+    interval(denote(Sym, A, Text), Res),
+    Res = 10. 
+
+:- end_tests(denote).
+
+:- begin_tests(color).
+
+test(color1) :-
+    Col = red,
+    A = 5 + 5,
+    interval(color(Col, A), Res),
+    Res = 10. 
+
+:- end_tests(color).
+
+:- begin_tests(semicolon).
+
+test(semicolon1) :-
+    A = 1 + 2,
+    B = 5 + 5,
+    interval(';'(A, B), Res),
+    Res = 10. 
+
+:- end_tests(semicolon).
+
+:- begin_tests(curly).
+
+test(curly1) :-
+    A = 1 + 2,
+    interval('{}'(A), Res),
+    Res = 3. 
+
+:- end_tests(curly).
 
 % Helper predicate to check equality
 equal(Res0, Res) :-
