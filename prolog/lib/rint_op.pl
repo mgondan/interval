@@ -104,6 +104,14 @@ pnorm(X, Mu, Sigma, Res, Flags) :-
      interval_((X - Mu)/Sigma, Z, Flags),
      interval_(pnorm0(Z), Res, Flags).
 
+int_hook(pnorm, pnorm1(...), ..., []).
+pnorm1(Z, Res, Flags) :-
+     interval_(pnorm0(Z), Res, Flags).
+
+int_hook(pnorm, pnorm2(atomic), atomic, []).
+pnorm2(atomic(Z), atomic(Res), Flags) :-
+     eval(pnorm0(Z), Res, Flags).
+
 %
 % Quantile function
 %
@@ -114,6 +122,14 @@ int_hook(qnorm, qnorm(..., ..., ...), ..., []).
 qnorm(P, Mu, Sigma, Res, Flags) :-
      interval_(qnorm0(P), Z, Flags),
      interval_(Mu + Z * Sigma, Res, Flags).
+
+int_hook(qnorm, qnorm1(...), ..., []).
+qnorm1(P, Res, Flags) :-
+     interval_(qnorm0(P), Res, Flags).
+
+int_hook(qnorm, qnorm2(atomic), atomic, []).
+qnorm2(atomic(P), atomic(Res), Flags) :-
+     eval(qnorm0(P), Res, Flags).
 
 %
 % Density
