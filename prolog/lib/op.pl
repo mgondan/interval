@@ -26,7 +26,7 @@ mono((+)/2, [+, +]).
 mono((-)/1, [-]).
 mono((-)/2, [+, -]).
 mono((*)/2, **).
-mono((^)/2, [*, /]).
+mono((**)/2, [*, /]). % power
 mono((exp)/1, [+]).
 
 %
@@ -370,21 +370,45 @@ sqrt1(A...B, Res, _Flags) :-
 %
 % Power
 %
+int_hook(^, pow0(atomic, atomic), atomic, []).
+pow0(atomic(X), atomic(Y), atomic(Res), _Flags) :-
+    eval(X^Y, Res).
+
 % Even exponent with negative base
-int_hook((^), pow(..., atomic), ..., []).
+int_hook(^, pow(..., atomic), ..., []).
 pow(L...U, atomic(Exp), Res, _Flags),
     negative(L, U),
-    even(Exp),
-    natural(Exp)
+    natural(Exp),
+    even(Exp)
  => eval(U^Exp, L^Exp, Res).
 
 % Even exponent with mixed base
-pow(L...U, atomic(Exp), Res, _Flags),
-    mixed(L, U),
-    even(Exp),
+pow(A...B, atomic(Exp), Res, _Flags),
+    mixed(A, B),
+    natural(Exp),
+    even(Exp)
+ => eval(max(A^Exp, B^Exp), U),
+    Res = 0...U.
+
+pow(A...B, atomic(Exp), Res, _Flags),
+    mixed(A, B),
     natural(Exp)
- => eval(max(L^Exp, U^Exp), Upper),
-    Res = 0...Upper.
+    % \+ even(Exp)
+ => eval(A^Exp, A1),
+    eval(B^Exp, B1),
+    sort([A1, B1], [L, U]),
+    Res = L...U.
+
+% Positive works with all exponents
+pow(L...U, atomic(Exp), Res, _Flags),
+    positive(L, U),
+    Exp >= 0
+ => eval(L^Exp, U^Exp, Res).
+
+pow(L...U, atomic(Exp), Res, _Flags),
+    positive(L, U)
+    % Exp < 0
+ => eval(U^Exp, L^Exp, Res).
 
 % General case
 pow(L...U, atomic(Exp), Res, _Flags),
@@ -396,7 +420,7 @@ even(A) :-
     A mod 2 =:= 0.
 
 natural(A) :-
-    A >=0,
+    A >= 0,
     integer(A).
 
 %
