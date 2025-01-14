@@ -1,3 +1,8 @@
+% For mcclass. Todo: change later 
+interval_(A, Res, _Flags),
+    atomic(A)
+ => Res = atomic(A).
+
 interval_(atomic(A), Res, Flags),
     r_hook(A),
     memberchk(topic(_), Flags)
