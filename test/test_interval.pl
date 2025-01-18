@@ -384,6 +384,13 @@ test(power_mixed_base_odd_expon) :-
     L is -27,
     U is 8.
 
+test(power_positive_base_neg_expon) :-
+    Base = 2...4,
+    Exp = -2,
+    interval(Base ^ Exp, L...U),
+    L is 0.0625,
+    U is 0.25.
+
 :- end_tests(power).
 
 :- begin_tests(abs).

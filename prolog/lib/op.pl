@@ -390,24 +390,10 @@ pow(A...B, atomic(Exp), Res, _Flags),
  => eval(max(A^Exp, B^Exp), U),
     Res = 0...U.
 
-pow(A...B, atomic(Exp), Res, _Flags),
-    mixed(A, B),
-    natural(Exp)
-    % \+ even(Exp)
- => eval(A^Exp, A1),
-    eval(B^Exp, B1),
-    sort([A1, B1], [L, U]),
-    Res = L...U.
-
-% Positive works with all exponents
+% Positive also works with negative exponents
 pow(L...U, atomic(Exp), Res, _Flags),
     positive(L, U),
-    Exp >= 0
- => eval(L^Exp, U^Exp, Res).
-
-pow(L...U, atomic(Exp), Res, _Flags),
-    positive(L, U)
-    % Exp < 0
+    Exp < 0
  => eval(U^Exp, L^Exp, Res).
 
 % General case
