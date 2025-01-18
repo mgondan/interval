@@ -433,12 +433,11 @@ abs1(A...B, Res, _Flags) :-
     Res = L...U.
 
 %
-% round
+% Round
 %
-int_hook(round, round1(atomic, atomic), atomic, []).
-round1(atomic(A), atomic(Dig), atomic(Res), _Flags) :-
-    Mul is 10^Dig,
-    Res is round(A*Mul) / Mul.
+int_hook(round, round1(atomic, atomic), ..., []).
+round1(atomic(A), Dig, Res, Flags) :-
+    round2(A...A, Dig, Res, Flags).
     
 int_hook(round, round2(..., atomic), ..., []).
 round2(A...B, atomic(Dig), Res, _Flags) :-

@@ -436,6 +436,27 @@ test(round1) :-
     L = 2.71,
     U = 3.15.
 
+test(round2) :-
+    A = 0.333...0.334,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 0.33,
+    U = 0.34.
+
+test(round3) :-
+    A = 0.333...0.333,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 0.33,
+    U = 0.34.
+
+test(round4) :-
+    A = 0.333,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 0.33,
+    U = 0.34.
+
 :- end_tests(round).
 
 :- begin_tests(sin).
