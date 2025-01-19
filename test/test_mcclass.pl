@@ -30,8 +30,9 @@ test(dfrac) :-
 test(tstat_atomic) :-
     A = 1,
     B = 3,
-    interval(tstat(A / B), Res),
-    Res is 0.33.
+    interval(tstat(A / B), L...U),
+    L = 0.33,
+    U = 0.34.
 
 test(tstat_interval) :-
     A = 1...5,
@@ -43,8 +44,9 @@ test(tstat_interval) :-
 test(hdrs_atomic) :-
     A = 1,
     B = 3,
-    interval(hdrs(A / B), Res),
-    Res is 0.3.
+    interval(hdrs(A / B), L...U),
+    L = 0.3,
+    U = 0.4.
 
 test(hdrs_interval) :-
     A = 1...5,
@@ -56,8 +58,9 @@ test(hdrs_interval) :-
 test(chi2ratio_atomic) :-
     A = 1,
     B = 3,
-    interval(chi2ratio(A / B), Res),
-    Res is 0.33.
+    interval(chi2ratio(A / B), L...U),
+    L = 0.33,
+    U = 0.34.
 
 test(chi2ratio_interval) :-
     A = 1...5,
@@ -69,8 +72,9 @@ test(chi2ratio_interval) :-
 test(pval_atomic) :-
     A = 1,
     B = 3,
-    interval(pval(A / B), Res),
-    Res is 0.333.
+    interval(pval(A / B), L...U),
+    L = 0.333,
+    U = 0.334.
 
 test(pval_interval) :-
     A = 1...5,
@@ -258,8 +262,10 @@ test(cidiv) :-
 
 test(ciexp) :-
     interval(exp(ci(1, 2)), ci(A, B)),
-    test_mcclass:equal(A, 2.7183),
-    test_mcclass:equal(B, 7.3891).
+    test_mcclass:equal(A, A1),
+    test_mcclass:equal(B, B1),
+    A1 = 2.7182...2.7183,
+    B1 = 7.389...7.3891.
 
 :- end_tests(ci).
 
