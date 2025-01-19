@@ -221,8 +221,8 @@ int_hook('<-', assign(_, _), _, [evaluate(false)]).
 assign(atomic(Var), A, Res, Flags) :-
     interval_(A, Res, Flags),
     ( Res = L ... _
-     -> r_mcclass:r_topic('<-'(Var, L)) % incomplete
-     ;  r_mcclass:r_topic('<-'(Var, Res))
+     -> r_session:r_topic('<-'(Var, L)) % incomplete
+     ;  r_session:r_topic('<-'(Var, Res))
     ).
 
 %

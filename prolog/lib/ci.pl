@@ -6,7 +6,8 @@ interval_(A, Res, _Flags),
 interval_(atomic(A), Res, Flags),
     r_hook(A),
     memberchk(topic(_), Flags)
- => r_mcclass:r_topic(A, Res).
+ => r_session:r_topic(A, Res1),
+    Res = Res1.
 
 interval_(C, Res, Flags),
     C = ci(A, B)
