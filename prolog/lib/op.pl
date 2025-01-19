@@ -390,24 +390,10 @@ pow(A...B, atomic(Exp), Res, _Flags),
  => eval(max(A^Exp, B^Exp), U),
     Res = 0...U.
 
-pow(A...B, atomic(Exp), Res, _Flags),
-    mixed(A, B),
-    natural(Exp)
-    % \+ even(Exp)
- => eval(A^Exp, A1),
-    eval(B^Exp, B1),
-    sort([A1, B1], [L, U]),
-    Res = L...U.
-
-% Positive works with all exponents
+% Positive also works with negative exponents
 pow(L...U, atomic(Exp), Res, _Flags),
     positive(L, U),
-    Exp >= 0
- => eval(L^Exp, U^Exp, Res).
-
-pow(L...U, atomic(Exp), Res, _Flags),
-    positive(L, U)
-    % Exp < 0
+    Exp < 0
  => eval(U^Exp, L^Exp, Res).
 
 % General case
@@ -447,12 +433,11 @@ abs1(A...B, Res, _Flags) :-
     Res = L...U.
 
 %
-% round
+% Round
 %
-int_hook(round, round1(atomic, atomic), atomic, []).
-round1(atomic(A), atomic(Dig), atomic(Res), _Flags) :-
-    Mul is 10^Dig,
-    Res is round(A*Mul) / Mul.
+int_hook(round, round1(atomic, atomic), ..., []).
+round1(atomic(A), Dig, Res, Flags) :-
+    round2(A...A, Dig, Res, Flags).
     
 int_hook(round, round2(..., atomic), ..., []).
 round2(A...B, atomic(Dig), Res, _Flags) :-

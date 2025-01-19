@@ -53,7 +53,9 @@ test(pnorm2) :-
 
 test(pnorm3) :-
     interval(pnorm(0.5), Res),
-    interval(round(Res, 4), 0.6915).
+    interval(round(Res, 4), L...U),
+    L = 0.6914,
+    U = 0.6915.
 
 test(qnorm1) :-
     interval(qnorm(0.6...0.7, 100...101, 10...11), Res),
@@ -65,7 +67,9 @@ test(qnorm2) :-
 
 test(qnorm3) :-
     interval(qnorm(0.6), Res),
-    interval(round(Res, 4), 0.2533).
+    interval(round(Res, 4), L...U),
+    L = 0.2533,
+    U = 0.2534.
 
 test(dnorm_z_neg) :-
     interval(dnorm(90...91, 100...101, 10...11), Res),

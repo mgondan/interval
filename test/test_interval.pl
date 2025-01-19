@@ -384,6 +384,13 @@ test(power_mixed_base_odd_expon) :-
     L is -27,
     U is 8.
 
+test(power_positive_base_neg_expon) :-
+    Base = 2...4,
+    Exp = -2,
+    interval(Base ^ Exp, L...U),
+    L is 0.0625,
+    U is 0.25.
+
 :- end_tests(power).
 
 :- begin_tests(abs).
@@ -428,6 +435,27 @@ test(round1) :-
     interval(round(A, Dig), L...U),
     L = 2.71,
     U = 3.15.
+
+test(round2) :-
+    A = 0.333...0.334,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 0.33,
+    U = 0.34.
+
+test(round3) :-
+    A = 0.333...0.333,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 0.33,
+    U = 0.34.
+
+test(round4) :-
+    A = 0.333,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 0.33,
+    U = 0.34.
 
 :- end_tests(round).
 
