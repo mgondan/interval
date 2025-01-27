@@ -3,10 +3,9 @@ interval_(A, Res, _Flags),
     atomic(A)
  => Res = atomic(A).
 
-interval_(atomic(A), Res, Flags),
-    r_hook(A),
-    memberchk(topic(_), Flags)
- => r_mcclass:r_topic(A, Res).
+interval_(atomic(A), Res, _Flags),
+    r_hook(_R, A)
+ => eval(A, Res). 
 
 interval_(C, Res, Flags),
     C = ci(A, B)

@@ -11,9 +11,22 @@ colon(A, A).
 %
 eval_hook(Atom, Res) :-
     atomic(Atom),
+    r_hook(R, Atom),
+    !,
+    call(R, Atom, Res).
+
+eval_hook(Atom, Res) :-
+    atomic(Atom),
     r_hook(Atom),
     !,
     r(Atom, Res).
+
+eval_hook(Expr, Res) :-
+    compound(Expr),
+    compound_name_arity(Expr, Name, Arity),
+    r_hook(R, Name/Arity),
+    !,
+    call(R, Expr, Res).
 
 eval_hook(Expr, Res) :-
     compound(Expr),

@@ -1,6 +1,7 @@
 :- module(mcint, [interval/2, interval/3, op(150, xfx, ...)]).
 
 :- multifile r_hook/1.
+:- multifile r_hook/2.
 :- multifile int_hook/4.
 :- multifile eval_hook/2.
 :- multifile mono/2.
