@@ -1,3 +1,5 @@
+:- use_module(cleaning).
+
 %
 % Addition (for testing)
 %
@@ -213,17 +215,6 @@ read(Options, A, Res, Flags) :-
     Eps is 10^(-D)/2,
     MEps is -Eps,
     interval_(A + MEps...Eps, Res, New).
-
-%
-% Assignment
-%
-int_hook('<-', assign(_, _), _, [evaluate(false)]).
-assign(atomic(Var), A, Res, Flags) :-
-    interval_(A, Res, Flags),
-    ( Res = L ... _
-     -> r_mcclass:r_topic('<-'(Var, L)) % incomplete
-     ;  r_mcclass:r_topic('<-'(Var, Res))
-    ).
 
 %
 % Other

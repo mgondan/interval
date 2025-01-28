@@ -11,9 +11,22 @@ colon(A, A).
 %
 eval_hook(Atom, Res) :-
     atomic(Atom),
+    r_hook(R, Atom),
+    !,
+    call(R, Atom, Res).
+
+eval_hook(Atom, Res) :-
+    atomic(Atom),
     r_hook(Atom),
     !,
     r(Atom, Res).
+
+eval_hook(Expr, Res) :-
+    compound(Expr),
+    compound_name_arity(Expr, Name, Arity),
+    r_hook(R, Name/Arity),
+    !,
+    call(R, Expr, Res).
 
 eval_hook(Expr, Res) :-
     compound(Expr),
@@ -326,3 +339,17 @@ dchisq_A(L...U, atomic(Df), Res, Flags) :-
     Mode is Df - 2,
     interval_(dchisq(atomic(Mode), atomic(Df)), U1..._, Flags),
     Res = L1...U1.
+
+%
+% Assignment
+%
+r_hook('<-'/2).
+int_hook('<-', assign(_, _), _, [evaluate(false)]).
+assign(atomic(Var), A, Res, Flags) :-
+    interval_(A, Res1, Flags),
+    unwrap(Res1, Res2),
+    ( Res2 = L ... _
+     -> eval('<-'(Var, L), Res3) % incomplete
+     ;  eval(('<-'(Var, Res2)), Res3)
+    ),
+    clean(Res3, Res).
