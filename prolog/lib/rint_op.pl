@@ -339,3 +339,17 @@ dchisq_A(L...U, atomic(Df), Res, Flags) :-
     Mode is Df - 2,
     interval_(dchisq(atomic(Mode), atomic(Df)), U1..._, Flags),
     Res = L1...U1.
+
+%
+% Assignment
+%
+r_hook('<-'/2).
+int_hook('<-', assign(_, _), _, [evaluate(false)]).
+assign(atomic(Var), A, Res, Flags) :-
+    interval_(A, Res1, Flags),
+    unwrap(Res1, Res2),
+    ( Res2 = L ... _
+     -> eval('<-'(Var, L), Res3) % incomplete
+     ;  eval(('<-'(Var, Res2)), Res3)
+    ),
+    clean(Res3, Res).

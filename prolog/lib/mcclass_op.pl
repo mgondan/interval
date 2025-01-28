@@ -217,20 +217,6 @@ read(Options, A, Res, Flags) :-
     interval_(A + MEps...Eps, Res, New).
 
 %
-% Assignment
-%
-r_hook('<-'/2).
-int_hook('<-', assign(_, _), _, [evaluate(false)]).
-assign(atomic(Var), A, Res, Flags) :-
-    interval_(A, Res1, Flags),
-    unwrap(Res1, Res2),
-    ( Res2 = L ... _
-     -> eval('<-'(Var, L), Res3) % incomplete
-     ;  eval(('<-'(Var, Res2)), Res3)
-    ),
-    clean(Res3, Res).
-
-%
 % Other
 %
 int_hook(';', or(_, _), _, []).
