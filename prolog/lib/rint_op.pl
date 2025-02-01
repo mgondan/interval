@@ -50,14 +50,23 @@ r_hook(false).
 %
 % Call R 
 %
-int_hook(r, r1(_), _, [evaluate(false)]).
-r1(A, Res, _Flags) :-
-    unwrap_r(A, A1),
-    eval_hook(r(A1), Res1),
-    Res = atomic(Res1),
-    !.
+int_hook(r, r1(atomic), _, [evaluate(false)]).
+r1(atomic(A), Res, _Flags) :-
+    eval_hook(r(A), Res1),
+    Res = atomic(Res1).
 
-r1(A, Res, Flags) :-
+int_hook(r, r2(_), _, [evaluate(false)]).
+r2(A, Res, Flags) :-
+    compound(A),
+    compound_name_arguments(A, Name, Args1),
+    maplist(interval__(Flags), Args1, Args2),
+    compound_name_arguments(A1, Name, Args2),
+    unwrap_r(A1, A2),
+    !,
+    eval_hook(r(A2), Res1),
+    Res = atomic(Res1).
+
+r2(A, Res, Flags) :-
     interval_(A, Res, Flags).
 
 %
