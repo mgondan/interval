@@ -1,5 +1,7 @@
 :- reexport('../r'), r_initialize.
 
+:- use_module(cleaning).
+
 %
 % Skip R vectors
 %
@@ -9,6 +11,13 @@ colon(A, A).
 %
 % Obtain atoms or functions from R
 %
+eval_hook(r(Expr), Res) :-
+    eval_hook(Expr, Res).
+
+eval_hook(r(Expr), Res) :-
+    !,
+    r(Expr, Res).
+
 eval_hook(Atom, Res) :-
     atomic(Atom),
     r_hook(R, Atom),
@@ -37,6 +46,19 @@ eval_hook(Expr, Res) :-
 
 r_hook(true).
 r_hook(false).
+
+%
+% Call R 
+%
+int_hook(r, r1(_), _, [evaluate(false)]).
+r1(A, Res, _Flags) :-
+    unwrap_r(A, A1),
+    eval_hook(r(A1), Res1),
+    Res = atomic(Res1),
+    !.
+
+r1(A, Res, Flags) :-
+    interval_(A, Res, Flags).
 
 %
 % Binomial distribution
