@@ -5,7 +5,27 @@
 :- use_module(library(rint)).
 
 test_rint :-
-    run_tests([binom, normal, t]).
+    run_tests([r, binom, normal, t]).
+
+:- begin_tests(r).
+
+test(r1) :-
+    A is 1,
+    interval(<-(x, A), _),
+    interval(r(x), Res),
+    Res = A.
+
+test(r2) :-
+    interval(r(1 + 1) + 2...3, Res),
+    Res = 4...5.
+
+test(r3) :-
+    interval(dbinom(1...2, 10, 0.7), L1...U1),
+    interval(r(dbinom(1...2, 10, 0.7)), L2...U2),
+    L1 =:= L2,
+    U1 =:= U2.
+
+:- end_tests(r).
 
 :- begin_tests(binom).
 

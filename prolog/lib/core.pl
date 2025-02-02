@@ -83,8 +83,7 @@ instantiate_(ci(A, B), Res),
     Res = ci(_, _)
  => Res = ci(A, B).
 
-instantiate_(A, Res),
-    var(Res)
+instantiate_(A, Res)
  => Res = A.
 
 % special case: multiplication ([*, *], commutative)
