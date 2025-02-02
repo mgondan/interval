@@ -380,7 +380,7 @@ assign(atomic(Var), A, Res, Flags) :-
     interval_(A, Res1, Flags),
     unwrap(Res1, Res2),
     ( Res2 = L ... _
-     -> eval('<-'(Var, L), Res3) % incomplete
-     ;  eval(('<-'(Var, Res2)), Res3)
+     -> eval('<-'(Var, L), Res3)
+     ;  eval('<-'(Var, Res2), Res3)
     ),
     clean(Res3, Res).
