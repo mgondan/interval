@@ -53,6 +53,7 @@ r_hook(false).
 int_hook(r, r1(atomic), _, [evaluate(false)]).
 r1(atomic(A), Res, _Flags) :-
     eval_hook(r(A), Res1),
+    !,
     clean(Res1, Res).
 
 int_hook(r, r2(_), _, [evaluate(false)]).
