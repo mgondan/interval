@@ -1,5 +1,3 @@
-:- use_module(cleaning).
-
 %
 % Addition (for testing)
 %

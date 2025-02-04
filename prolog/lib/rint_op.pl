@@ -53,7 +53,8 @@ r_hook(false).
 int_hook(r, r1(atomic), _, [evaluate(false)]).
 r1(atomic(A), Res, _Flags) :-
     eval_hook(r(A), Res1),
-    Res = atomic(Res1).
+    !,
+    clean(Res1, Res).
 
 int_hook(r, r2(_), _, [evaluate(false)]).
 r2(A, Res, Flags) :-
@@ -64,7 +65,7 @@ r2(A, Res, Flags) :-
     unwrap_r(A1, A2),
     !,
     eval_hook(r(A2), Res1),
-    Res = atomic(Res1).
+    clean(Res1, Res).
 
 r2(A, Res, Flags) :-
     interval_(A, Res, Flags).
@@ -376,11 +377,14 @@ dchisq_A(L...U, atomic(Df), Res, Flags) :-
 %
 r_hook('<-'/2).
 int_hook('<-', assign(_, _), _, [evaluate(false)]).
-assign(atomic(Var), A, Res, Flags) :-
-    interval_(A, Res1, Flags),
-    unwrap(Res1, Res2),
-    ( Res2 = L ... _
-     -> eval('<-'(Var, L), Res3) % incomplete
-     ;  eval(('<-'(Var, Res2)), Res3)
-    ),
-    clean(Res3, Res).
+assign(Var, A, Res, Flags) :-
+    interval_(A, A1, Flags),
+    assign_(Var, A1, Res).
+
+assign_(atomic(Var), L...U, Res) :-
+    eval_hook(Var <- call("...", L, U), Res),
+    !.
+
+assign_(atomic(Var), atomic(A), Res) :-
+    eval_hook(Var <- A, Res1),
+    clean(Res1, Res).

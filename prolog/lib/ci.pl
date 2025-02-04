@@ -1,11 +1,7 @@
-% For mcclass. Todo: change later 
-interval_(A, Res, _Flags),
-    atomic(A)
- => Res = atomic(A).
-
 interval_(atomic(A), Res, _Flags),
     r_hook(_R, A)
- => eval(A, Res). 
+ => eval(A, Res1),
+    clean(Res1, Res).
 
 interval_(C, Res, Flags),
     C = ci(A, B)
