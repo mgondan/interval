@@ -1,0 +1,13 @@
+---------
+2025-02-27 16:29:02 
+test1 | Inferences: 4209
+test2 | Inferences: 4270
+test3 | Inferences: 916
+test4 | Inferences: 1769
+test5 | Inferences: 166
+test6 | Inferences: 9420 | Levels=6
+test7 | Inferences: 18905 | Levels=7
+test8 | Inferences: 37862 | Levels=8
+test9 | Inferences: 75763 | Levels=9
+---------
+
