@@ -418,6 +418,12 @@ pow(L...U, atomic(Exp), Res, _Flags),
     natural(Exp)
  => eval(L^Exp, U^Exp, Res).
 
+pow(L...U, atomic(Exp), Res, _Flags),
+    positive(L, U),
+    Exp > 0,
+    Exp < 1
+ => eval(L^Exp, U^Exp, Res).
+
 % Utility
 even(A) :-
     A mod 2 =:= 0.
