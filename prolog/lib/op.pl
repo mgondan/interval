@@ -86,14 +86,21 @@ not_eq(A...B, C...D, Res, Flags) :-
 
 not_eq(_..._, _..._, false, _Flags).
 
-int_hook(=:=, eq(..., ...), _, []).
-eq(A...B, C...D, Res, Flags) :-
+int_hook(=:=, eq1(atomic, atomic), _, []).
+eq1(atomic(A), atomic(B), true, _Flags) :-
+    A =:= B,
+    !.
+
+eq1(_, _, false, _Flags).
+
+int_hook(=:=, eq2(..., ...), _, []).
+eq2(A...B, C...D, Res, Flags) :-
     less_eq(A...B, C...D, true, Flags),
     great_eq(A...B, C...D, true, Flags),
     !,
     Res = true.
 
-eq(_..._, _..._, false, _Flags). 
+eq2(_..._, _..._, false, _Flags). 
 
 %
 % Division
@@ -106,6 +113,16 @@ int_hook(/, div2(..., ...), ..., []).
 div2(A...B, C...D, Res, Flags) :-
     !,
     div(A...B, C...D, Res, Flags).
+
+int_hook(/, div3(..., atomic), ..., []).
+div3(L...U, atomic(A), Res, Flags) :-
+    !,
+    div(L...U, A...A, Res, Flags).
+
+int_hook(/, div4(atomic, ...), ..., []).
+div4(atomic(A), L...U, Res, Flags) :-
+    !,
+    div(A...A, L...U, Res, Flags).
 
 % Hickey Figure 1
 mixed(L, U) :-
