@@ -9,6 +9,10 @@ interval_(C, Res, Flags),
     interval_(B, B1, Flags),
     Res = ci(A1, B1).
 
-instantiate(A, Res),
+instantiate(A, B),
     A = ci
- => Res = ci(_, _).
+ => B = ci(_, _).
+
+instantiate(A, B),
+    B = ci(_, _)
+ => A = ci.

@@ -15,7 +15,6 @@ eval(Expr1, Expr2, L ... U) :-
     eval(Expr1, L),
     eval(Expr2, U).
 
-
 interval_(atomic(A), Res, _Flags),
     Res = L...U
  => L = A,
@@ -27,17 +26,25 @@ interval_(atomic(A), Res, _Flags)
 interval_(L...U, Res, _Flags)
  => Res = L...U.
 
+% Skip evaluation of arguments
 interval_(Expr, Res, Flags),
     compound(Expr),
     compound_name_arguments(Expr, Name, Args),
-    int_hook(Name, Mask, Res0, Opt),
-    option(evaluate(true), Opt, true),
-    instantiate(Res0, Res),
+    int_hook(Name, Mask, Res, Opt),
+    option(evaluate(false), Opt, true),
     compound_name_arguments(Mask, Fun, Args1),
-    maplist(instantiate, Args1, Args2),
-    maplist(interval__(Flags), Args, Args2)
- => compound_name_arguments(Goal, Fun, Args2),
+    maplist(instantiate, Args1, Args3),
+    maplist(=, Args, Args3)
+ => compound_name_arguments(Goal, Fun, Args),
     call(Goal, Res, Flags).
+
+% Evaluate arguments
+interval_(Expr, Res, Flags),
+    compound(Expr),
+    compound_name_arguments(Expr, Name, Args),
+    maplist(interval__(Flags), Args, Args1),
+    compound_name_arguments(Expr1, Name, Args1)
+ => interval2_(Expr1, Res, Flags).
 
 interval__(Flags, A, Res) :-
     interval_(A, Res, Flags).
@@ -47,73 +54,60 @@ instantiate(A, Res),
  => Res = atomic(_).
 
 instantiate(A, Res), 
+    Res = atomic(_)
+ => A = atomic.
+
+instantiate(A, Res), 
     A = ...
  => Res = _..._.
 
-instantiate(A, Res),
-    var(A)
- => Res = A.
+instantiate(A, Res), 
+    Res = _..._
+ => A = (...).
 
-% Skipping evaluation of arguments
-interval_(Expr, Res, Flags),
+instantiate(A, B),
+    var(A)
+ => A = B.
+
+% Find int_hook
+interval2_(Expr, Res, Flags),
     compound(Expr),
     compound_name_arguments(Expr, Name, Args),
-    int_hook(Name, Mask, Res0, Opt),
-    option(evaluate(false), Opt, true),
-    instantiate(Res0, Res),
-    compound_name_arguments(Mask, Fun, Args1),
-    maplist(instantiate, Args1, Args2),
-    maplist(instantiate_, Args, Args2)
- => compound_name_arguments(Goal, Fun, Args2),
-    call(Goal, Res, Flags).
+    maplist(instantiate, Types, Args),
+    int_hook(Name, Mask, _Res0, _Opt),
+    compound_name_arguments(Mask, Fun, Types),
+    compound_name_arguments(Goal, Fun, Args)
+ => call(Goal, Res, Flags).
 
-instantiate_(atomic(A), Res),
-    Res = atomic(_)
- => Res = atomic(A).
-
-instantiate_(atomic(A), Res),
-    Res = _..._
- => Res = A...A.
-
-instantiate_(L...U, Res),
-    Res = _..._
- => Res = L...U.
-
-instantiate_(ci(A, B), Res),
-    Res = ci(_, _)
- => Res = ci(A, B).
-
-instantiate_(A, Res)
- => Res = A.
-
-% special case: multiplication ([*, *], commutative)
-interval_(Expr, Res, Flags),
+% Special case: multiplication ([*, *], commutative)
+interval2_(Expr, Res, _Flags),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, **)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval__(Flags), Args, Args1),
-    findall(R, both(Name, Args1, R), Bounds),
+    findall(R, both(Name, Args, R), Bounds),
     min_list(Bounds, L),
     max_list(Bounds, U),
     Res = L...U.
 
-% general case
-interval_(Expr, Res, Flags),
+% General case 
+interval2_(Expr, Res, _Flags),
     compound(Expr),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, Dir)
  => compound_name_arguments(Expr, Name, Args),
-    maplist(interval__(Flags), Args, Args1),
-    findall(R, lower(Dir, Name, Args1, R), Lower),
+    findall(R, lower(Dir, Name, Args, R), Lower),
     min_list(Lower, L),
-    findall(R, upper(Dir, Name, Args1, R), Upper),
+    findall(R, upper(Dir, Name, Args, R), Upper),
     max_list(Upper, U),
     Res = L...U.
 
 %
 % Default case
 %
+interval2_(_, _, _Flags)
+ => fail.
+
 interval_(_, _, _Flags)
  => fail.
 
