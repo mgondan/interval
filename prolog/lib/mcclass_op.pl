@@ -206,13 +206,12 @@ col(_Col, A, Res, Flags) :-
 %
 % Read intervals from input
 %
-int_hook(@, read(_, _), _, []).
-read(Options, A, Res, Flags) :-
-    !, append(Options, Flags, New),
-    option(digits(D), New, 1.0Inf),
+int_hook(input, input(atomic), ..., []).
+input(A, Res, Flags) :-
+    option(digits(D), Flags, 2),
     Eps is 10^(-D)/2,
     MEps is -Eps,
-    interval_(A + MEps...Eps, Res, New).
+    interval_(A + MEps...Eps, Res, Flags).
 
 %
 % Other
