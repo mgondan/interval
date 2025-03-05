@@ -44,9 +44,6 @@ eval_hook(Expr, Res) :-
     !,
     r(Expr, Res).
 
-r_hook(true).
-r_hook(false).
-
 %
 % Call R 
 %
@@ -91,8 +88,9 @@ r_hook(pbinom1/3).
 mono(pbinom1/3, [-, +, +]).
 
 %
-% Quantile function - hier weiter
+% Quantile function
 %
+int_hook(qbinom, qbinom(..., atomic, ..., atomic), ..., []).
 int_hook(qbinom, qbinom(..., ..., ..., atomic), ..., []).
 
 % lower tail
@@ -113,7 +111,15 @@ mono(qbinom1/3, [-, +, +]).
 %
 % Density
 %
+int_hook(dbinom, dbinom(..., atomic, atomic), ..., []).
+int_hook(dbinom, dbinom(..., atomic, ...), ..., []).
 int_hook(dbinom, dbinom(..., ..., ...), ..., []).
+
+dbinom(X1...X2, atomic(N), P1...P2, Res, Flags) :-
+    dbinom(X1...X2, N...N, P1...P2, Res, Flags).
+
+dbinom(X1...X2, atomic(N), atomic(P), Res, Flags) :-
+    dbinom(X1...X2, N...N, P...P, Res, Flags).
 
 % left to X / N
 dbinom(X1...X2, N1...N2, P1...P2, Res, Flags) :-
@@ -154,8 +160,8 @@ pnorm1(Z, Res, Flags) :-
      interval_(pnorm0(Z), Res, Flags).
 
 int_hook(pnorm, pnorm2(atomic), atomic, []).
-pnorm2(atomic(Z), atomic(Res), Flags) :-
-     eval(pnorm0(Z), Res, Flags).
+pnorm2(atomic(Z), atomic(Res), _Flags) :-
+     eval(pnorm0(Z), Res).
 
 %
 % Quantile function
@@ -173,8 +179,8 @@ qnorm1(P, Res, Flags) :-
      interval_(qnorm0(P), Res, Flags).
 
 int_hook(qnorm, qnorm2(atomic), atomic, []).
-qnorm2(atomic(P), atomic(Res), Flags) :-
-     eval(qnorm0(P), Res, Flags).
+qnorm2(atomic(P), atomic(Res), _Flags) :-
+     eval(qnorm0(P), Res).
 
 %
 % Density
@@ -209,6 +215,7 @@ dnorm0(A...B, Res, Flags) :-
 %
 % t distribution
 %
+int_hook(pt, pt(..., atomic, atomic), ..., []).
 int_hook(pt, pt(..., ..., atomic), ..., []).
 
 r_hook(pt0/2).
@@ -259,6 +266,7 @@ pt(L...U, Df, atomic(false), Res, Flags) :-
 r_hook(qt0/2).
 mono(qt0/2, [+,-]).
 
+int_hook(qt, qt(..., atomic), ..., []).
 int_hook(qt, qt(..., ...), ..., []).
 qt(P, Df, Res, Flags) :-
     interval_(qt0(P, Df), Res, Flags).
@@ -272,6 +280,7 @@ mono(dt0/2, [+, +]).
 r_hook(dt1/2).
 mono(dt1/2, [-, +]).
 
+int_hook(dt, dt(..., atomic), ..., []).
 int_hook(dt, dt(..., ...), ..., []).
 dt(L...U, Df, Res, Flags) :-
     U =< 0,
@@ -291,7 +300,6 @@ dt(L...U, Df, Res, Flags) :-
 %
 % chisq
 %
-
 int_hook(pchisq, pchisq(..., atomic, atomic), ..., []).
 
 r_hook(pchisq0/2).

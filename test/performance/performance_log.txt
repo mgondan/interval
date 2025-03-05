@@ -11,3 +11,16 @@ test8 | Inferences: 37862 | Levels=8
 test9 | Inferences: 75763 | Levels=9
 ---------
 
+---------
+2025-03-05 10:08:37 
+test1 | Inferences: 1613
+test2 | Inferences: 1399
+test3 | Inferences: 814
+test4 | Inferences: 918
+test5 | Inferences: 171
+test6 | Inferences: 726 | Levels=6
+test7 | Inferences: 844 | Levels=7
+test8 | Inferences: 962 | Levels=8
+test9 | Inferences: 1080 | Levels=9
+---------
+
