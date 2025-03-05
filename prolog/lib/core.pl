@@ -10,11 +10,11 @@ eval(Expr, Res),
 eval(X, Res)
  => Res is X.
 
-% For convenience
 eval(Expr1, Expr2, L ... U) :-
     eval(Expr1, L),
     eval(Expr2, U).
 
+% Force atomic to interval
 interval_(atomic(A), Res, _Flags),
     Res = L...U
  => L = A,
@@ -30,13 +30,15 @@ interval_(L...U, Res, _Flags)
 interval_(Expr, Res, Flags),
     compound(Expr),
     compound_name_arguments(Expr, Name, Args),
-    int_hook(Name, Mask, Res, Opt),
+    int_hook(Name, Mask, Res0, Opt),
     option(evaluate(false), Opt, true),
-    compound_name_arguments(Mask, Fun, Args1),
-    maplist(instantiate, Args1, Args3),
-    maplist(=, Args, Args3)
- => compound_name_arguments(Goal, Fun, Args),
-    call(Goal, Res, Flags).
+    compound_name_arguments(Mask, Fun, Types),
+    maplist(instantiate, Types, Args1),
+    maplist(=, Args, Args1),
+    compound_name_arguments(Goal, Fun, Args),
+    findall(Res1, call(Goal, Res1, Flags), Sol),
+    maplist(instantiate(Res0), Sol)
+ => member(Res, Sol).
 
 % Evaluate arguments
 interval_(Expr, Res, Flags),
@@ -74,10 +76,12 @@ interval2_(Expr, Res, Flags),
     compound(Expr),
     compound_name_arguments(Expr, Name, Args),
     maplist(instantiate, Types, Args),
-    int_hook(Name, Mask, _Res0, _Opt),
+    int_hook(Name, Mask, Res0, _Opt),
     compound_name_arguments(Mask, Fun, Types),
-    compound_name_arguments(Goal, Fun, Args)
- => call(Goal, Res, Flags).
+    compound_name_arguments(Goal, Fun, Args),
+    findall(Res1, call(Goal, Res1, Flags), Sol),
+    maplist(instantiate(Res0), Sol)
+ => member(Res, Sol).
 
 % Special case: multiplication ([*, *], commutative)
 interval2_(Expr, Res, _Flags),
