@@ -209,6 +209,26 @@ test(not_available_nan) :-
     interval(available(0 / 0), Res),
     Res = false.
 
+test(available_ci_atomic) :-
+    interval(available(ci(5 + 1, 6 + 1)), Res),
+    Res = true.
+
+test(not_available_ci_atomic) :-
+    interval(available(ci(0 / 0, 1)), Res),
+    Res = false.
+
+test(available_ci_interval) :-
+    interval(available(ci(5...6 / 2...3, 5...6 / 1...2)), Res),
+    Res = true.
+
+test(available_ci_neginf) :-
+    interval(available(ci(5...6 / 2...3, 1.0Inf)), Res),
+    Res = true.
+
+test(available_ci_ninfpos) :-
+    interval(available(ci(-1.0Inf, 5...6 / 2...3)), Res),
+    Res = true.
+
 :- end_tests(available).
 
 :- begin_tests(equality).

@@ -116,6 +116,14 @@ avail2(atomic(A), Res),
    dif(Class, nan),
    eval(A, Res).
 
+avail2(atomic(A), Res),
+   A = 1.0Inf
+=> Res = A.
+
+avail2(atomic(A), Res),
+   A = -1.0Inf
+=> Res = A.
+
 avail2(atomic(A), Res)
 => eval(A, A1),
    avail2(A1, Res).
@@ -125,6 +133,14 @@ avail3(A ... B, Res, _Flags)
 => avail2(atomic(A), A1),
    avail2(atomic(B), B1),
    eval(A1, B1, _),
+   !,
+   Res = true;
+   Res = false.
+
+int_hook(available, avail4(ci), _, []).
+avail4(ci(A, B), Res, Flags)
+=> interval_(available(A), true, Flags),
+   interval_(available(B), true, Flags),
    !,
    Res = true;
    Res = false.
