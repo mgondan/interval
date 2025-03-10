@@ -51,13 +51,13 @@ pval(A, Res, Flags) :-
 % Bugs
 %
 % Forget parts of an expression
-int_hook(omit_left, left(_), _, [evaluate(false)]).
-left(A, Res, Flags) :-
+int_hook(omit_left, left(_, _), _, [evaluate(false)]).
+left(_Bug, A, Res, Flags) :-
     A =.. [_Op, _L, R],
     interval_(R, Res, Flags).
 
-int_hook(omit_right, right(_), _, [evaluate(false)]).
-right(A, Res, Flags) :-
+int_hook(omit_right, right(_, _), _, [evaluate(false)]).
+right(_Bug, A, Res, Flags) :-
     A =.. [_Op, L, _R],
     interval_(L, Res, Flags).
 
@@ -75,12 +75,12 @@ instead2(_Bug, Wrong, _Correct, _Correct0, Res, Flags) :-
 
 % Drop
 int_hook(drop_right, drop_right(_, _), _, [evaluate(false)]).
-drop_right(_Bug, A, Res, Flags) :-
-    right(A, Res, Flags).
+drop_right(Bug, A, Res, Flags) :-
+    right(Bug, A, Res, Flags).
 
 int_hook(drop_left, drop_left(_, _), _, [evaluate(false)]).
-drop_left(_Bug, A, Res, Flags) :-
-    left(A, Res, Flags).
+drop_left(Bug, A, Res, Flags) :-
+    left(Bug, A, Res, Flags).
 
 % add_left, add_right
 int_hook(add_right, add(_, _), _, [evaluate(false)]).

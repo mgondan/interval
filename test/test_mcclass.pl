@@ -88,27 +88,31 @@ test(pval_interval) :-
 :- begin_tests(bugs).
 
 test(omit_right_atomic) :-
+    Bug = bug1,
     A = 5,
     B = 4,
-    interval(omit_right(A - B), Res),
+    interval(omit_right(Bug, A - B), Res),
     Res = A.
 
 test(omit_right_interval) :-
+    Bug = bug1,
     A = 11...12,
     B = 20...21,
-    interval(omit_right(A - B), Res),
+    interval(omit_right(Bug, A - B), Res),
     Res = A.
 
 test(omit_left_atomic) :-
+    Bug = bug1,
     A = 5,
     B = 4,
-    interval(omit_left(A - B), Res),
+    interval(omit_left(Bug, A - B), Res),
     Res = B.
 
 test(omit_left_interval) :-
+    Bug = bug1,
     A = 11...12,
     B = 20...21,
-    interval(omit_left(A - B), Res),
+    interval(omit_left(Bug, A - B), Res),
     Res = B.
 
 test(omit) :-
