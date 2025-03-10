@@ -101,7 +101,7 @@ dot(A, B, Res, Flags) :-
 %
 int_hook(available, avail1(atomic), _, []).
 avail1(atomic(A), Res, _Flags) :-
-    avail2(atomic(A), Res),
+    avail2(atomic(A), _Res1),
     !,
     Res = true 
     ;   Res = false.
