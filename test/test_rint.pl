@@ -123,6 +123,10 @@ test(dnorm_z_mixed) :-
 
 :- begin_tests(t).
 
+test(pt_default_tail) :-
+    interval(pt(-0.5... -0.2, 5), Res),
+    equal(Res, 0.3191...0.4247).
+
 test(pt_lowertail_neg) :-
     interval(pt(-0.5... -0.2, 5, true), Res),
     equal(Res, 0.3191...0.4247).

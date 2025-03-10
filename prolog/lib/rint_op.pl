@@ -215,6 +215,7 @@ dnorm0(A...B, Res, Flags) :-
 %
 % t distribution
 %
+int_hook(pt, pt_(..., atomic), ..., []).
 int_hook(pt, pt(..., atomic, atomic), ..., []).
 int_hook(pt, pt(..., ..., atomic), ..., []).
 
@@ -229,6 +230,10 @@ mono(pt2/2, [-,+]).
 
 r_hook(pt3/2).
 mono(pt3/2, [-,-]).
+
+% default (lower tail)
+pt_(A, Df, Res, Flags) :-
+    pt(A, Df, atomic(true), Res, Flags).
 
 % lower tail
 pt(L...U, Df, atomic(true), Res, Flags) :-
