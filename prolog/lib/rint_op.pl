@@ -271,6 +271,10 @@ pt(L...U, Df, atomic(false), Res, Flags) :-
 r_hook(qt0/2).
 mono(qt0/2, [+,-]).
 
+int_hook(qt, qt1(atomic, atomic), atomic, []).
+qt1(atomic(P), atomic(Df), atomic(Res), _Flags) :-
+    eval_hook(r(qt(P, Df)), Res).
+
 int_hook(qt, qt(..., atomic), ..., []).
 int_hook(qt, qt(..., ...), ..., []).
 qt(P, Df, Res, Flags) :-
