@@ -291,6 +291,16 @@ test(ciexp) :-
     A1 = 2.7182...2.7183,
     B1 = 7.389...7.3891.
 
+test(onetailed_neginf) :-
+    A = 1...2,
+    interval(neginf(A), Res),
+    Res = ci(A, 1.0Inf).
+
+test(onetailed_ninfpos) :-
+    A = 1...2,
+    interval(ninfpos(A), Res),
+    Res = ci(-1.0Inf, A).
+
 :- end_tests(ci).
 
 :- begin_tests(pm).

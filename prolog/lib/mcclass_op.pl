@@ -195,6 +195,15 @@ pm(A, B, Res, Flags) :-
     interval_(A + B, B1, Flags),
     Res = ci(A1, B1).
 
+% Return a one-tailed confidence interval
+int_hook(neginf, neginf0(_), ci, []).
+neginf0(A, Res, _Flags) :-
+    Res = ci(A, 1.0Inf).
+
+int_hook(ninfpos, ninfpos0(_), ci, []).
+ninfpos0(A, Res, _Flags) :-
+    Res = ci(-1.0Inf, A).
+
 %
 % Equation sign: named arguments in R functions (leave name unchanged)
 %
