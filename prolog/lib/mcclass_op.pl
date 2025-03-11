@@ -16,18 +16,15 @@ plus2(A, B, Res, Flags) :-
 %
 % Fractions, i.e., numerator, line, and denominator
 %
-int_hook(frac, frac(_, _), _, []).
-frac(A, B, Res, Flags) :-
+int_hook(dfrac, frac0(_, _), _, []).
+int_hook(frac, frac0(_, _), _, []).
+frac0(A, B, Res, Flags) :-
     option(digits(Dig), Flags, _),
     interval_(round(A, atomic(Dig)), A1, Flags),
     interval_(round(B, atomic(Dig)), B1, Flags),
     !,
-    interval(A1 / B1, Res, Flags).
- 
-int_hook(dfrac, dfrac(_, _), _, []).
-dfrac(A, B, Res, Flags) :-
-    interval(frac(A, B), Res, Flags).
-
+    interval_(A1 / B1, L...U, Flags),
+    return(L, U, Res).
 %
 % Reasonable number of digits
 %
