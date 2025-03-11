@@ -1,4 +1,4 @@
-:- module(cleaning, [clean/2, unwrap/2, unwrap_r/2, op(150, xfx, ...)]).
+:- module(cleaning, [clean/2, unwrap/2, return/3, unwrap_r/2, op(150, xfx, ...)]).
 
 clean(atomic(A), Res)
  => Res = atomic(A).
@@ -40,3 +40,10 @@ unwrap_r_(A, _Res),
 unwrap_r_(A, Res),
     compound(A)
  => mapargs(unwrap_r_, A, Res).
+
+ return(L, U, Res),
+    L =:= U
+ => Res = atomic(L).
+
+return(L, U, Res)
+ => Res = L...U. 

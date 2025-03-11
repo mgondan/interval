@@ -103,8 +103,8 @@ interval2_(Expr, Res, _Flags),
     findall(R, lower(Dir, Name, Args, R), Lower),
     min_list(Lower, L),
     findall(R, upper(Dir, Name, Args, R), Upper),
-    max_list(Upper, U),
-    Res = L...U.
+    max_list(Upper, U),  
+    return(L, U, Res).
 
 %
 % Default case
