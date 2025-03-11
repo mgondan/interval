@@ -3,14 +3,6 @@ interval_(atomic(A), Res, _Flags),
  => eval(A, Res1),
     clean(Res1, Res).
 
-interval_(A, Res, _Flags),
-    A = 1.0Inf
- => Res = A.
-
-interval_(A, Res, _Flags),
-    A = -1.0Inf
- => Res = A.
-
 interval_(C, Res, Flags),
     C = ci(A, B)
  => interval_(A, A1, Flags),
