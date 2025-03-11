@@ -147,7 +147,13 @@ test(pt_df_interval) :-
     interval(pt(0.5...1, 2...5, false), Res),
     equal(Res, 0.1816...0.3334).
 
-test(qt) :-
+test(qt_atomic) :-
+    interval(qt(0.4, 5), Res),
+    interval(round(Res, 4), L...U),
+    L = -0.2672,
+    U = -0.2671.
+    
+test(qt_interval) :-
     interval(qt(0.4...0.6, 5), Res),
     equal(Res, -0.2672...0.2672).
 

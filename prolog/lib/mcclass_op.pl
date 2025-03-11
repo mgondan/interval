@@ -16,18 +16,15 @@ plus2(A, B, Res, Flags) :-
 %
 % Fractions, i.e., numerator, line, and denominator
 %
-int_hook(frac, frac(_, _), _, []).
-frac(A, B, Res, Flags) :-
+int_hook(dfrac, frac0(_, _), _, []).
+int_hook(frac, frac0(_, _), _, []).
+frac0(A, B, Res, Flags) :-
     option(digits(Dig), Flags, _),
     interval_(round(A, atomic(Dig)), A1, Flags),
     interval_(round(B, atomic(Dig)), B1, Flags),
     !,
-    interval(A1 / B1, Res, Flags).
- 
-int_hook(dfrac, dfrac(_, _), _, []).
-dfrac(A, B, Res, Flags) :-
-    interval(frac(A, B), Res, Flags).
-
+    interval_(A1 / B1, L...U, Flags),
+    return(L, U, Res).
 %
 % Reasonable number of digits
 %
@@ -129,6 +126,14 @@ avail3(A ... B, Res, _Flags)
    Res = true;
    Res = false.
 
+int_hook(available, avail4(ci), _, []).
+avail4(ci(A, B), Res, Flags)
+=> interval_(available(A), true, Flags),
+   interval_(available(B), true, Flags),
+   !,
+   Res = true;
+   Res = false.
+
 int_hook(=@=, equal1(_, _), _, []).
 equal1(A, B, Res, Flags) :-
     interval_(A =:= B, Res, Flags).
@@ -178,6 +183,15 @@ pm(A, B, Res, Flags) :-
     interval_(A - B, A1, Flags),
     interval_(A + B, B1, Flags),
     Res = ci(A1, B1).
+
+% Return a one-tailed confidence interval
+int_hook(neginf, neginf0(_), ci, []).
+neginf0(A, Res, _Flags) :-
+    Res = ci(A, atomic(1.0Inf)).
+
+int_hook(ninfpos, ninfpos0(_), ci, []).
+ninfpos0(A, Res, _Flags) :-
+    Res = ci(atomic(-1.0Inf), A).
 
 %
 % Equation sign: named arguments in R functions (leave name unchanged)

@@ -209,6 +209,26 @@ test(not_available_nan) :-
     interval(available(0 / 0), Res),
     Res = false.
 
+test(available_ci_atomic) :-
+    interval(available(ci(5 + 1, 6 + 1)), Res),
+    Res = true.
+
+test(not_available_ci_atomic) :-
+    interval(available(ci(0 / 0, 1)), Res),
+    Res = false.
+
+test(available_ci_interval) :-
+    interval(available(ci(5...6 / 2...3, 5...6 / 1...2)), Res),
+    Res = true.
+
+test(available_ci_neginf) :-
+    interval(available(ci(5...6 / 2...3, 1.0Inf)), Res),
+    Res = true.
+
+test(available_ci_ninfpos) :-
+    interval(available(ci(-1.0Inf, 5...6 / 2...3)), Res),
+    Res = true.
+
 :- end_tests(available).
 
 :- begin_tests(equality).
@@ -270,6 +290,16 @@ test(ciexp) :-
     test_mcclass:equal(B, B1),
     A1 = 2.7182...2.7183,
     B1 = 7.389...7.3891.
+
+test(onetailed_neginf) :-
+    A = 1...2,
+    interval(neginf(A), Res),
+    Res = ci(A, 1.0Inf).
+
+test(onetailed_ninfpos) :-
+    A = 1...2,
+    interval(ninfpos(A), Res),
+    Res = ci(-1.0Inf, A).
 
 :- end_tests(ci).
 
