@@ -115,13 +115,6 @@ interval2_(_, _, _Flags)
 interval_(_, _, _Flags)
  => fail.
 
-return(L, U, Res),
-    L =:= U
- => Res = atomic(L).
-
-return(L, U, Res)
- => Res = L...U. 
-
 lower(Dir, Name, Args, Res) :-
     maplist(lower, Dir, Args, Lower),
     Expr =.. [Name | Lower],
