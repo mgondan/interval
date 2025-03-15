@@ -138,28 +138,56 @@ test(pnorm5) :-
     equal(Res, 0.7933...0.8644).
 
 test(qnorm1) :-
-    interval(qnorm(0.6...0.7, 100...101, 10...11), Res),
-    equal(Res, 102.5334...106.7685).
-
-test(qnorm2) :-
-    interval(qnorm(0.6...0.7), Res),
-    equal(Res, 0.2533...0.5245).
-
-test(qnorm3) :-
     interval(qnorm(0.6), Res),
     interval(round(Res, 4), L...U),
     L = 0.2533,
     U = 0.2534.
 
-test(dnorm_z_neg) :-
+test(qnorm2) :-
+    interval(qnorm(0.6, 100, 10), Res),
+    interval(round(Res, 4), L...U),
+    L = 102.5334,
+    U = 102.5335.
+
+test(qnorm3) :-
+    interval(qnorm(0.6, 100, 10, false), Res),
+    interval(round(Res, 4), L...U),
+    L = 97.4665,
+    U = 97.4666.
+
+test(qnorm4) :-
+    interval(qnorm(0.6...0.7), Res),
+    equal(Res, 0.2533...0.5245).
+
+test(qnorm5) :-
+    interval(qnorm(0.6...0.7, 100...101, 10...11), Res),
+    equal(Res, 102.5334...106.7685).
+
+test(qnorm6) :-
+    interval(qnorm(0.6...0.7, 100...101, 10...11, false), Res),
+    equal(Res, 94.2315...98.4666).
+
+test(dnorm1) :-
+    interval(dnorm(0.5), Res),
+    equal(Res, 0.3520...0.3521).
+
+test(dnorm2) :-
+    interval(dnorm(90, 100, 10), Res),
+    equal(Res, 0.0241...0.0242).
+
+test(dnorm3) :-
+    interval(dnorm(0.5...0.6), Res),
+    equal(Res, 0.3332...0.3521).
+
+test(dnorm4) :-
     interval(dnorm(90...91, 100...101, 10...11), Res),
     equal(Res, 0.0198...0.0286).
 
-test(dnorm_z_pos) :-
+test(dnorm5) :-
     interval(dnorm(110...111, 100...101, 10...11), Res),
     equal(Res, 0.0198...0.0286).
 
-test(dnorm_z_mixed) :-
+test(dnorm6) :-
     interval(dnorm(99...102, 100...101, 10...11), Res),
     equal(Res, 0.0355...0.0399).
 

@@ -222,48 +222,89 @@ pnorm6(Z, atomic(false), Res, Flags) :-
 r_hook(qnorm0/1).
 mono(qnorm0/1, [+]).
 
-int_hook(qnorm, qnorm(..., ..., ...), ..., []).
-qnorm(P, Mu, Sigma, Res, Flags) :-
-     interval_(qnorm0(P), Z, Flags),
-     interval_(Mu + Z * Sigma, Res, Flags).
+r_hook(qnorm1/1).
+mono(qnorm1/1, [-]).
 
-int_hook(qnorm, qnorm1(...), ..., []).
-qnorm1(P, Res, Flags) :-
+% Atomic, Mu = 0, Sd = 1, lower tail
+int_hook(qnorm, qnorm_(atomic), atomic, []).
+qnorm_(atomic(P), atomic(Res), _Flags) :-
+    eval(r(qnorm(P)), Res).
+
+% Atomic, lower tail
+int_hook(qnorm, qnorm_(atomic, atomic, atomic), atomic, []).
+qnorm_(atomic(P), atomic(Mu), atomic(Sigma), atomic(Res), _Flags) :-
+    eval(r(qnorm(P, Mu, Sigma)), Res).
+
+% Atomic
+int_hook(qnorm, qnorm_(atomic, atomic, atomic, atomic), atomic, []).
+qnorm_(atomic(P), atomic(Mu), atomic(Sigma), atomic(Tail), atomic(Res), _Flags) :-
+    eval(r(qnorm(P, Mu, Sigma, Tail)), Res).
+
+% Interval, Mu = 0, Sd = 1, lower tail
+int_hook(qnorm, qnorm2(...), ..., []).
+qnorm2(P, Res, Flags) :-
      interval_(qnorm0(P), Res, Flags).
 
-int_hook(qnorm, qnorm2(atomic), atomic, []).
-qnorm2(atomic(P), atomic(Res), _Flags) :-
-     eval(qnorm0(P), Res).
+% Interval, lower tail  
+int_hook(qnorm, qnorm3(..., ..., ...), ..., []).
+qnorm3(P, Mu, Sigma, Res, Flags) :-
+    qnorm5(P, Mu, Sigma, atomic(true), Res, Flags).
 
+% Interval
+int_hook(qnorm, qnorm4(..., ..., ..., atomic), ..., []).
+qnorm4(P, Mu, Sigma, Tail, Res, Flags) :-
+    qnorm5(P, Mu, Sigma, Tail, Res, Flags).
+
+qnorm5(P, Mu, Sigma, atomic(true), Res, Flags) :-
+    interval_(qnorm0(P), Z, Flags),
+    interval_(Mu + Z * Sigma, Res, Flags).
+
+qnorm5(P, Mu, Sigma, atomic(false), Res, Flags) :-
+    interval_(qnorm1(P), Z, Flags),
+    interval_(Mu + Z * Sigma, Res, Flags).
 %
 % Density
 %
+r_hook(dnorm0/1).
+mono(dnorm0/1, [+]).
+
 r_hook(dnorm1/1).
-mono(dnorm1/1, [+]).
+mono(dnorm1/1, [-]).
 
-r_hook(dnorm2/1).
-mono(dnorm2/1, [-]).
+% Atomic, Mu = 0, Sd = 1
+int_hook(dnorm, dnorm_(atomic), atomic, []).
+dnorm_(atomic(A), atomic(Res), _Flags) :-
+    eval(r(dnorm(A)), Res).
 
-int_hook(dnorm, dnorm(..., ..., ...), ..., []).
-dnorm(X, Mu, Sigma, Res, Flags) :-
+% Atomic
+int_hook(dnorm, dnorm_(atomic, atomic, atomic), atomic, []).
+dnorm_(atomic(A), atomic(Mu), atomic(Sigma), atomic(Res), _Flags) :-
+    eval(r(dnorm(A, Mu, Sigma)), Res).
+
+% Interval, Mu = 0, Sd = 1 
+int_hook(dnorm, dnorm2(...), ..., []).
+
+% Interval 
+int_hook(dnorm, dnorm3(..., ..., ...), ..., []).
+dnorm3(X, Mu, Sigma, Res, Flags) :-
     interval_((X - Mu)/Sigma, Z, Flags),
-    interval_(atomic(1)/Sigma * dnorm0(Z), Res, Flags).
+    dnorm2(Z, Res0, Flags),
+    interval_(atomic(1)/Sigma * Res0, Res, Flags).
 
-int_hook(dnorm0, dnorm0(...), ..., []).
-dnorm0(A...B, Res, Flags) :-
+dnorm2(A...B, Res, Flags) :-
     B =< 0,
+    !,
+    interval_(dnorm0(A...B), Res, Flags).
+
+dnorm2(A...B, Res, Flags) :-
+    A >= 0,
     !,
     interval_(dnorm1(A...B), Res, Flags).
 
-dnorm0(A...B, Res, Flags) :-
-    A >= 0,
-    !,
-    interval_(dnorm2(A...B), Res, Flags).
-
 % mixed
-dnorm0(A...B, Res, Flags) :-
+dnorm2(A...B, Res, Flags) :-
     Max is max(abs(A), B),
-    interval_(dnorm2(0...Max), Res, Flags).
+    interval_(dnorm1(0...Max), Res, Flags).
 
 %
 % t distribution

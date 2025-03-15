@@ -39,7 +39,14 @@ pnorm1 <- function(...){
   pnorm(..., lower.tail=FALSE)
 }
 
-qnorm0 <- qnorm
+qnorm0 <- function(...){
+  qnorm(..., lower.tail=TRUE)
+}
+
+qnorm1 <- function(...){
+  qnorm(..., lower.tail=FALSE)
+}
+
 dnorm0 <- dnorm1 <- dnorm2 <- dnorm
 
 pt0 <- function(...){
