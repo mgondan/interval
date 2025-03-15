@@ -35,11 +35,11 @@ pnorm0 <- pnorm
 qnorm0 <- qnorm
 dnorm0 <- dnorm1 <- dnorm2 <- dnorm
 
-pt0 <- pt1 <- function(...){
+pt0 <- function(...){
   pt(..., lower.tail=TRUE)
 }
 
-pt2 <- pt3 <- function(...){
+pt1 <- function(...){
   pt(..., lower.tail=FALSE)
 }
 

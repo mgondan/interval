@@ -215,55 +215,29 @@ dnorm0(A...B, Res, Flags) :-
 %
 % t distribution
 %
-int_hook(pt, pt_(..., atomic), ..., []).
-int_hook(pt, pt(..., atomic, atomic), ..., []).
-int_hook(pt, pt(..., ..., atomic), ..., []).
-
 r_hook(pt0/2).
-mono(pt0/2, [+,-]).
+mono(pt0/2, [+,+]).
 
 r_hook(pt1/2).
-mono(pt1/2, [+,+]).
-
-r_hook(pt2/2).
-mono(pt2/2, [-,+]).
-
-r_hook(pt3/2).
-mono(pt3/2, [-,-]).
+mono(pt1/2, [-,-]).
 
 % default (lower tail)
+int_hook(pt, pt_(..., atomic), ..., []).
 pt_(A, Df, Res, Flags) :-
     pt(A, Df, atomic(true), Res, Flags).
 
+int_hook(pt, pt(..., atomic, atomic), ..., []).
+int_hook(pt, pt(..., ..., atomic), ..., []).
+
 % lower tail
 pt(L...U, Df, atomic(true), Res, Flags) :-
-    U =< 0,
     !,
     interval_(pt0(L...U, Df), Res, Flags).
 
-pt(L...U, Df, atomic(true), Res, Flags) :-
-    L >= 0,
-    !,
-    interval_(pt1(L...U, Df), Res, Flags).
-
-pt(L...U, Df, atomic(true), Res, Flags) :-
-    Max is max(abs(L), U), 
-    interval_(pt1(0...Max, Df), Res, Flags).
-
 % upper tail
 pt(L...U, Df, atomic(false), Res, Flags) :-
-    U =< 0,
     !, 
-    interval_(pt2(L...U, Df), Res, Flags).
-
-pt(L...U, Df, atomic(false), Res, Flags) :-
-    L >= 0,
-    !, 
-    interval_(pt3(L...U, Df), Res, Flags).
-
-pt(L...U, Df, atomic(false), Res, Flags) :-
-    Max is max(abs(L), U), 
-    interval_(pt3(0...Max, Df), Res, Flags).
+    interval_(pt1(L...U, Df), Res, Flags).
 
 %
 % Quantile function
