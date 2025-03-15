@@ -46,32 +46,60 @@ test(assign2) :-
 :- begin_tests(binom).
 
 test(dbinom1) :-
+    interval(dbinom(11, 20, 0.6), Res),
+    equal(Res, 0.1597...0.1598).
+
+test(dbinom2) :-
+    interval(dbinom(11...12, 20, 0.6...0.7), Res),
+    equal(Res, 0.0653...0.1798).
+
+test(dbinom3) :-
+    interval(dbinom(11...12, 20, 0.6), Res),
+    equal(Res, 0.1597...0.1798).
+
+test(dbinom4) :-
     interval(dbinom(11...12, 20...21, 0.6...0.7), Res),
     equal(Res, 0.0411...0.1798).
 
 % left to X / N
-test(dbinom2) :- 
+test(dbinom5) :- 
     interval(dbinom(10...11, 20...21, 0.6...0.7), Res),
     equal(Res, 0.0176...0.1598).
 
 % right to X / N
-test(dbinom3) :- 
+test(dbinom6) :- 
     interval(dbinom(15...16, 20...21, 0.6...0.7), Res),
     equal(Res, 0.0349...0.1879).
 
-test(qbinom_lowertail) :-
-    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, true), Res),
+test(qbinom1) :-
+    interval(qbinom(0.6, 20, 0.3), Res),
+    Res = 6.0.
+
+test(qbinom2) :-
+    interval(qbinom(0.6, 20, 0.3, false), Res),
+    Res = 5.0.
+
+test(qbinom3) :-
+    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7), Res),
     equal(Res, 12...15).
 
-test(qbinom_uppertail) :-
+test(qbinom4) :-
     interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, false), Res),
     equal(Res, 11...15).
 
-test(pbinom_lowertail) :-
-    interval(pbinom(10, 20, 0.6...0.7, true), Res),
+test(pbinom1) :-
+    interval(pbinom(10, 20, 0.6), Res),
+    equal(Res, 0.2446...0.2447).
+
+test(pbinom2) :-
+    interval(pbinom(10, 20, 0.6, false), Res),
+    equal(Res, 0.7553...0.7554).
+
+test(pbinom3) :-
+    interval(pbinom(10, 20, 0.6...0.7), Res),
     equal(Res, 0.0479...0.2447).
 
-test(pbinom_uppertail) :-
+test(pbinom4) :-
     interval(pbinom(10, 20, 0.6...0.7, false), Res),
     equal(Res, 0.7553...0.9521).
 
