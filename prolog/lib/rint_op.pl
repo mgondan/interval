@@ -49,7 +49,7 @@ eval_hook(Expr, Res) :-
 %
 int_hook(r, r1(atomic), _, [evaluate(false)]).
 r1(atomic(A), Res, _Flags) :-
-    eval_hook(r(A), Res1),
+    eval(r(A), Res1),
     !,
     clean(Res1, Res).
 
@@ -61,7 +61,7 @@ r2(A, Res, Flags) :-
     compound_name_arguments(A1, Name, Args2),
     unwrap_r(A1, A2),
     !,
-    eval_hook(r(A2), Res1),
+    eval(r(A2), Res1),
     clean(Res1, Res).
 
 r2(A, Res, Flags) :-
@@ -156,17 +156,17 @@ mono(pnorm1/1, [-]).
 % Atomic, Mu = 0, Sd = 1, lower tail
 int_hook(pnorm, pnorm_(atomic), atomic, []).
 pnorm_(atomic(A), atomic(Res), _Flags) :-
-    eval_hook(r(pnorm(A)), Res).
+    eval(r(pnorm(A)), Res).
 
 % Atomic, lower tail
 int_hook(pnorm, pnorm_(atomic, atomic, atomic), atomic, []).
 pnorm_(atomic(A), atomic(Mu), atomic(Sigma), atomic(Res),_Flags) :-
-    eval_hook(r(pnorm(A, Mu, Sigma)), Res).
+    eval(r(pnorm(A, Mu, Sigma)), Res).
 
 % Atomic
 int_hook(pnorm, pnorm_(atomic, atomic, atomic, atomic), atomic, []).
 pnorm_(atomic(A), atomic(Mu), atomic(Sigma), atomic(Tail), atomic(Res), _Flags) :-
-    eval_hook(r(pnorm(A, Mu, Sigma, Tail)), Res).
+    eval(r(pnorm(A, Mu, Sigma, Tail)), Res).
 
 % Interval, Mu = 0, Sd = 1, lower tail
 int_hook(pnorm, pnorm2(...), ..., []).
@@ -274,7 +274,7 @@ mono(qt0/2, [+,-]).
 
 int_hook(qt, qt1(atomic, atomic), atomic, []).
 qt1(atomic(P), atomic(Df), atomic(Res), _Flags) :-
-    eval_hook(r(qt(P, Df)), Res).
+    eval(r(qt(P, Df)), Res).
 
 int_hook(qt, qt(..., atomic), ..., []).
 int_hook(qt, qt(..., ...), ..., []).
@@ -400,9 +400,9 @@ assign(Var, A, Res, Flags) :-
     assign_(Var, A1, Res).
 
 assign_(atomic(Var), L...U, Res) :-
-    eval_hook(Var <- call("...", L, U), Res),
+    eval(Var <- call("...", L, U), Res),
     !.
 
 assign_(atomic(Var), atomic(A), Res) :-
-    eval_hook(Var <- A, Res1),
+    eval(Var <- A, Res1),
     clean(Res1, Res).
