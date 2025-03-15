@@ -98,41 +98,41 @@ dot(A, B, Res, Flags) :-
 %
 int_hook(available, avail1(atomic), _, []).
 avail1(atomic(A), Res, _Flags) :-
-    avail2(atomic(A), _Res1),
-    !,
-    Res = true 
-    ;   Res = false.
+    (  avail2(atomic(A), _Res1)
+    -> Res = true 
+    ;  Res = false
+    ).
 
 avail2(atomic(A), Res),
-   integer(A)
-=> eval(A, Res).
+    integer(A)
+ => eval(A, Res).
 
 avail2(atomic(A), Res),
-   number(A)
-=> float_class(A, Class),
-   dif(Class, nan),
-   eval(A, Res).
+    number(A)
+ => float_class(A, Class),
+    dif(Class, nan),
+    eval(A, Res).
 
 avail2(atomic(A), Res)
-=> eval(A, A1),
-   avail2(A1, Res).
+ => eval(A, A1),
+    avail2(A1, Res).
 
 int_hook(available, avail3(...), _, []).
 avail3(A ... B, Res, _Flags)
-=> avail2(atomic(A), A1),
-   avail2(atomic(B), B1),
-   eval(A1, B1, _),
-   !,
-   Res = true;
-   Res = false.
+ => avail2(atomic(A), A1),
+    avail2(atomic(B), B1),
+    (  eval(A1, B1, _)
+    -> Res = true
+    ;  Res = false
+    ).
 
 int_hook(available, avail4(ci), _, []).
 avail4(ci(A, B), Res, Flags)
-=> interval_(available(A), true, Flags),
-   interval_(available(B), true, Flags),
-   !,
-   Res = true;
-   Res = false.
+ => ( interval_(available(A), true, Flags),
+      interval_(available(B), true, Flags)
+    -> Res = true
+    ;  Res = false
+    ). 
 
 int_hook(=@=, equal1(_, _), _, []).
 equal1(A, B, Res, Flags) :-
