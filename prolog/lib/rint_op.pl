@@ -150,18 +150,45 @@ mono(dbinom1/3, [-, +, +]).
 r_hook(pnorm0/1).
 mono(pnorm0/1, [+]).
 
-int_hook(pnorm, pnorm(..., ..., ...), ..., []).
-pnorm(X, Mu, Sigma, Res, Flags) :-
-     interval_((X - Mu)/Sigma, Z, Flags),
+r_hook(pnorm1/1).
+mono(pnorm1/1, [-]).
+
+% Atomic, Mu = 0, Sd = 1, lower tail
+int_hook(pnorm, pnorm_(atomic), atomic, []).
+pnorm_(atomic(A), atomic(Res), _Flags) :-
+    eval_hook(r(pnorm(A)), Res).
+
+% Atomic, lower tail
+int_hook(pnorm, pnorm_(atomic, atomic, atomic), atomic, []).
+pnorm_(atomic(A), atomic(Mu), atomic(Sigma), atomic(Res),_Flags) :-
+    eval_hook(r(pnorm(A, Mu, Sigma)), Res).
+
+% Atomic
+int_hook(pnorm, pnorm_(atomic, atomic, atomic, atomic), atomic, []).
+pnorm_(atomic(A), atomic(Mu), atomic(Sigma), atomic(Tail), atomic(Res), _Flags) :-
+    eval_hook(r(pnorm(A, Mu, Sigma, Tail)), Res).
+
+% Interval, Mu = 0, Sd = 1, lower tail
+int_hook(pnorm, pnorm2(...), ..., []).
+pnorm2(A, Res, Flags) :-
+    pnorm6(A, atomic(true), Res, Flags).
+
+% Interval, lower tail
+int_hook(pnorm, pnorm4(..., ..., ...), ..., []).
+pnorm4(A, Mu, Sigma, Res, Flags) :-
+    pnorm5(A, Mu, Sigma, atomic(true), Res, Flags).
+
+% Interval
+int_hook(pnorm, pnorm5(..., ..., ..., atomic), ..., []).
+pnorm5(A, Mu, Sigma, Tail, Res, Flags) :-
+     interval_((A - Mu)/Sigma, Z, Flags),
+     pnorm6(Z, Tail, Res, Flags).
+
+pnorm6(Z, atomic(true), Res, Flags) :-
      interval_(pnorm0(Z), Res, Flags).
 
-int_hook(pnorm, pnorm1(...), ..., []).
-pnorm1(Z, Res, Flags) :-
-     interval_(pnorm0(Z), Res, Flags).
-
-int_hook(pnorm, pnorm2(atomic), atomic, []).
-pnorm2(atomic(Z), atomic(Res), _Flags) :-
-     eval(pnorm0(Z), Res).
+pnorm6(Z, atomic(false), Res, Flags) :-
+     interval_(pnorm1(Z), Res, Flags).    
 
 %
 % Quantile function

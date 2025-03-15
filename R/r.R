@@ -31,7 +31,14 @@ dbinom2 = function(k1, k2, N1, N2, p1, p2)
 }
 
 # pnorm/qnorm with 1 argument z
-pnorm0 <- pnorm
+pnorm0 <- function(...){
+  pnorm(..., lower.tail=TRUE)
+}
+
+pnorm1 <- function(...){
+  pnorm(..., lower.tail=FALSE)
+}
+
 qnorm0 <- qnorm
 dnorm0 <- dnorm1 <- dnorm2 <- dnorm
 

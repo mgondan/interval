@@ -80,18 +80,34 @@ test(pbinom_uppertail) :-
 :- begin_tests(normal).
 
 test(pnorm1) :-
-    interval(pnorm(90...91, 100...101, 10...11), Res),
-    equal(Res, 0.1356...0.2067).
-
-test(pnorm2) :-
-    interval(pnorm(0.5...0.7), Res),
-    equal(Res, 0.6914...0.7581).
-
-test(pnorm3) :-
     interval(pnorm(0.5), Res),
     interval(round(Res, 4), L...U),
     L = 0.6914,
     U = 0.6915.
+
+test(pnorm2) :-
+    interval(pnorm(90, 100, 10), Res),
+    interval(round(Res, 4), L...U),
+    L = 0.1586,
+    U = 0.1587.
+
+test(pnorm3) :-
+    interval(pnorm(90, 100, 10, false), Res),
+    interval(round(Res, 4), L...U),
+    L = 0.8413,
+    U = 0.8414.
+
+test(pnorm4) :-
+    interval(pnorm(0.5...0.7), Res),
+    equal(Res, 0.6914...0.7581).
+
+test(pnorm5) :-
+    interval(pnorm(90...91, 100...101, 10...11), Res),
+    equal(Res, 0.1356...0.2067).
+
+test(pnorm5) :-
+    interval(pnorm(90...91, 100...101, 10...11, false), Res),
+    equal(Res, 0.7933...0.8644).
 
 test(qnorm1) :-
     interval(qnorm(0.6...0.7, 100...101, 10...11), Res),
