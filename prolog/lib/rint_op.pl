@@ -70,16 +70,28 @@ r2(A, Res, Flags) :-
 %
 % Binomial distribution
 %
+int_hook(pbinom, pbinom_(atomic, atomic, atomic), atomic, []).
+pbinom_(atomic(X), atomic(N), atomic(P),atomic(Res), _Flags) :-
+    eval(r(pbinom(X, N, P)), Res).
+
+int_hook(pbinom, pbinom_(atomic, atomic, atomic, atomic), atomic, []).
+pbinom_(atomic(X), atomic(N), atomic(P), atomic(Tail), atomic(Res), _Flags) :-
+    eval(r(pbinom(X, N, P, Tail)), Res).
+
+int_hook(pbinom, pbinom(atomic, atomic, ...), ..., []).
+pbinom(X, N, P, Res, Flags) :-
+    pbinom(X, N, P, atomic(true), Res, Flags).
+
 int_hook(pbinom, pbinom(atomic, atomic, ..., atomic), ..., []).
 
 % lower tail
-pbinom(atomic(X), atomic(N), P, atomic(true), Res, Flags) :-
+pbinom(X, N, P, atomic(true), Res, Flags) :-
     !,
-    interval_(pbinom0(atomic(X), atomic(N), P), Res, Flags).
+    interval_(pbinom0(X, N, P), Res, Flags).
 
 % upper tail
-pbinom(atomic(X), atomic(N), P, atomic(false), Res, Flags) :-
-    interval_(pbinom1(atomic(X), atomic(N), P), Res, Flags).
+pbinom(X, N, P, atomic(false), Res, Flags) :-
+    interval_(pbinom1(X, N, P), Res, Flags).
 
 r_hook(pbinom0/3).
 mono(pbinom0/3, [+, -, -]).
@@ -90,8 +102,19 @@ mono(pbinom1/3, [-, +, +]).
 %
 % Quantile function
 %
-int_hook(qbinom, qbinom(..., atomic, ..., atomic), ..., []).
-int_hook(qbinom, qbinom(..., ..., ..., atomic), ..., []).
+int_hook(qbinom, qbinom_(atomic, atomic, atomic), atomic, []).
+qbinom_(atomic(Alpha), atomic(N), atomic(P), atomic(Res), _Flags) :-
+    eval(r(qbinom(Alpha, N, P)), Res).
+
+int_hook(qbinom, qbinom_(atomic, atomic, atomic, atomic), atomic, []).
+qbinom_(atomic(Alpha), atomic(N), atomic(P), atomic(Tail), atomic(Res), _Flags) :-
+    eval(r(qbinom(Alpha, N, P, Tail)), Res).
+
+int_hook(qbinom, qbinom2(..., _, ...), ..., []).
+qbinom2(Alpha, N, P, Res, Flags) :-
+    qbinom(Alpha, N, P, atomic(true), Res, Flags).
+
+int_hook(qbinom, qbinom(..., _, ..., atomic), ..., []).
 
 % lower tail
 qbinom(Alpha, N, P, atomic(true), Res, Flags) :-
@@ -111,16 +134,19 @@ mono(qbinom1/3, [-, +, +]).
 %
 % Density
 %
-int_hook(dbinom, dbinom(..., atomic, atomic), ..., []).
-int_hook(dbinom, dbinom(..., atomic, ...), ..., []).
-int_hook(dbinom, dbinom(..., ..., ...), ..., []).
+int_hook(dbinom, dbinom_(atomic, atomic, atomic), atomic, []).
+dbinom_(atomic(X), atomic(N), atomic(P), atomic(Res), _Flags) :-
+    eval(r(dbinom(X, N, P)), Res).
 
-dbinom(X1...X2, atomic(N), P1...P2, Res, Flags) :-
+int_hook(dbinom, dbinom3(..., atomic, ...), ..., []).
+dbinom3(X1...X2, atomic(N), P1...P2, Res, Flags) :-
     dbinom(X1...X2, N...N, P1...P2, Res, Flags).
 
-dbinom(X1...X2, atomic(N), atomic(P), Res, Flags) :-
+int_hook(dbinom, dbinom4(..., atomic, atomic), ..., []).
+dbinom4(X1...X2, atomic(N), atomic(P), Res, Flags) :-
     dbinom(X1...X2, N...N, P...P, Res, Flags).
 
+int_hook(dbinom, dbinom(..., ..., ...), ..., []).
 % left to X / N
 dbinom(X1...X2, N1...N2, P1...P2, Res, Flags) :-
     X2 < N1 * P1,
