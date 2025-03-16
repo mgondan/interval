@@ -238,3 +238,13 @@ or(A, B, Res, Flags) :-
 int_hook('{}', curly(_), _, []).
 curly(A, Res, Flags) :-
     interval_(A, Res, Flags).
+
+%
+% Upper tail, lower tail, both tails
+%
+% dist/2 just returns the first argument. It is needed for mathematical
+% rendering expressions like P_T(X >= x; df=n-1) via mathml.
+%
+int_hook(dist, dist(_, atomic), _, []).
+dist(X, _, Res, Flags) :-
+    interval_(X, Res, Flags).
