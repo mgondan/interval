@@ -349,13 +349,34 @@ pt(L...U, Df, atomic(false), Res, Flags) :-
 r_hook(qt0/2).
 mono(qt0/2, [+,-]).
 
+r_hook(qt1/2).
+mono(qt1/2, [-,+]).
+
+% Atomic, lower tail
 int_hook(qt, qt_(atomic, atomic), atomic, []).
 qt_(atomic(P), atomic(Df), atomic(Res), _Flags) :-
     eval(r(qt(P, Df)), Res).
 
-int_hook(qt, qt(..., _), ..., []).
-qt(P, Df, Res, Flags) :-
+% Atomic
+int_hook(qt, qt_(atomic, atomic, atomic), atomic, []).
+qt_(atomic(P), atomic(Df), atomic(Tail), atomic(Res), _Flags) :-
+    eval(r(qt(P, Df, 'lower.tail'=Tail)), Res).
+
+% Interval, lower tail
+int_hook(qt, qt2(..., _), ..., []).
+qt2(P, Df, Res, Flags) :-
+    qt(P, Df, atomic(true), Res, Flags).
+
+% Interval
+int_hook(qt, qt(..., _, atomic), ..., []).
+
+% lower tail
+qt(P, Df, atomic(true), Res, Flags) :-
     interval_(qt0(P, Df), Res, Flags).
+
+% upper tail
+qt(P, Df, atomic(false), Res, Flags) :-
+    interval_(qt1(P, Df), Res, Flags).
 
 %
 % Density

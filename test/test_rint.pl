@@ -221,15 +221,21 @@ test(pt6) :-
 
 test(qt1) :-
     interval(qt(0.4, 5), Res),
-    interval(round(Res, 4), L...U),
-    L = -0.2672,
-    U = -0.2671.
-    
-test(qt2) :-
-    interval(qt(0.4...0.6, 5), Res),
-    equal(Res, -0.2672...0.2672).
+    interval(round(Res, 4), -0.2672... -0.2671).
 
+test(qt2) :-
+    interval(qt(0.4, 5, false), Res),
+    interval(round(Res, 4), 0.2671...0.2672).
+    
 test(qt3) :-
+    interval(qt(0.4...0.7, 5), Res),
+    equal(Res, -0.2672...0.5595).
+
+test(qt4) :-
+    interval(qt(0.4...0.7, 5, false), Res),
+    equal(Res, -0.5595...0.2672).
+
+test(qt5) :-
     interval(qt(0.4...0.6, 2...5), Res),
     equal(Res, -0.2672...0.2887).
 
@@ -305,7 +311,7 @@ test(dchisq4) :-
     interval(dchisq(1.3...1.4, 3), Res),
     equal(Res, 0.2344...0.2375).
 
-test(dchisq_df_mixed) :-
+test(dchisq5) :-
     interval(dchisq(0.9...1.1, 3), Res),
     equal(Res, 0.2413...0.2420).
 
