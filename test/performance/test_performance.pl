@@ -70,7 +70,7 @@ test3 :-
 
 % Rint
 test4 :-
-    Call = interval(pbinom(13, 20, 0.5...0.6, true) + qbinom(0.8...0.9, 20, 0.5...0.6, true) - dbinom(0.8...0.9, 20, 0.5...0.6), _Res),
+    Call = interval(pbinom(13, 20, 0.5...0.6, true) + qbinom(0.8...0.9, 20, 0.5...0.6, true) - dbinom(11...12, 20, 0.5...0.6), _Res),
     test_('test4', Call, '').     
 
 % R assignment
