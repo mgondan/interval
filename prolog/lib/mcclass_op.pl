@@ -254,5 +254,4 @@ dist(_, X, _, Res, Flags) :-
 % pt(T, DF, lower.tail=TRUE)
 %
 int_hook(tail, tail(atomic), atomic, []).
-tail(atomic("upper"), atomic(true), _).
-tail(atomic("lower"), atomic(false), _).
+tail(A, A, _).
