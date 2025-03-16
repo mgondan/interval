@@ -195,57 +195,61 @@ test(dnorm6) :-
 
 :- begin_tests(t).
 
-test(pt_default_tail) :-
+test(pt1) :-
+    interval(pt(-0.5, 5), Res),
+    equal(Res, 0.3191...0.3192).
+
+test(pt2) :-
+    interval(pt(-0.5, 5, false), Res),
+    equal(Res, 0.6808...0.6809).
+
+test(pt3) :-
     interval(pt(-0.5... -0.2, 5), Res),
     equal(Res, 0.3191...0.4247).
 
-test(pt_lowertail_neg) :-
-    interval(pt(-0.5... -0.2, 5, true), Res),
-    equal(Res, 0.3191...0.4247).
+test(pt4) :-
+    interval(pt(-0.5... -0.2, 5...6), Res),
+    equal(Res, 0.3191...0.4241).
 
-test(pt_lowertail_pos) :-
-    interval(pt(0.5...1, 5, true), Res),
-    equal(Res, 0.6808...0.8184).
-
-test(pt_uppertail_neg) :-
+test(pt5) :-
     interval(pt(-0.5... -0.2, 5, false), Res),
     equal(Res, 0.5753...0.6809).
 
-test(pt_uppertail_pos) :-
-    interval(pt(0.5...1, 5, false), Res),
-    equal(Res, 0.1816...0.3192).
-
-test(pt_df_interval) :-
+test(pt6) :-
     interval(pt(0.5...1, 2...5, false), Res),
     equal(Res, 0.1816...0.3334).
 
-test(qt_atomic) :-
+test(qt1) :-
     interval(qt(0.4, 5), Res),
     interval(round(Res, 4), L...U),
     L = -0.2672,
     U = -0.2671.
     
-test(qt_interval) :-
+test(qt2) :-
     interval(qt(0.4...0.6, 5), Res),
     equal(Res, -0.2672...0.2672).
 
-test(qt_df_interval) :-
+test(qt3) :-
     interval(qt(0.4...0.6, 2...5), Res),
     equal(Res, -0.2672...0.2887).
 
-test(dt_neg) :-
+test(dt1) :-
+    interval(dt(-0.5, 5), Res),
+    equal(Res, 0.3279...0.3280).
+
+test(d2) :-
     interval(dt(-0.5... -0.4, 5), Res),
     equal(Res, 0.3279...0.3454).
 
-test(dt_pos) :-
+test(dt3) :-
     interval(dt(0.4...0.5, 5), Res),
     equal(Res, 0.3279...0.3454).
 
-test(dt_mixed) :-
+test(dt4) :-
     interval(dt(-0.4... 0.5, 5), Res),
     equal(Res, 0.3279...0.3797).
 
-test(dt_df_interval) :-
+test(dt5) :-
     interval(dt(-0.5... -0.4, 2...5), Res),
     equal(Res, 0.2962...0.3454).
 
