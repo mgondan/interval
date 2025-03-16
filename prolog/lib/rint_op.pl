@@ -315,13 +315,23 @@ mono(pt0/2, [+,+]).
 r_hook(pt1/2).
 mono(pt1/2, [-,-]).
 
-% default (lower tail)
-int_hook(pt, pt_(..., atomic), ..., []).
-pt_(A, Df, Res, Flags) :-
+% Atomic, lower tail
+int_hook(pt, pt_(atomic, atomic), atomic, []).
+pt_(atomic(A), atomic(Df), atomic(Res), _Flags) :-
+    eval(r(pt(A, Df)), Res).
+
+% Atomic
+int_hook(pt, pt_(atomic, atomic, atomic), atomic, []).
+pt_(atomic(A), atomic(Df), atomic(Tail), atomic(Res), _Flags) :-
+    eval(r(pt(A, Df, 'lower.tail'=Tail)), Res).
+
+% Interval, lower tail
+int_hook(pt, pt2(..., _), ..., []).
+pt2(A, Df, Res, Flags) :-
     pt(A, Df, atomic(true), Res, Flags).
 
-int_hook(pt, pt(..., atomic, atomic), ..., []).
-int_hook(pt, pt(..., ..., atomic), ..., []).
+% Interval
+int_hook(pt, pt(..., _, atomic), ..., []).
 
 % lower tail
 pt(L...U, Df, atomic(true), Res, Flags) :-
@@ -339,12 +349,11 @@ pt(L...U, Df, atomic(false), Res, Flags) :-
 r_hook(qt0/2).
 mono(qt0/2, [+,-]).
 
-int_hook(qt, qt1(atomic, atomic), atomic, []).
-qt1(atomic(P), atomic(Df), atomic(Res), _Flags) :-
+int_hook(qt, qt_(atomic, atomic), atomic, []).
+qt_(atomic(P), atomic(Df), atomic(Res), _Flags) :-
     eval(r(qt(P, Df)), Res).
 
-int_hook(qt, qt(..., atomic), ..., []).
-int_hook(qt, qt(..., ...), ..., []).
+int_hook(qt, qt(..., _), ..., []).
 qt(P, Df, Res, Flags) :-
     interval_(qt0(P, Df), Res, Flags).
 
@@ -357,8 +366,11 @@ mono(dt0/2, [+, +]).
 r_hook(dt1/2).
 mono(dt1/2, [-, +]).
 
-int_hook(dt, dt(..., atomic), ..., []).
-int_hook(dt, dt(..., ...), ..., []).
+int_hook(dt, dt_(atomic, atomic), atomic, []).
+dt_(atomic(A), atomic(Df), atomic(Res), _Flags) :-
+    eval(r(dt(A, Df)), Res).
+
+int_hook(dt, dt(..., _), ..., []).
 dt(L...U, Df, Res, Flags) :-
     U =< 0,
     !,
