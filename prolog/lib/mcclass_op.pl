@@ -248,3 +248,11 @@ curly(A, Res, Flags) :-
 int_hook(dist, dist(_, atomic), _, []).
 dist(X, _, Res, Flags) :-
     interval_(X, Res, Flags).
+
+%
+% This forwards the tail argument to lower.tail of the R function, e.g. in
+% pt(T, DF, lower.tail=TRUE)
+%
+int_hook(tail, tail(atomic), atomic, []).
+tail(atomic("upper"), atomic(true), _).
+tail(atomic("lower"), atomic(false), _).
