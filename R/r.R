@@ -57,11 +57,16 @@ pt1 <- function(...){
   pt(..., lower.tail=FALSE)
 }
 
-qt0 <- qt
+qt0 <- function(...){
+  qt(..., lower.tail=TRUE)
+}
+
+qt1 <- function(...){
+  qt(..., lower.tail=FALSE)
+}
+
 dt0 <- dt1 <- dt
 
-
-# chisquare test with/without corretion
 pchisq0 <- function(...) {
   pchisq(..., lower.tail=TRUE)
 }

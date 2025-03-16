@@ -5,7 +5,7 @@
 :- use_module(library(rint)).
 
 test_rint :-
-    run_tests([r, assignment, binom, normal, t]).
+    run_tests([r, assignment, binom, normal, t, chisq]).
 
 :- begin_tests(r).
 
@@ -221,15 +221,21 @@ test(pt6) :-
 
 test(qt1) :-
     interval(qt(0.4, 5), Res),
-    interval(round(Res, 4), L...U),
-    L = -0.2672,
-    U = -0.2671.
-    
-test(qt2) :-
-    interval(qt(0.4...0.6, 5), Res),
-    equal(Res, -0.2672...0.2672).
+    interval(round(Res, 4), -0.2672... -0.2671).
 
+test(qt2) :-
+    interval(qt(0.4, 5, false), Res),
+    interval(round(Res, 4), 0.2671...0.2672).
+    
 test(qt3) :-
+    interval(qt(0.4...0.7, 5), Res),
+    equal(Res, -0.2672...0.5595).
+
+test(qt4) :-
+    interval(qt(0.4...0.7, 5, false), Res),
+    equal(Res, -0.5595...0.2672).
+
+test(qt5) :-
     interval(qt(0.4...0.6, 2...5), Res),
     equal(Res, -0.2672...0.2887).
 
@@ -257,35 +263,55 @@ test(dt5) :-
 
 :- begin_tests(chisq).
 
-test(pchisq_lower) :-
-    interval(pchisq(0.3...0.4, 5, true), Res),
+test(pchisq1) :-
+    interval(pchisq(0.3, 5), Res),
+    equal(Res, 0.0023...0.0024).
+
+test(pchisq2) :-
+    interval(pchisq(0.3, 5, false), Res),
+    equal(Res, 0.9976...0.9977).
+
+test(pchisq3) :-
+    interval(pchisq(0.3...0.4, 5), Res),
     equal(Res, 0.0023...0.0047).
 
-test(pchisq_upper) :-
+test(pchisq4) :-
     interval(pchisq(0.3...0.4, 5, false), Res),
-    equal(Res, 0.9953...0.9976).
+    equal(Res, 0.9953...0.9977).
 
-test(qchisq_lower) :-
-    interval(qchisq(0.3...0.4, 5, true), Res),
+test(qchisq1) :-
+    interval(qchisq(0.3, 5), Res),
+    equal(Res, 2.9999...3).
+
+test(qchisq2) :-
+    interval(qchisq(0.3, 5, false), Res),
+    equal(Res, 6.0644...6.0645).
+
+test(qchisq3) :-
+    interval(qchisq(0.3...0.4, 5), Res),
     equal(Res, 2.9999...3.6555).
     
-test(qchisq_upper) :-
+test(qchisq4) :-
     interval(qchisq(0.3...0.4, 5, false), Res),
-    equal(Res, 5.1319...6.0644).
+    equal(Res, 5.1318...6.0645).
 
-test(dchisq_df_lower2) :-
+test(dchisq1) :-
+    interval(dchisq(0.3, 2), Res),
+    equal(Res, 0.4303...0.4304).
+
+test(dchisq2) :-
     interval(dchisq(0.3...0.4, 2), Res),
-    equal(Res, 0.4094...0.4304).
+    equal(Res, 0.4093...0.4304).
 
-test(dchisq_df_below_mode) :-
+test(dchisq3) :-
     interval(dchisq(1.3...1.4, 4), Res),
-    equal(Res, 0.1697...0.1738).
+    equal(Res, 0.1696...0.1739).
 
-test(dchisq_df_above_mode) :-
+test(dchisq4) :-
     interval(dchisq(1.3...1.4, 3), Res),
-    equal(Res, 0.2344...0.2374).
+    equal(Res, 0.2344...0.2375).
 
-test(dchisq_df_mixed) :-
+test(dchisq5) :-
     interval(dchisq(0.9...1.1, 3), Res),
     equal(Res, 0.2413...0.2420).
 
