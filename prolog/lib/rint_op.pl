@@ -322,6 +322,14 @@ pt_(atomic(A), atomic(Df), atomic(Res), _Flags) :-
 
 % Atomic
 int_hook(pt, pt_(atomic, atomic, atomic), atomic, []).
+
+pt_(atomic(A), atomic(Df), atomic("lower"), atomic(Res), _Flags) :-
+    eval(r(pt(A, Df, 'lower.tail'=true)), Res).
+pt_(atomic(A), atomic(Df), atomic("upper"), atomic(Res), _Flags) :-
+    eval(r(pt(A, Df, 'lower.tail'=false)), Res).
+pt_(atomic(A), atomic(Df), atomic("two.sided"), atomic(Res), _Flags) :-
+    eval(2 * r(pt(abs(A), Df, 'lower.tail'=false)), Res).
+    
 pt_(atomic(A), atomic(Df), atomic(Tail), atomic(Res), _Flags) :-
     eval(r(pt(A, Df, 'lower.tail'=Tail)), Res).
 
@@ -333,6 +341,13 @@ pt2(A, Df, Res, Flags) :-
 % Interval
 int_hook(pt, pt(..., _, atomic), ..., []).
 
+pt(A, Df, atomic("lower"), Res, Flags) :-
+    pt(A, Df, atomic(true), Res, Flags).
+pt(A, Df, atomic("upper"), Res, Flags) :-
+    pt(A, Df, atomic(false), Res, Flags).
+pt(A, Df, atomic("two.sided"), Res, Flags) :-
+    interval_(atomic(2) * pt(abs(A), Df, atomic("upper")), Res, Flags).
+    
 % lower tail
 pt(L...U, Df, atomic(true), Res, Flags) :-
     !,
