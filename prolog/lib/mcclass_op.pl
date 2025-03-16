@@ -242,11 +242,11 @@ curly(A, Res, Flags) :-
 %
 % Upper tail, lower tail, both tails
 %
-% dist/3 just returns the first argument. It is needed for mathematical
+% dist/3 just returns the second argument. It is needed for mathematical
 % rendering expressions like P_T(X >= x; df=n-1) via mathml.
 %
-int_hook(dist, dist(_, atomic, atomic), _, []).
-dist(X, _, _, Res, Flags) :-
+int_hook(dist, dist(atomic, _, atomic), _, []).
+dist(_, X, _, Res, Flags) :-
     interval_(X, Res, Flags).
 
 %
