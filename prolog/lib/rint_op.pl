@@ -389,13 +389,29 @@ dt(L...U, Df, Res, Flags) :-
 %
 % chisq
 %
-int_hook(pchisq, pchisq(..., atomic, atomic), ..., []).
-
 r_hook(pchisq0/2).
 mono(pchisq0/2, [+,-]).
 
 r_hook(pchisq1/2).
 mono(pchisq1/2, [-,+]).
+
+% Atomic, lower tail
+int_hook(pchisq, pchisq_(atomic, atomic), atomic, []).
+pchisq_(atomic(A), atomic(Df), atomic(Res), _Flags) :-
+    eval(r(pchisq(A, Df)), Res).
+
+% Atomic
+int_hook(pchisq, pchisq_(atomic, atomic, atomic), atomic, []).
+pchisq_(atomic(A), atomic(Df), atomic(Tail), atomic(Res), _Flags) :-
+    eval(r(pchisq(A, Df, 'lower.tail'=Tail)), Res).
+
+% Interval, lower tail
+int_hook(pchisq, pchisq2(..., atomic), ..., []).
+pchisq2(A, Df, Res, Flags) :-
+    pchisq(A, Df, atomic(true), Res, Flags).
+
+% Interval
+int_hook(pchisq, pchisq(..., atomic, atomic), ..., []).
 
 % lower tail
 pchisq(L...U, Df, atomic(true), Res, Flags):-
@@ -410,32 +426,53 @@ pchisq(L...U, Df, atomic(false), Res, Flags):-
 %
 % quantile function
 %
-int_hook(qchisq, qchisq(..., atomic, atomic), ..., []).
-
 r_hook(qchisq0/2).
 mono(qchisq0/2, [+,+]).
 
 r_hook(qchisq1/2).
 mono(qchisq1/2, [-,+]).
 
+% Atomic, lower tail
+int_hook(qchisq, qchisq_(atomic, atomic), atomic, []).
+qchisq_(atomic(P), atomic(Df), atomic(Res), _Flags) :-
+    eval(r(qchisq(P, Df)), Res).
+
+% Atomic
+int_hook(qchisq, qchisq_(atomic, atomic, atomic), atomic, []).
+qchisq_(atomic(P), atomic(Df), atomic(Tail), atomic(Res), _Flags) :-
+    eval(r(qchisq(P, Df, 'lower.tail'=Tail)), Res).
+
+% Interval, lower tail
+int_hook(qchisq, qchisq2(..., atomic), ..., []).
+qchisq2(P, Df, Res, Flags) :-
+    qchisq(P, Df, atomic(true), Res, Flags).
+
+% Interval
+int_hook(qchisq, qchisq(..., atomic, atomic), ..., []).
+
+% lower tail
 qchisq(L...U, Df, atomic(true), Res, Flags):-
     !,
     interval_(qchisq0(L...U, Df), Res, Flags).
 
+% upper tail
 qchisq(L...U, Df, atomic(false), Res, Flags):-
     interval_(qchisq1(L...U, Df), Res, Flags).
 
 %
 % density
 %
-int_hook(dchisq, dchisq(..., atomic), ..., []).
-
 r_hook(dchisq0/2).
 mono(dchisq0/2, [-,/]).
 
 r_hook(dchisq1/2).
 mono(dchisq1/2, [+,/]).
 
+int_hook(dchisq, dchisq_(atomic, atomic), atomic, []).
+dchisq_(atomic(A), atomic(Df), atomic(Res), _Flags) :-
+    eval(r(dchisq(A, Df)), Res).
+
+int_hook(dchisq, dchisq(..., atomic), ..., []).
 % for df<=2
 dchisq(L...U, atomic(Df), Res, Flags):-
     Df =< 2,
@@ -462,11 +499,11 @@ dchisq_A(L...U, atomic(Df), Res, Flags) :-
 
 % for L < mode, U > mode
 dchisq_A(L...U, atomic(Df), Res, Flags) :-
-    interval_(dchisq(atomic(L), atomic(Df)), X1..._, Flags),
-    interval_(dchisq(atomic(U), atomic(Df)), X3..._, Flags),
-    L1 is min(X1, X3),
+    interval_(dchisq(atomic(L), atomic(Df)), atomic(X1), Flags),
+    interval_(dchisq(atomic(U), atomic(Df)), atomic(X2), Flags),
+    L1 is min(X1, X2),
     Mode is Df - 2,
-    interval_(dchisq(atomic(Mode), atomic(Df)), U1..._, Flags),
+    interval_(dchisq(atomic(Mode), atomic(Df)), atomic(U1), Flags),
     Res = L1...U1.
 
 %
