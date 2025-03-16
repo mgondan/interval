@@ -37,3 +37,16 @@ test8 | Inferences: 978 | Levels=8
 test9 | Inferences: 1098 | Levels=9
 ---------
 
+---------
+2025-03-16 14:31:06 
+test1 | Inferences: 1254
+test2 | Inferences: 1025
+test3 | Inferences: 664
+test4 | Inferences: 734
+test5 | Inferences: 149
+test6 | Inferences: 594 | Levels=6
+test7 | Inferences: 690 | Levels=7
+test8 | Inferences: 786 | Levels=8
+test9 | Inferences: 882 | Levels=9
+---------
+
