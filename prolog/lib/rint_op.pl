@@ -161,7 +161,7 @@ dbinom(X1...X2, N1...N2, P1...P2, Res, Flags) :-
 
 % otherwise
 dbinom(X1...X2, N1...N2, P1...P2, Res, _Flags) :-
-    r(dbinom2(X1, X2, N1, N2, P1, P2), ##(L, U)),
+    eval(r(dbinom2(X1, X2, N1, N2, P1, P2)), ##(L, U)),
     Res = L...U.
 
 r_hook(dbinom0/3).
