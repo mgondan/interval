@@ -41,8 +41,8 @@ chi2ratio(A, Res, Flags) :-
     interval_(round(A, atomic(2)), Res, Flags).
 
 int_hook(pval, pval(_), _, []).
-pval(A, Res, Flags) :-
-    interval_(round(A, atomic(3)), Res, Flags).
+pval(A, pval(Res), Flags) :-
+    interval_(A, Res, Flags).
 
 %
 % Bugs
