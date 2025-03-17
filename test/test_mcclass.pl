@@ -72,16 +72,20 @@ test(chi2ratio_interval) :-
 test(pval_atomic) :-
     A = 1,
     B = 3,
-    interval(pval(A / B), L...U),
-    L = 0.333,
-    U = 0.334.
+    interval(pval(A / B), Res),
+    Res = pval(R),
+    R > 0.333, 
+    R < 0.334.
 
 test(pval_interval) :-
     A = 1...5,
     B = 3...6,
-    interval(pval(A / B), L...U),
-    L is 0.166,
-    U is 1.667.
+    interval(pval(A / B), Res),
+    Res = pval(L...U),
+    L > 0.1666,
+    L < 0.1667,
+    U > 1.6666,
+    U < 1.6667.
 
 :- end_tests(number_digit).
 
