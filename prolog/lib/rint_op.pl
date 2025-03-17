@@ -329,6 +329,8 @@ pt_(atomic(A), atomic(Df), atomic("upper"), atomic(Res), _Flags) :-
     eval(r(pt(A, Df, 'lower.tail'=false)), Res).
 pt_(atomic(A), atomic(Df), atomic("two.sided"), atomic(Res), _Flags) :-
     eval(2 * r(pt(abs(A), Df, 'lower.tail'=false)), Res).
+pt_(atomic(A), atomic(Df), atomic("density"), atomic(Res), _Flags) :-
+    eval(r(dt(A, Df)), Res).
     
 pt_(atomic(A), atomic(Df), atomic(Tail), atomic(Res), _Flags) :-
     eval(r(pt(A, Df, 'lower.tail'=Tail)), Res).
@@ -347,7 +349,9 @@ pt(A, Df, atomic("upper"), Res, Flags) :-
     pt(A, Df, atomic(false), Res, Flags).
 pt(A, Df, atomic("two.sided"), Res, Flags) :-
     interval_(atomic(2) * pt(abs(A), Df, atomic("upper")), Res, Flags).
-    
+pt(A, Df, atomic("density"), Res, Flags) :-
+    interval_(dt(A, Df), Res, Flags).
+
 % lower tail
 pt(L...U, Df, atomic(true), Res, Flags) :-
     !,

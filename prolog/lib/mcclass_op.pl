@@ -96,7 +96,15 @@ dot(A, B, Res, Flags) :-
 %
 % Available: not NA
 %
-int_hook(available, avail1(atomic), _, []).
+int_hook(available, avail0(_), _, []).
+avail0(pval(A), Res, Flags) :-
+    !,
+    interval(available1(A), Res, Flags).
+
+avail0(A, Res, Flags) :-
+    interval(available1(A), Res, Flags).
+
+int_hook(available1, avail1(atomic), _, []).
 avail1(atomic(A), Res, _Flags) :-
     (  avail2(atomic(A), _Res1)
     -> Res = true 
@@ -117,7 +125,7 @@ avail2(atomic(A), Res)
  => eval(A, A1),
     avail2(A1, Res).
 
-int_hook(available, avail3(...), _, []).
+int_hook(available1, avail3(...), _, []).
 avail3(A ... B, Res, _Flags)
  => avail2(atomic(A), A1),
     avail2(atomic(B), B1),
@@ -126,7 +134,7 @@ avail3(A ... B, Res, _Flags)
     ;  Res = false
     ).
 
-int_hook(available, avail4(ci), _, []).
+int_hook(available1, avail4(ci), _, []).
 avail4(ci(A, B), Res, Flags)
  => ( interval_(available(A), true, Flags),
       interval_(available(B), true, Flags)
@@ -234,6 +242,13 @@ int_hook(';', or(_, _), _, []).
 or(A, B, Res, Flags) :-
     interval_(A, _, Flags),
     interval_(B, Res, Flags).
+
+int_hook(';', or(_, _, _), _, []).
+or(A, B, C, Res, Flags) :-
+    interval_(A, _, Flags),
+    interval_(B, _, Flags),
+    interval_(C, Res, Flags).
+
 
 int_hook('{}', curly(_), _, []).
 curly(A, Res, Flags) :-
