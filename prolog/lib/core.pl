@@ -14,6 +14,11 @@ eval(Expr1, Expr2, L ... U) :-
     eval(Expr1, L),
     eval(Expr2, U).
 
+% External definitions of interval_/3 
+interval_(A, Res, Flags),
+    interval_hook(A, Res1, Flags)
+ => Res = Res1.
+
 % Force atomic to interval
 interval_(atomic(A), Res, _Flags),
     Res = L...U
@@ -51,7 +56,9 @@ interval__(Flags, A, Res) :-
 
 instantiate(atomic, atomic(_)).
 instantiate(..., _..._).
-instantiate(A, A).
+instantiate(A, Res) :-
+    var(A),
+    A = Res.
 
 % Find int_hook
 interval2_(Expr, Res, Flags),
