@@ -7,6 +7,7 @@
 :- multifile mono/2.
 :- multifile interval_/3.
 :- multifile instantiate/2.
+:- multifile interval_hook/3.
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -15,7 +16,6 @@
 :- nb_setval(digits, 2).
 
 :- consult([lib/interface, lib/core, lib/op, lib/rint_op]).
-
 
 /** <module> Use intervals in R functions.
 

@@ -5,6 +5,7 @@
 :- multifile mono/2.
 :- multifile interval_/3.
 :- multifile instantiate/2.
+:- multifile interval_hook/3.
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
