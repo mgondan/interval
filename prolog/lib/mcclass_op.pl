@@ -142,7 +142,15 @@ avail4(ci(A, B), Res, Flags)
     ;  Res = false
     ). 
 
-int_hook(=@=, equal1(_, _), _, []).
+int_hook(=@=, equal0(_, _), _, []).
+equal0(A, pval(B), Res, Flags) :-
+    !,
+    interval(equal1(A, B), Res, Flags).
+
+equal0(A, B, Res, Flags) :-
+    interval(equal1(A, B), Res, Flags).
+
+int_hook(equal1, equal1(_, _), _, []).
 equal1(A, B, Res, Flags) :-
     interval_(A =:= B, Res, Flags).
 
