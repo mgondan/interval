@@ -52,14 +52,15 @@ less2(_...A2, B1..._, Res, _Flags) :-
 
 less2(_..._, _..._, false2, _Flags).
 
-int_hook(=<, less_eq(..., ...), _, []).
-
-less_eq(A1..._, _...B2, Res, _Flags) :-
+int_hook(=<, less_eq(_, _), _, []).
+less_eq(A, B, Res, Flags) :-
+    interval_(A, A1..._, Flags),
+    interval_(B, _...B2, Flags),
     A1 =< B2,
     !,
     Res = true.
 
-less_eq(_..._, _..._, false, _Flags).
+less_eq(_, _, false, _).
 
 int_hook(>, great(..., ...), _, []).
 great(A1..._, _...B2, Res, _Flags) :-
@@ -69,13 +70,15 @@ great(A1..._, _...B2, Res, _Flags) :-
 
 great(_..._, _..._, false, _Flags).
 
-int_hook(>=, great_eq(..., ...), _, []).
-great_eq(_...A2, B1..._, Res, _Flags) :-
+int_hook(>=, great_eq(_, _), _, []).
+great_eq(A, B, Res, Flags) :-
+    interval_(A, _...A2, Flags),
+    interval_(B, B1..._, Flags),
     A2 >= B1,
     !,
     Res = true.
 
-great_eq(_..._, _..._, false, _Flags).
+great_eq(_, _, false, _).
 
 int_hook(=\=, not_eq(..., ...), _, []).
 not_eq(A...B, C...D, Res, Flags) :-
@@ -86,21 +89,14 @@ not_eq(A...B, C...D, Res, Flags) :-
 
 not_eq(_..._, _..._, false, _Flags).
 
-int_hook(=:=, eq1(atomic, atomic), _, []).
-eq1(atomic(A), atomic(B), true, _Flags) :-
-    A =:= B,
-    !.
-
-eq1(_, _, false, _Flags).
-
-int_hook(=:=, eq2(..., ...), _, []).
-eq2(A...B, C...D, Res, Flags) :-
-    less_eq(A...B, C...D, true, Flags),
-    great_eq(A...B, C...D, true, Flags),
+int_hook(=:=, eq0(_, _), _, []).
+eq0(A, B, Res, Flags) :-
+    less_eq(A, B, true, Flags),
+    great_eq(A, B, true, Flags),
     !,
     Res = true.
 
-eq2(_..._, _..._, false, _Flags). 
+eq0(_, _, false, _Flags). 
 
 %
 % Division
