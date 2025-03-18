@@ -145,10 +145,20 @@ avail4(ci(A, B), Res, Flags)
 int_hook(=@=, equal0(_, _), _, []).
 equal0(A, pval(B), Res, Flags) :-
     !,
-    interval(equal1(A, B), Res, Flags).
+    interval_(equal1(A, B), Res, Flags).
+
+equal0(ci(A, B), ci(C, D), Res, Flags) :-
+    !,
+    interval_(A =@= C, Res0, Flags),
+    interval_(B =@= D, Res1, Flags),
+    (   Res0 = true, 
+        Res1 = true
+    ->  Res = true
+    ;   Res = false
+    ).
 
 equal0(A, B, Res, Flags) :-
-    interval(equal1(A, B), Res, Flags).
+    interval_(equal1(A, B), Res, Flags).
 
 int_hook(equal1, equal1(_, _), _, []).
 equal1(A, B, Res, Flags) :-
@@ -236,12 +246,21 @@ col(_Col, A, Res, Flags) :-
 %
 % Read intervals from input
 %
-int_hook(input, input(atomic), ..., []).
-input(A, Res, Flags) :-
+int_hook(input, input1(atomic), ..., []).
+input1(A, Res, Flags) :-
     option(digits(D), Flags, 2),
     Eps is 10^(-D)/2,
     MEps is -Eps,
     interval_(A + MEps...Eps, Res, Flags).
+
+int_hook(input, input2(ci), ci, []).
+input2(ci(A, B), Res, Flags) :-
+    option(digits(D), Flags, 2),
+    Eps is 10^(-D)/2,
+    MEps is -Eps,
+    interval_(A + MEps...Eps, A1, Flags),
+    interval_(B + MEps...Eps, B1, Flags),
+    Res = ci(A1, B1).
 
 %
 % Other
