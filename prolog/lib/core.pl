@@ -49,25 +49,9 @@ interval_(Expr, Res, Flags),
 interval__(Flags, A, Res) :-
     interval_(A, Res, Flags).
 
-instantiate(A, Res), 
-    A = atomic
- => Res = atomic(_).
-
-instantiate(A, Res), 
-    Res = atomic(_)
- => A = atomic.
-
-instantiate(A, Res), 
-    A = ...
- => Res = _..._.
-
-instantiate(A, Res), 
-    Res = _..._
- => A = (...).
-
-instantiate(A, B),
-    var(A)
- => A = B.
+instantiate(atomic, atomic(_)).
+instantiate(..., _..._).
+instantiate(A, A).
 
 % Find int_hook
 interval2_(Expr, Res, Flags),
