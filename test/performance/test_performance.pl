@@ -1,6 +1,6 @@
 :- module(test_performance, [test_performance/0, clear_log/0]).
 
-:- use_module(library(mcclass)).
+:- use_module(library(rint)).
 :- use_module(library(date)). 
 
 :- initialization(init).
@@ -50,28 +50,23 @@ test_(Name, Call, Opt) :-
 % Tests
 test_performance :-
     log_header,
-    test1, test2, test3, test4, test5, test6, test7, test8, test9,
+    test1, test2, test3, test5, test6, test7, test8, test9,
     log_trailer.
 
 % Numbers
 test1 :-
-    Call = interval(frac(1.5 + (1 + 1.5), (1 + 1.5) - 0.5) + ((5 * 2)^2 / 10), _Res),
+    Call = interval((1.5 + (1 + 1.5) / (1 + 1.5) - 0.5) / ((5 * 2)^2 / 10), _Res),
     test_('test1', Call, '').  
 
 % Intervals
 test2 :-
-    Call = interval(frac(1.5...2.5 + (1.2...2.2 + 1.5...2.3), (1.1...2.2 + 1.5...2.1) - 0.5...0.7) + ((5.1...6.1 * 2.3...5.1)^2 / 10.1...10.9), _Res),
+    Call = interval((1.5...2.5 + (1.2...2.2 + 1.5...2.3) / (1.1...2.2 + 1.5...2.1) - 0.5...0.7) / ((5.1...6.1 * 2.3...5.1)^2 / 10.1...10.9), _Res),
     test_('test2', Call, '').  
 
-% Confidence intervals
-test3 :-
-    Call = interval(ci(1...2 * 0.5...0.7, 5...7 / 0.4...0.5) - (5...6 + 1...2)^2 , _Res),
-    test_('test3', Call, ''). 
-
 % Rint
-test4 :-
+test3 :-
     Call = interval(pbinom(13, 20, 0.5...0.6, true) + qbinom(0.8...0.9, 20, 0.5...0.6, true) - dbinom(11...12, 20, 0.5...0.6), _Res),
-    test_('test4', Call, '').     
+    test_('test3', Call, '').     
 
 % R assignment
 test5 :-
