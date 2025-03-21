@@ -550,15 +550,17 @@ dchisq_A(L...U, atomic(Df), Res, Flags) :-
 % Assignment
 %
 r_hook('<-'/2).
-int_hook('<-', assign(_, _), _, [evaluate(false)]).
-assign(Var, A, Res, Flags) :-
+int_hook('<-', assign0(_, _), _, [evaluate(false)]).
+assign0(Var, A, Res, Flags) :-
     interval_(A, A1, Flags),
-    assign_(Var, A1, Res).
+    interval2_(assign(Var, A1), Res, Flags).
 
-assign_(atomic(Var), L...U, Res) :-
-    eval(Var <- call("...", L, U), Res),
-    !.
-
-assign_(atomic(Var), atomic(A), Res) :-
+int_hook(assign, assign1(atomic, atomic), atomic, []).
+assign1(atomic(Var), atomic(A), Res, _Flags) :-
     eval(Var <- A, Res1),
+    clean(Res1, Res).
+
+int_hook(assign, assign2(atomic, ...), ..., []).
+assign2(atomic(Var), L...U, Res, _Flags) :-
+    eval(Var <- call("...", L, U), Res1),
     clean(Res1, Res).
