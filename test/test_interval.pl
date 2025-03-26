@@ -9,7 +9,7 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 test_interval :-
-    run_tests([comparison, division, sqrt, power, abs, round, sin]).
+    run_tests([comparison, division, sqrt, power, abs, round, sin, list]).
 
 :- begin_tests(comparison).
 
@@ -492,6 +492,18 @@ test(sin_falling) :-
     equal(Res, 0.8084...0.9093).
 
 :- end_tests(sin).
+
+:- begin_tests(list).
+
+test(list1) :-
+    interval([], Res),
+    Res = [].
+
+test(list2) :-
+    interval([1, 2+3, "age"], Res),
+    Res = [1, 5, "age"].
+
+:- end_tests(list).
 
 % Helper predicate to check equality
 equal(Res0, Res) :-

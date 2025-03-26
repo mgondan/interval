@@ -6,6 +6,9 @@ clean(atomic(A), Res)
 clean(L...U, Res)
  => Res = L...U.
 
+clean([], Res)
+ => Res = [].
+ 
 clean(Expr, Expr1),
     compound(Expr)
  => mapargs(clean, Expr, Expr1).
@@ -41,9 +44,11 @@ unwrap_r_(A, Res),
     compound(A)
  => mapargs(unwrap_r_, A, Res).
 
- return(L, U, Res),
-    L =:= U
- => Res = atomic(L).
+return(L, U, Res),
+    L = U
+ => clean(L, Res).
 
-return(L, U, Res)
+return(L, U, Res),
+   atomic(L),
+   atomic(U)
  => Res = L...U. 
