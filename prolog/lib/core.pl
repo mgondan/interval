@@ -78,7 +78,7 @@ interval2_(Expr, Res, _Flags),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, **)
  => compound_name_arguments(Expr, Name, Args),
-    findall(R, both(Name, Args, R), Bounds),
+    findall(R, both_(Name, Args, R), Bounds),
     min_list(Bounds, L),
     max_list(Bounds, U),
     Res = L...U.
@@ -89,9 +89,9 @@ interval2_(Expr, Res, _Flags),
     compound_name_arity(Expr, Name, Arity),
     mono(Name/Arity, Dir)
  => compound_name_arguments(Expr, Name, Args),
-    findall(R, lower(Dir, Name, Args, R), Lower),
+    findall(R, lower_(Dir, Name, Args, R), Lower),
     min_list(Lower, L),
-    findall(R, upper(Dir, Name, Args, R), Upper),
+    findall(R, upper_(Dir, Name, Args, R), Upper),
     max_list(Upper, U),  
     return(L, U, Res).
 
@@ -104,50 +104,50 @@ interval2_(_, _, _Flags)
 interval_(_, _, _Flags)
  => fail.
 
-lower(Dir, Name, Args, Res) :-
-    maplist(lower, Dir, Args, Lower),
+lower_(Dir, Name, Args, Res) :-
+    maplist(lower_, Dir, Args, Lower),
     Expr =.. [Name | Lower],
     eval(Expr, Res).
 
-upper(Dir, Name, Args, Res) :-
-    maplist(upper, Dir, Args, Upper),
+upper_(Dir, Name, Args, Res) :-
+    maplist(upper_, Dir, Args, Upper),
     Expr =.. [Name | Upper],
     eval(Expr, Res).
 
-both(Name, Args, Res) :-
-    maplist(lower(*), Args, Lower),
+both_(Name, Args, Res) :-
+    maplist(lower_(*), Args, Lower),
     Expr =.. [Name | Lower],
     eval(Expr, Res).
 
 % Obtain lower and upper bounds
-lower(+, A..._, L)
+lower_(+, A..._, L)
  => L = A.
 
-lower(-, _...A, L)
+lower_(-, _...A, L)
  => L = A.
 
-lower(*, A...B, L)
+lower_(*, A...B, L)
  => L = A ; L = B.
 
-lower(_, atomic(A), L)
+lower_(_, atomic(A), L)
  => L = A.
 
-lower(_, A, L),
+lower_(_, A, L),
     atomic(A)
  => L = A.
 
-upper(+, _...B, U)
+upper_(+, _...B, U)
  => U = B.
 
-upper(-, A..._, U)
+upper_(-, A..._, U)
  => U = A.
 
-upper(*, A...B, U)
+upper_(*, A...B, U)
  => U = A ; U = B.
 
-upper(_, atomic(A), U)
+upper_(_, atomic(A), U)
  => U = A.
 
-upper(_, A, U),
+upper_(_, A, U),
     atomic(A)
  => U = A.
