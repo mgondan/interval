@@ -31,6 +31,12 @@ interval_(atomic(A), Res, _Flags)
 interval_(L...U, Res, _Flags)
  => Res = L...U.
 
+interval_([], Res, _Flags)
+ => Res = [].
+
+interval_([H | T], Res, Flags)
+ => maplist(interval__(Flags), [H | T], Res).
+
 % Skip evaluation of arguments
 interval_(Expr, Res, Flags),
     compound(Expr),
@@ -132,8 +138,10 @@ lower_(*, A...B, L)
 lower_(_, atomic(A), L)
  => L = A.
 
-lower_(_, A, L),
-    atomic(A)
+lower_(_, [H | T], L)
+ => unwrap([H | T], L).
+
+lower_(_, A, L)
  => L = A.
 
 upper_(+, _...B, U)
@@ -148,6 +156,8 @@ upper_(*, A...B, U)
 upper_(_, atomic(A), U)
  => U = A.
 
-upper_(_, A, U),
-    atomic(A)
+upper_(_, [H | T], U)
+ => unwrap([H | T], U).
+
+upper_(_, A, U)
  => U = A.
