@@ -454,6 +454,10 @@ abs1(A...B, Res, _Flags) :-
 %
 % Round
 %
+int_hook(round, round0(_), _, []).
+round0(A, Res, Flags) :-
+    interval_(round(A, atomic(0)), Res, Flags).
+
 int_hook(round, round1(atomic, atomic), ..., []).
 round1(atomic(A), Dig, Res, Flags) :-
     round2(A...A, Dig, Res, Flags).
