@@ -27,7 +27,9 @@ mono((-)/1, [-]).
 mono((-)/2, [+, -]).
 mono((*)/2, **).
 mono((**)/2, [*, /]). % power
-mono((exp)/1, [+]).
+mono(exp/1, [+]).
+mono(min/2, [+, +]).
+mono(max/2, [+, +]).
 
 %
 % Comparison
