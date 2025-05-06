@@ -33,10 +33,17 @@ interval <- function(expr, flags = NULL, env = globalenv()) {
   expr <- rolog::once(call("term_string", expression(T), expr))
   flags <- c(flags, list(cat = FALSE))
   t <- rolog::once(call("interval", expr$T, expression(X), flags), env = env)
-  if (t$X[[1]] == "...") {
-    r <- paste0(t$X[[2]], "...", t$X[[3]])
-  } else {
-    r <- paste(t$X, collapse = "")
-  }
-  return(r)
+  return(get_result(t))
 }
+
+# Format the result from Prolog
+get_result <- function(t) {
+  if (is.list(t) && t$X[[1]] == "...") {
+    return(paste0(t$X[[2]], "...", t$X[[3]]))
+  }
+  if (is.list(t) && t$X[[1]] == "...") {
+    return(paste(t$X, collapse = ""))
+  }
+  return(t)
+}
+
