@@ -1,6 +1,6 @@
 Package: interval
 Title: Interval Arithmetic for R
-Version: 1.0
+Version: 0.1
 Authors@R: c(person("Matthias", "Gondan", role=c("aut", "cre", "cph"),
         email="Matthias.Gondan-Rochon@uibk.ac.at", comment="Universität Innsbruck"),
         person("Jeremy", "Irilli", role=c("aut"),
