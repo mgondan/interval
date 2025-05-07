@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^pack.pl$
-^prolog/
 ^test/
 ^\.github/
