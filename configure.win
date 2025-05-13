@@ -1,2 +1,0 @@
-mkdir -p inst/prolog
-cp -r prolog/* inst/prolog/
