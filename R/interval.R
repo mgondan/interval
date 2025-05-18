@@ -1,13 +1,7 @@
 .onAttach <- function(libname, pkgname) {
-#  if(!requireNamespace("rolog", quiet=TRUE))
-#    stop("Could not load R package rolog.")
-
   if(!rolog::rolog_ok())
     stop("Could not attach R package rolog.")
-
-#  module <- system.file(file.path("prolog", "interval.pl"), package="interval")
-#  rolog::consult(module)
-
+    
   module <- system.file(file.path("prolog", "rint.pl"), package="interval")
   rolog::consult(module)
 }
