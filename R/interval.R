@@ -20,11 +20,11 @@ interval <- function(expr, flags = NULL, env = globalenv()) {
   expr <- rolog::once(call("term_string", expression(T), expr))
   flags <- c(flags, list(cat = FALSE))
   t <- rolog::once(call("interval", expr$T, expression(X), flags), env = env)
-  return(get_result(t))
+  return(.get_result(t))
 }
 
 # Format the result from Prolog
-get_result <- function(t) {
+.get_result <- function(t) {
   if(is.list(t) && t$X[[1]] == "...") {
     return(paste0(t$X[[2]], "...", t$X[[3]]))
   }
