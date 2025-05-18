@@ -16,7 +16,7 @@
 
 :- nb_setval(digits, 2).
 
-:- consult([lib/interface, lib/core, lib/op, lib/rint_op]).
+:- consult(['../inst/prolog/lib/interface', '../inst/prolog/lib/core', '../inst/prolog/lib/op', 'r', '../inst/prolog/lib/rint_op']).
 
 /** <module> Use intervals in R functions.
 
