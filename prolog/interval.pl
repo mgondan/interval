@@ -13,7 +13,7 @@
 
 :- nb_setval(digits, 2).
 
-:- consult([lib/interface, lib/core, lib/op]).
+:- consult(['../inst/prolog/lib/interface', '../inst/prolog/lib/core', '../inst/prolog/lib/op']).
 
 %% <module> Perform arithmetic operations with intervals.
 %

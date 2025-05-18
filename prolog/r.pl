@@ -4,6 +4,8 @@
 
 :- dynamic r_initialized/0.
 
+:- initialization(r_initialize).
+
 % Initialize R, load some code into the base environment.
 r_initialize,
     r_initialized

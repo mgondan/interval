@@ -1,5 +1,3 @@
-:- reexport('../r').
-
 :- use_module(cleaning).
 
 %
