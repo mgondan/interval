@@ -1,6 +1,5 @@
 :-  module(r, 
     [
-      r_initialize/0,
       r_initialize/1,
       r/1,
       r/2,
@@ -11,7 +10,7 @@
 
 :- dynamic initialized/0, initialized/1.
 
-:- initialization(init).
+:- initialization(r_initialize).
 
 % Initialize R, load some code into the base environment.
 r_initialize,
