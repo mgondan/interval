@@ -1,6 +1,7 @@
 :-  module(r, 
     [
       r_initialize/1,
+      r_close/1,
       r/1,
       r/2,
       r_source/2
@@ -33,6 +34,13 @@ r_initialize(Session)
     directory_file_path(Dir, 'R', Dir1),
     r_source(r, Dir1),
     assert(initialized(Session)).
+
+r_close(Session),
+    initialized
+ => rs_close(Session).
+
+r_close(Session)
+ => true.
 
 % Call R
 r(Expr)

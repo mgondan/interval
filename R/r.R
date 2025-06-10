@@ -1,3 +1,6 @@
+`...` <- function(lo, hi)
+  call("...", lo, hi)
+
 pbinom0 <- function(...)
   pbinom(..., lower.tail=TRUE)
 
