@@ -1,29 +1,47 @@
-:- module(r, [r_initialize/0, r/1, r/2, r_source/2]).
+:-  module(r, 
+    [
+      r_initialize/0,
+      r_initialize/1,
+      r/1,
+      r/2,
+      r_source/2
+    ]).
 
-:- use_module(library(rolog)).
+:- use_module(library(rs_rolog)).
 
-:- dynamic r_initialized/0.
+:- dynamic initialized/0, initialized/1.
 
-:- initialization(r_initialize).
+:- initialization(init).
 
 % Initialize R, load some code into the base environment.
 r_initialize,
-    r_initialized
+    initialized
  => true.
 
 r_initialize
  => pack_property(interval, directory(Dir)),
     directory_file_path(Dir, 'R', Dir1),
     r_source(r, Dir1),
-    assert(r_initialized).
+    assert(initialized).
+
+r_initialize(Session),
+    initialized(Session)
+ => true.
+
+r_initialize(Session)
+ => rs_init(Session),
+    pack_property(interval, directory(Dir)),
+    directory_file_path(Dir, 'R', Dir1),
+    r_source(r, Dir1),
+    assert(initialized(Session)).
 
 % Call R
 r(Expr)
- => r_call(Expr).
+ => rx_call(Expr).
 
 % Evaluate R expression
 r(Expr, Res)
- => r_eval(Expr, Res).
+ => rx_eval(Expr, Res).
 
 r_source(Name, Dir)
  => file_name_extension(Name, 'R', File),
