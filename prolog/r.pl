@@ -39,7 +39,7 @@ r_close(Session),
     initialized
  => rs_close(Session).
 
-r_close(Session)
+r_close(_)
  => true.
 
 % Call R
