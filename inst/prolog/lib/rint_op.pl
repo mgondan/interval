@@ -1,12 +1,6 @@
 :- use_module(cleaning).
 
 %
-% Skip R vectors
-%
-int_hook(:, colon(_, _), _, []).
-colon(A, A).
-
-%
 % Obtain atoms or functions from R
 %
 eval_hook(r(Expr), Res) :-
@@ -64,6 +58,13 @@ r2(A, Res, Flags) :-
 
 r2(A, Res, Flags) :-
     interval_(A, Res, Flags).
+
+%
+% Skip R vectors
+%
+int_hook(:, colon(_, _), _, []).
+colon(A, B, Res, _Flags) :-
+    Res =.. [:, A, B].
 
 %
 % Binomial distribution

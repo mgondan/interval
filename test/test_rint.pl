@@ -5,7 +5,7 @@
 :- use_module(library(rint)).
 
 test_rint :-
-    run_tests([r, assignment, binom, normal, t, chisq]).
+    run_tests([r, assignment, colon, binom, normal, t, chisq]).
 
 :- begin_tests(r).
 
@@ -42,6 +42,14 @@ test(assign2) :-
     Res = A.
 
 :- end_tests(assignment).
+
+:- begin_tests(colon).
+
+test(colon1) :-
+    A = 1:10,
+    interval(A, A).
+
+:- end_tests(colon).
 
 :- begin_tests(binom).
 
