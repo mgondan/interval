@@ -1,54 +1,74 @@
-:- module(cleaning, [clean/2, unwrap/2, return/3, unwrap_r/2, op(150, xfx, ...)]).
+/** <file> Clean representations
 
-clean(atomic(A), Res)
- => Res = atomic(A).
+Mapping between expression from the user-level to clean representations 
+*/
 
-clean(L...U, Res)
- => Res = L...U.
+% Number
+clean(A, Cleaned),
+    number(A)
+ => Cleaned = number(A).
 
-clean([], Res)
- => Res = [].
- 
+clean(User, number(A))
+ => User = A.
+
+% Constants pi and e
+clean(pi, Cleaned)
+ => Cleaned = number(pi).
+
+clean(e, Cleaned)
+ => Cleaned = number(e).
+
+% Interval
+clean(L...U, Cleaned)
+ => Cleaned = L...U.
+
+clean(User, L...U)
+ => User = L...U.
+
+% Empty list
+clean([], Cleaned)
+ => Cleaned = [].
+
+clean(User, [])
+ => User = [].
+
+% Boolean
+clean(true, Cleaned) 
+ => Cleaned = bool(true).
+
+clean(false, Cleaned) 
+ => Cleaned = bool(false).
+
+clean(User, bool(Boolean)) 
+ => User = Boolean.
+
+% String
+clean(A, Cleaned),
+    string(A)
+ => Cleaned = string(A).
+
+clean(User, string(A))
+ => User = A.
+
+% Atom
+clean(A, Cleaned),
+    atomic(A)
+ => Cleaned = atomic(A).
+
+clean(User, atomic(A))
+ => User = A.
+
+% Compound (recursive call on arguments)
 clean(Expr, Expr1),
     compound(Expr)
  => mapargs(clean, Expr, Expr1).
 
-clean(A, Res),
-    atomic(A)
- => Res = atomic(A).
+clean(Expr, Expr1),
+    compound(Expr1)
+ => mapargs(clean, Expr, Expr1).
 
-unwrap(atomic(A), Res)
- => Res = A.
-
-unwrap(A...A, Res)
- => Res = A.
-
-unwrap(A, Res),
-    compound(A)
- => mapargs(unwrap, A, Res).
-
-unwrap(A, Res)
- => Res = A.
-
-unwrap_r(A, Res)
- => unwrap_r_(A, Res).
-
-unwrap_r_(atomic(A), Res)
- => Res = A.
-
-unwrap_r_(A, _Res),
-    A = _..._
- => fail.
-
-unwrap_r_(A, Res),
-    compound(A)
- => mapargs(unwrap_r_, A, Res).
-
-return(L, U, Res),
-    L = U
- => clean(L, Res).
-
-return(L, U, Res),
-   atomic(L),
-   atomic(U)
- => Res = L...U. 
+% Variables
+clean(A, B),
+    var(A),
+    var(B)
+ => A = B.
