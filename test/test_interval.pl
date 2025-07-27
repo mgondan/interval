@@ -9,7 +9,7 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 test_interval :-
-    run_tests([comparison, division, sqrt, power, abs, round, sin, list]).
+    run_tests([comparison, division, sqrt, power, abs, round, sin, list, no_evaluation, addition, subtraction, multiplication, exponential, unary_plus, unary_minus, max, min]).
 
 :- begin_tests(comparison).
 
@@ -338,9 +338,25 @@ test(sqrt10) :-
     interval(sqrt1(A), X),
     X = 1.5NaN.
 
+test(sqrt11) :-
+    interval(sqrt(9), X),
+    X = 3.0.
+
 :- end_tests(sqrt).
 
 :- begin_tests(power).
+
+test(power_number) :-
+    Base = 2,
+    Exp = 5,
+    interval(Base ^ Exp, Res),
+    Res is 32.
+
+test(power_other_symbol) :-
+    Base = 2,
+    Exp = 5,
+    interval(Base ** Exp, Res),
+    Res is 32.
 
 test(power_pos_base_even_expon) :-
     Base = 2...3,
@@ -425,6 +441,16 @@ test(abs4) :-
     U > 1.99999,
     U < 2.00001.
 
+test(abs5) :-
+    A = -1,
+    interval(abs(A), Res),
+    Res = 1.
+
+test(abs6) :-
+    A = 1,
+    interval(abs(A), Res),
+    Res is 1.
+
 :- end_tests(abs).
 
 :- begin_tests(round).
@@ -505,6 +531,160 @@ test(list2) :-
 
 :- end_tests(list).
 
+:- begin_tests(no_evaluation).
+
+test(number1) :-
+    interval(5, Res),
+    Res = 5.
+
+test(number2) :-
+    interval(5, L...U),
+    L...U = 5...5.
+
+test(interval) :-
+    interval(1...2, Res),
+    Res = 1...2.
+
+test(logical1) :-
+    interval(true, Res),
+    Res = true.
+
+test(logical2) :-
+    interval(false, Res),
+    Res = false.
+
+test(atomic) :-
+    interval(a, Res),
+    Res = a.
+
+test(string) :-
+    interval("abc", Res),
+    Res = "abc".
+
+:- end_tests(no_evaluation).
+
+:- begin_tests(addition).
+
+test(addition1) :-
+    interval(1.5 + 2, Res),
+    Res = 3.5.
+
+test(addition2) :-
+    interval(1...2 + 1, Res),
+    Res = 2...3.
+
+test(addition3) :-
+    interval(1 + 1...2, Res),
+    Res = 2...3.    
+
+test(addition4) :-
+    interval(1...2 + 1...2, Res),
+    Res = 2...4.
+
+:- end_tests(addition).
+
+:- begin_tests(subtraction).
+
+test(subtraction1) :-
+    interval(3 - 1.5, Res),
+    Res = 1.5.
+
+test(subtraction2) :-
+    interval(1...2 - 1, Res),
+    Res = 0...1.
+
+test(subtraction3) :-
+    interval(1 - 1...2, Res),
+    Res = -1...0.    
+
+test(addition4) :-
+    interval(3...4 - 1...2, Res),
+    Res = 1...3.
+
+:- end_tests(subtraction).
+
+:- begin_tests(multiplication).
+
+test(multiplication1) :-
+    interval(3 * 1.5, Res),
+    Res = 4.5.
+
+test(multiplication2) :-
+    interval(1...2 * 3, Res),
+    Res = 3...6.
+
+test(multiplication3) :-
+    interval(2 * 1...2, Res),
+    Res = 2...4.    
+
+test(multiplication4) :-
+    interval(3...4 * 1...2, Res),
+    Res = 3...8.
+
+:- end_tests(multiplication).
+
+:- begin_tests(exponential).
+
+test(exponential1) :-
+    interval(exp(2), Res),
+    equal(Res, 7.3890...7.3891).
+
+test(exponential2) :-
+    interval(exp(1...2), Res),
+    equal(Res, 2.7182...7.3891).
+
+:- end_tests(exponential).
+
+:- begin_tests(unary_plus).
+
+test(unary_plus1) :-
+    interval(+(-2), Res),
+    Res is -2.
+
+test(unary_plus2) :-
+    interval(+(-1...3), Res),
+    Res = -1...3.
+
+:- end_tests(unary_plus).
+
+:- begin_tests(unary_minus).
+
+test(unary_minus1) :-
+    interval(-(-2), Res),
+    Res is 2.
+
+test(unary_minus2) :-
+    interval(-(-1...3), Res),
+    Res = -3...1.
+
+:- end_tests(unary_minus).
+
+:- begin_tests(max).
+
+test(max1) :-
+    interval(max(1, 2), Res),
+    Res is 2.
+
+test(max2) :-
+    interval(max(1...3, 1...4), Res),
+    Res = 1...4.
+
+:- end_tests(max).
+
+:- begin_tests(min).
+
+test(min1) :-
+    interval(min(1, 2), Res),
+    Res is 1.
+
+test(min2) :-
+    interval(min(1...3, 1...4), Res),
+    Res = 1...3.
+
+:- end_tests(min).
+
 % Helper predicate to check equality
 equal(Res0, Res) :-
-    interval:interval(round(Res0, 4), Res).
+    interval(round(Res0, 4), Res1),
+    Res = Res1.
+
