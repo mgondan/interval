@@ -1,14 +1,47 @@
 :- module(rint, [interval/2, interval/3, op(150, xfx, ...), op(800, xfx, <-)]).
 
-:- multifile r_hook/1.
-:- multifile r_hook/2.
-:- multifile int_hook/4.
-:- multifile eval_hook/2.
-:- multifile mono/2.
-:- multifile interval_/3.
-:- multifile interval_hook/3.
+/** <module> Use intervals in R functions.
 
-:- dynamic instantiate/2.
+This module expands the 'interval' module with R functions. 
+For general information on the use of interval/2 and interval/3, please refer to that module. 
+For better compatibility with R, the standard built-in arithmetic evaluation is used 
+instead of the library clpBNR as in the module 'interval'. 
+*/
+
+% Supported functions:
+%   Assignment 
+%       - '<-'
+%       
+%   Binomial distribution
+%       - Cumulated density with default lower tail: interval(pbinom(X, N, P), Res)
+%       - Cumulated density with explicit tail argument: interval(pbinom(X, N, P, true), Res)
+%       - Quantile with default lower tail: interval(qbinom(Alpha, N, P), Res)
+%       - Quantilewith explicit tail argument: interval(qbinom(Alpha, N, P, true), Res)
+%       - Density: interval(dbinom(X, N, P), Res)
+%
+%   Normal distribution
+%       - Cumulated density with defaults: interval(pnorm(X), Res)
+%       - Cumulated density with default lower tail: interval(pnorm(X, Mu, Sd), Res)
+%       - Cumulated density with explicit tail argument: interval(pnorm(X, Mu, Sd, false), Res)
+%       - Quantile with defaults: interval(qnorm(P), Res)
+%       - Quantile with default lower tail: interval(qnorm(P, Mu, Sigma), Res)
+%       - Quantile with explicit tail argument: interval(qnorm(P, Mu, Sigma, true), Res)
+%       - Density with defaults: interval(dnorm(X), Res)
+%       - Density: interval(dnorm(X, Mu, Sigma), Res)
+%
+%   T distribution
+%       - Cumulated density with default lower tail: interval(pt(X, Df), Res)
+%       - Cumulated density explicit tail argument: interval(pt(X, Df, false), Res)
+%       - Quantile with default lower tail: interval(qt(P, Df), Res)
+%       - Quantile with explicit tail argument: interval(qt(P, Df, true), Res)
+%       - Density: interval(dt(X, Df), Res)
+%
+%   Chi-square distribution
+%       - Cumulated density with default lower tail: interval(pchisq(X, Df), Res)
+%       - Cumulated density explicit tail argument: interval(pchisq(X, Df, false), Res)
+%       - Quantile with default lower tail: interval(qchisq(P, Df), Res)
+%       - Quantile with explicit tail argument: interval(qchisq(P, Df, true), Res)
+%       - Density: interval(dchisq(X, Df), Res)
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -16,27 +49,10 @@
 
 :- nb_setval(digits, 2).
 
-:- consult(['../inst/prolog/lib/interface', '../inst/prolog/lib/core', '../inst/prolog/lib/op', 'r', '../inst/prolog/lib/rint_op']).
-
-/** <module> Use intervals in R functions.
-
-This module expands the 'interval' module with R functions.
-For general information on the use of interval/2, please refer to that module. 
- */
-
-% Binomial distribution
-% - Cumulated density lower-tail: interval(pbinom(X, N, P, true), Res)
-% - Cumulated density upper-tail: interval(pbinom(X, N, P, false), Res)
-% - Quantile: interval(qbinom(Alpha, N, P, true), Res)
-% - Density: interval(dbinom(X, N, P), Res)
-%
-% Normal distribution
-% - Cumulated density: interval(pnorm(X, Mu, Sigma), Res)
-% - Quantile: interval(qnorm(P, Mu, Sigma), Res)
-% - Density: interval(dnorm(X, Mu, Sigma), Res)
-%
-% T distribution
-% - Cumulated density lower-tail: interval(pt(X, Df, true), Res)
-% - Cumulated density upper-tail: interval(pt(X, Df, false), Res)
-% - Quantile: interval(qt(P, Df), Res)
-% - Density: interval(dt(X, Df), Res)
+:- consult(['../inst/prolog/lib/cleaning', 
+            '../inst/prolog/lib/interface', 
+            '../inst/prolog/lib/rint_op', 
+            '../inst/prolog/lib/op', 
+            '../inst/prolog/lib/eval_r',
+            'r', 
+            '../inst/prolog/lib/utility']).
