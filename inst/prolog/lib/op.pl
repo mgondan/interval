@@ -18,7 +18,7 @@ Depends on these externally defined predicates:
  - min_list/2
  - max_list/2
 
-Every operator is defined with a interval_/3 clause. 
+Every operator is defined with an interval_/3 clause. 
 Macros may be used for automatic generation of interval_/3 clauses. 
 A 'macro' predicate matches the arguments of 'macro_clause' except for the last one being the result:
     macro(Op/Arity, MacroType) <---> macro_clause(Op/Arity, MacroType, Clauses)
@@ -31,11 +31,11 @@ For more information on the meaning of macro arguments, refer to the module 'exp
 
 :- multifile(interval_/3).
 
-user:term_expansion(macro(Op/Arity, MacroType), Clauses) :-
-    macro_clause(Op/Arity, MacroType, Clauses).
+user:term_expansion(macro(Op/Arity, Fn, Dir), Clauses) :-
+    macro_clause(Op/Arity, Fn, Dir, Clauses).
 
-user:term_expansion(macro(Op/Arity, Fn/Arity, Dir), Clauses) :-
-    macro_clause(Op/Arity, Fn/Arity, Dir, Clauses).
+user:term_expansion(macro(Op/Arity, Fn, Dir, Options), Clauses) :-
+    macro_clause(Op/Arity, Fn, Dir, Options, Clauses).
 
 %
 % No evaluation
@@ -74,7 +74,7 @@ interval_(_...A2 < B1..._, Res, _Flags) :-
     less(A2, B1, Res0), 
     !, Res = Res0.
 
-macro((<)/2, mixed).
+macro((<)/2, interval_, []).
 
 % Greater
 interval_(number(A) > number(B), Res, _Flags) :-
@@ -85,7 +85,7 @@ interval_(A1..._ > _...B2, Res, _Flags) :-
     less(B2, A1, Res0),
     !, Res = Res0.
 
-macro((>)/2, mixed).
+macro((>)/2, interval_, []).
 
 % Less or equal
 interval_(number(A) =< number(B), Res, _Flags) :-
@@ -95,24 +95,24 @@ interval_(number(A) =< number(B), Res, _Flags) :-
 less_eq(A, B, bool(true)) :-
     eval(A =< B), !.
 
-less_eq(_, _, bool(true)).
+less_eq(_, _, bool(false)).
 
-interval_(_...A2 =< B1..._, Res, _Flags) :-
-    less_eq(A2, B1, Res0),
+interval_(A1..._ =< _...B2, Res, _Flags) :-
+    less_eq(A1, B2, Res0),
     !, Res = Res0.
 
-macro((=<)/2, mixed).
+macro((=<)/2, interval_, []).
 
 % Greater or equal
 interval_(number(A) >= number(B), Res, _Flags) :-
     less_eq(B, A, Res0),
     !, Res = Res0.
 
-interval_(A1..._ >= _...B2, Res, _Flags) :-
-    less_eq(B2, A1, Res0),
+interval_(_...A2 >= B1..._, Res, _Flags) :-
+    less_eq(B1, A2, Res0),
     !, Res = Res0.
 
-macro((>=)/2, mixed).
+macro((>=)/2, interval_, []).
 
 % Equal
 interval_(number(A) =:= number(B), Res, _Flags) :-
@@ -132,7 +132,7 @@ interval_(A1...A2 =:= B1...B2, Res, _Flags) :-
 interval_(_..._ =:= _..._, Res, _Flags) :-
     !, Res = bool(false).
 
-macro((=:=)/2, mixed).
+macro((=:=)/2, interval_, []).
 
 % Unequal
 interval_(number(A) =\= number(B), Res, _Flags) :-
@@ -150,31 +150,17 @@ interval_(A1...A2 =\= B1...B2, Res, _Flags) :-
 interval_(_..._ =\= _..._, Res, _Flags) :- 
     !, Res = bool(true).
 
-macro((=\=)/2, mixed).
+macro((=\=)/2, interval_, []).
 
 %
 % Addition
 %
-interval_(number(A) + number(B), Res, _Flags) :-
-    plus(A, B, Res0), 
-    !, Res = number(Res0).
-
-plus(A, B, Res) :-
-    eval(A + B, Res).
-
-macro((+)/2, plus/2, [+, +]).
+macro((+)/2, all, [+, +]).
 
 %
 % Subtraction
 %
-interval_(number(A) - number(B), Res, _Flags) :-
-    minus(A, B, Res0),
-    !, Res = number(Res0).
-
-minus(A, B, Res) :-
-    eval(A - B, Res).
-
-macro((-)/2, minus/2, [+, -]).
+macro((-)/2, all, [+, -]).
 
 %
 % Multiplication
@@ -195,7 +181,7 @@ interval_(A1...A2 * B1...B2, Res, _Flags) :-
     max_list([Res0, Res1, Res2, Res3], U), 
     !, Res = L...U.
 
-macro((*)/2, mixed).
+macro((*)/2, interval_, []).
 
 %
 % Division
@@ -212,7 +198,7 @@ interval_(A1...A2 / B1...B2, Res, _Flags) :-
     div(A1...A2, B1...B2, Res0),
     Res = Res0.
 
-macro((/)/2, mixed).
+macro((/)/2, interval_, []).
 
 div(A...B, C...D, Res),
     zero(A, B),
@@ -428,7 +414,7 @@ sqrt_(A, Res) :-
 
 sqrt_(_, 1.5NaN).
 
-macro(sqrt/1, sqrt/1, [+]).
+macro(sqrt/1, sqrt_, [+]).
 
 % sqrt1/1: only for intervals, crops negative part of interval at 0
 interval_(sqrt1(A...B), Res, _Flags) :-
@@ -618,50 +604,22 @@ sin1(A...B, Res) :-
 %
 % Unary plus
 %
-interval_(+(number(A)), Res, _Flags) :-
-    unary_plus(A, Res0),
-    !, Res = number(Res0).
-
-unary_plus(A, Res) :-
-    eval(+(A), Res).
-
-macro((+)/1, unary_plus/1, [+]).
+macro((+)/1, all, [+]).
 
 %
 % Unary negate
 %
-interval_(-(number(A)), Res, _Flags) :-
-    unary_minus(A, Res0),
-    !, Res = number(Res0).
-
-unary_minus(A, Res) :-
-    eval(-(A), Res).
-
-macro((-)/1, unary_minus/1, [-]).
+macro((-)/1, all, [-]).
 
 %
 % Max/2
 %
-interval_(max(number(A), number(B)), Res, _Flags) :-
-    max0(A, B, Res0),
-    !, Res = number(Res0).
-
-max0(A, B, Res) :-
-    eval(max(A, B), Res).
-
-macro(max/2, max0/2, [+, +]).
+macro(max/2, all, [+, +]).
 
 %
 % Min/2
 %
-interval_(min(number(A), number(B)), Res, _Flags) :-
-    min0(A, B, Res0),
-    !, Res = number(Res0).
-
-min0(A, B, Res) :-
-    eval(min(A, B), Res).
-
-macro(min/2, min0/2, [+, +]).
+macro(min/2, all, [+, +]).
 
 %
 % Evaluation of arguments.
@@ -673,6 +631,13 @@ interval_(A0, Res, Flags) :-
     compound_name_arguments(A1, Name, Args1),
     dif(A0, A1), 
     !, interval_(A1, Res, Flags).
+
+interval_(A, _Res, _Flags) :-
+    !, 
+    term_string(A, String),
+    string_concat("No rule matches ", String, Message),
+    writeln(Message),
+    fail.
 
 interval__(Flags, A, Res) :-
     interval_(A, Res, Flags).

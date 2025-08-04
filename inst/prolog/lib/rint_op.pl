@@ -7,7 +7,7 @@ Depends on these externally defined predicates:
 - positive/2
 - negative/2
 
-Every operator is defined with a interval_/3 clause. 
+Every operator is defined with an interval_/3 clause. 
 Macros may be used for automatic generation of interval_/3 clauses. 
 A 'macro' predicate matches the arguments of 'macro_clause' except for the last one being the result:
     macro(Op/Arity, MacroType) <---> macro_clause(Op/Arity, MacroType, Clauses)
@@ -22,17 +22,13 @@ For more information on the meaning of macro arguments, refer to the module 'exp
 
 :- multifile(interval_/3).
 
-user:term_expansion(macro(Op/Arity, MacroType), Clauses) :-
-    macro_clause(Op/Arity, MacroType, Clauses).
+:- dynamic(interval_/3).
 
-user:term_expansion(macro(Op/Arity, MacroType, ExtraArg), Clauses) :-
-    macro_clause(Op/Arity, MacroType, ExtraArg, Clauses).
+user:term_expansion(macro(Op/Arity, Fn, Dir), Clauses) :-
+    macro_clause(Op/Arity, Fn, Dir, Clauses).
 
-user:term_expansion(macro(Op/Arity, Fn/Arity, Dir), Clauses) :-
-    macro_clause(Op/Arity, Fn/Arity, Dir, Clauses).
-
-user:term_expansion(macro(Op/Arity2, Fn/Arity, ExtraArg, Dir), Clauses) :-
-    macro_clause(Op/Arity2, Fn/Arity, ExtraArg, Dir, Clauses).
+user:term_expansion(macro(Op/Arity, Fn, Dir, Options), Clauses) :-
+    macro_clause(Op/Arity, Fn, Dir, Options, Clauses).
 
 %
 % Call R 
@@ -92,56 +88,20 @@ interval_(:(A, B), Res, _Flags) :-
 % Binomial distribution
 %
 % pbinom/3: default lower.tail = TRUE
-interval_(pbinom(number(X), number(N), number(P)), Res, _Flags) :-
-    pbinom_lower(X, N, P, Res0),
-    !, Res = number(Res0).
-
-macro(pbinom/3, pbinom_lower/3, [+, -, -]).
+macro(pbinom/3, all, [+, -, -], [hook(r)]).
 
 % pbinom/4: explicit tail argument
-interval_(pbinom(number(X), number(N), number(P), bool(true)), Res, _Flags) :-
-    pbinom_lower(X, N, P, Res0),
-    !, Res = number(Res0).
+macro(pbinom/4, all, [+, -, -, /], [hook(r), pattern([_, _, _, bool(true)])]).
 
-interval_(pbinom(number(X), number(N), number(P), bool(false)), Res, _Flags) :-
-    pbinom_upper(X, N, P, Res0),
-    !, Res = number(Res0).
-
-pbinom_upper(X, N, P, Res) :-
-    eval(r(pbinom(X, N, P, false)), Res).
-
-pbinom_lower(X, N, P, Res) :-
-    eval(r(pbinom(X, N, P, true)), Res).
-
-macro(pbinom/4, pbinom_lower/3, extra(bool(true), 4), [+, -, -]).
-
-macro(pbinom/4, pbinom_upper/3, extra(bool(false), 4), [-, +, +]).
+macro(pbinom/4, all, [-, +, +, /], [hook(r), pattern([_, _, _, bool(false)])]).
 
 % qbinom/3: default lower.tail = TRUE
-interval_(qbinom(number(Alpha), number(N), number(P)), Res, _Flags) :-
-    qbinom_lower(Alpha, N, P, Res0),
-    !, Res = number(Res0).
-
-qbinom_lower(Alpha, N, P, Res) :-
-    eval(r(qbinom(Alpha, N, P, true)), Res).
-
-macro(qbinom/3, qbinom_lower/3, [+, +, +]).
+macro(qbinom/3, all, [+, +, +], [hook(r)]).
 
 % qbinom/4: explicit tail argument
-interval_(qbinom(number(Alpha), number(N), number(P), bool(true)), Res, _Flags) :-
-    qbinom_lower(Alpha, N, P, Res0),
-    !, Res = number(Res0).
+macro(qbinom/4, all, [+, +, +, /], [hook(r), pattern([_, _, _, bool(true)])]).
 
-interval_(qbinom(number(Alpha), number(N), number(P), bool(false)), Res, _Flags) :-
-    qbinom_upper(Alpha, N, P, Res0),
-    !, Res = number(Res0).
-
-qbinom_upper(Alpha, N, P, Res) :-
-    eval(r(qbinom(Alpha, N, P, false)), Res).
-
-macro(qbinom/4, qbinom_lower/3, extra(bool(true), 4), [+, +, +]).
-
-macro(qbinom/4, qbinom_upper/3, extra(bool(false), 4), [-, +, +]).
+macro(qbinom/4, all, [-, +, +, /], [hook(r), pattern([_, _, _, bool(false)])]).
 
 % dbinom
 interval_(dbinom(number(Alpha), number(N), number(P)), Res, _Flags) :-
@@ -173,82 +133,32 @@ dbinom0(X1...X2, N1...N2, P1...P2, L...U) :-
 dbinom0(X1...X2, N1...N2, P1...P2, L...U) :-
     eval(r(dbinom2(X1, X2, N1, N2, P1, P2)), ##(L, U)).
 
-macro(dbinom/3, mixed).
+macro(dbinom/3, interval_, []).
 
 %
 % Normal distribution
 %
 % pnorm/1: Mu = 0, Sd = 1, lower.tail = TRUE
-interval_(pnorm(number(A)), Res, _Flags) :-
-    pnorm_(A, Res0),
-    !, Res = number(Res0).
-
-pnorm_(A, Res) :-
-    eval(r(pnorm(A)), Res).
-
-macro(pnorm/1, pnorm_/1, [+]).
+macro(pnorm/1, all, [+], [hook(r)]).
 
 % pnorm/3: lower.tail = TRUE
-interval_(pnorm(number(A), number(Mu), number(Sigma)), Res, _Flags) :-
-    pnorm_lower(A, Mu, Sigma, Res0),
-    !, Res = number(Res0).
-
-pnorm_lower(A, Mu, Sigma, Res) :-
-    eval(r(pnorm(A, Mu, Sigma, true)), Res).
-
-macro(pnorm/3, pnorm_lower/3, [+,-,+]).
+macro(pnorm/3, all, [+,-,+], [hook(r)]).
 
 % pnorm/4: explicit tail argument
-interval_(pnorm(number(A), number(Mu), number(Sigma), bool(true)), Res, _Flags) :-
-    pnorm_lower(A, Mu, Sigma, Res0),
-    !, Res = number(Res0).
+macro(pnorm/4, all, [+,-,+,/], [hook(r), pattern([_, _, _, bool(true)])]).
 
-interval_(pnorm(number(A), number(Mu), number(Sigma), bool(false)), Res, _Flags) :-
-    pnorm_upper(A, Mu, Sigma, Res0),
-    !, Res = number(Res0).
-
-pnorm_upper(A, Mu, Sigma, Res) :-
-    eval(r(pnorm(A, Mu, Sigma, false)), Res).
-
-macro(pnorm/4, pnorm_lower/3, extra(bool(true), 4), [+,-,+]).
-
-macro(pnorm/4, pnorm_upper/3, extra(bool(false), 4), [-,+,-]).
+macro(pnorm/4, all, [-,+,-,/], [hook(r), pattern([_, _, _, bool(false)])]).
 
 % qnorm/1: Mu = 0, Sd = 1, lower tail
-interval_(qnorm(number(P)), Res, _Flags) :-
-    qnorm_(P, Res0),
-    !, Res = number(Res0).
-
-qnorm_(P, Res) :-
-    eval(r(qnorm(P)), Res).
-
-macro(qnorm/1, qnorm_/1, [+]).
+macro(qnorm/1, all, [+], [hook(r)]).
 
 % qnorm/3: lower.tail = TRUE
-interval_(qnorm(number(P), number(Mu), number(Sigma)), Res, _Flags) :-
-    qnorm_lower(P, Mu, Sigma, Res0),
-    !, Res = number(Res0).
-
-qnorm_lower(P, Mu, Sigma, Res) :-
-    eval(r(qnorm(P, Mu, Sigma, true)), Res).
-
-macro(qnorm/3, qnorm_lower/3, [+,+,+]).
+macro(qnorm/3, all, [+,+,+], [hook(r)]).
 
 % qnorm/4: explicit tail argument
-interval_(qnorm(number(P), number(Mu), number(Sigma), bool(true)), Res, _Flags) :-
-    qnorm_lower(P, Mu, Sigma, Res0),
-    !, Res = number(Res0).
+macro(qnorm/4, all, [+,+,+,/], [hook(r), pattern([_, _, _, bool(true)])]).
 
-interval_(qnorm(number(P), number(Mu), number(Sigma), bool(false)), Res, _Flags) :-
-    qnorm_upper(P, Mu, Sigma, Res0),
-    !, Res = number(Res0).
-
-qnorm_upper(P, Mu, Sigma, Res) :-
-    eval(r(qnorm(P, Mu, Sigma, false)), Res).
-
-macro(qnorm/4, qnorm_lower/3, extra(bool(true), 4), [+,+,+]).
-
-macro(qnorm/4, qnorm_upper/3, extra(bool(false), 4), [-,+,-]).
+macro(qnorm/4, all, [-,+,-,/], [hook(r), pattern([_, _, _, bool(false)])]).
 
 % dnorm/1: Mu = 0, Sd = 1
 interval_(dnorm(number(A)), Res, _Flags) :-
@@ -292,20 +202,13 @@ interval_(dnorm(A1...A2, Mu1...Mu2, Sigma1...Sigma2), Res, Flags) :-
     interval_(number(1)/Sigma1...Sigma2 * Res0, Res1, Flags),
     !, Res = Res1.
 
-macro(dnorm/3, mixed).
+macro(dnorm/3, interval_, []).
 
 %
 % t distribution
 %
 % pt/2: lower.tail = TRUE
-interval_(pt(number(A), number(Df)), Res, _Flags) :-
-    pt_lower(A, Df, Res0),
-    !, Res = number(Res0).
-
-pt_lower(A, Df, Res) :-
-    eval(r(pt(A, Df, 'lower.tail'=true)), Res).
-
-macro(pt/2, pt_lower/2, [+,+]).
+macro(pt/2, all, [+,+], [hook(r)]).
 
 % pt/3
 interval_(pt(number(A), number(Df), bool(true)), Res, _Flags) :-
@@ -315,6 +218,9 @@ interval_(pt(number(A), number(Df), bool(true)), Res, _Flags) :-
 interval_(pt(number(A), number(Df), bool(false)), Res, _Flags) :-
     pt_upper(A, Df, Res0),
     !, Res = number(Res0).
+
+pt_lower(A, Df, Res) :-
+    eval(r(pt(A, Df, 'lower.tail'=true)), Res).
 
 pt_upper(A, Df, Res) :-
     eval(r(pt(A, Df, 'lower.tail'=false)), Res).
@@ -330,7 +236,7 @@ pt_(A1...A2, Df1...Df2, true, L...U) :-
     pt_lower(A2, Df1, U).
 
 pt_(A1...A2, Df1...Df2, true, L...U) :-
-    positve(A1, A2),
+    positive(A1, A2),
     !,
     pt_lower(A1, Df1, L),
     pt_lower(A2, Df2, U).
@@ -357,7 +263,7 @@ pt_(A1...A2, Df1...Df2, false, Res) :-
     pt0_(0...Max, Df1...Df2, false, Res0),
     !, Res = Res0.    
     
-macro(pt/3, mixed, extra(bool(_), 3)).
+macro(pt/3, interval_, [], [pattern([_, _, bool(_)])]).
 
 % qt/2: lower.tail = TRUE
 interval_(qt(number(P), number(Df)), Res, _Flags) :-
@@ -371,7 +277,7 @@ interval_(qt(P1...P2, Df1...Df2), Res, _Flags) :-
     qt_(P1...P2, Df1...Df2, true, Res0),
     !, Res = Res0.
 
-macro(qt/2, mixed).
+macro(qt/2, interval_, []).
 
 % qt/3
 interval_(qt(number(P), number(Df), bool(true)), Res, _Flags) :-
@@ -411,7 +317,7 @@ qt_(P1...P2, Df1...Df2, false, L...U) :-
     qt_upper(P2, Df2, L),
     qt_upper(P1, Df1, U).
 
-macro(qt/3, mixed, extra(bool(_), 3)).
+macro(qt/3, interval_, [], [pattern([_, _, bool(_)])]).
 
 % dt/2
 interval_(dt(number(A), number(Df)), Res, _Flags) :-
@@ -442,60 +348,52 @@ dt0(A1...A2, Df1...Df2, Res) :-
     dt0(0...Max, Df1...Df2, Res0),
     !, Res = Res0.
 
-macro(dt/2, mixed).
+macro(dt/2, interval_, []).
 
 %
 % Chi-squared distribution
 %
 % pchisq/2: lower.tail = TRUE
-interval_(pchisq(number(A), number(Df)), Res, _Flags) :-
-    pchisq_lower(A, Df, Res0),
-    !, Res = number(Res0).
-
-pchisq_lower(A, Df, Res) :-
-    eval(r(pchisq(A, Df, 'lower.tail'=true)), Res).
-
-macro(pchisq/2, pchisq_lower/2, [+,-]).
+macro(pchisq/2, all, [+,-], [hook(r)]).
 
 % pchisq/3
 interval_(pchisq(number(A), number(Df), bool(true)), Res, _Flags) :-
-    pchisq_lower(A, Df, Res0),
+    pchisq_lower(A, Df, true, Res0),
     !, Res = number(Res0).
 
 interval_(pchisq(number(A), number(Df), bool(false)), Res, _Flags) :-
-    pchisq_upper(A, Df, Res0),
+    pchisq_upper(A, Df, false, Res0),
     !, Res = number(Res0).
 
-pchisq_upper(A, Df, Res) :-
-    eval(r(pchisq(A, Df, 'lower.tail'=false)), Res).
+pchisq_lower(A, Df, Tail, Res) :-
+    eval(r(pchisq(A, Df, 'lower.tail'=Tail)), Res).
 
-macro(pchisq/3, pchisq_lower/2, extra(bool(true), 3), [+,-]).
-macro(pchisq/3, pchisq_upper/2, extra(bool(false), 3), [-,+]).
+pchisq_upper(A, Df, Tail, Res) :-
+    eval(r(pchisq(A, Df, 'lower.tail'=Tail)), Res).
+
+macro(pchisq/3, pchisq_lower, [+, -, /], [pattern([_, _, bool(true)])]).
+macro(pchisq/3, pchisq_upper, [-, +, /], [pattern([_, _, bool(false)])]).
 
 % qchisq/2: lower.tail = TRUE
-interval_(qchisq(number(P), number(Df)), Res, _Flags) :-
-    qchisq_lower(P, Df, Res0),
-    !, Res = number(Res0).
-
-qchisq_lower(P, Df, Res) :-
-    eval(r(qchisq(P, Df, 'lower.tail'=true)), Res).
-
-macro(qchisq/2, qchisq_lower/2, [+,-]).
+macro(qchisq/2, all, [+,-], [hook(r)]).
 
 % qchisq/3
 interval_(qchisq(number(P), number(Df), bool(true)), Res, _Flags) :-
-    qchisq_lower(P, Df, Res0),
+    qchisq_lower(P, Df, true, Res0),
     !, Res = number(Res0).
 
 interval_(qchisq(number(P), number(Df), bool(false)), Res, _Flags) :-
-    qchisq_upper(P, Df, Res0),
+    qchisq_upper(P, Df, false, Res0),
     !, Res = number(Res0).
 
-qchisq_upper(P, Df, Res) :-
-    eval(r(qchisq(P, Df, 'lower.tail'=false)), Res).
+qchisq_lower(P, Df, Tail, Res) :-
+    eval(r(qchisq(P, Df, 'lower.tail'=Tail)), Res).
 
-macro(qchisq/3, qchisq_lower/2, extra(bool(true), 3), [+,+]).
-macro(qchisq/3, qchisq_upper/2, extra(bool(false), 3), [-,+]).
+qchisq_upper(P, Df, Tail, Res) :-
+    eval(r(qchisq(P, Df, 'lower.tail'=Tail)), Res).
+
+macro(qchisq/3, qchisq_lower, [+, +, /], [pattern([_, _, bool(true)])]).
+macro(qchisq/3, qchisq_upper, [-, +, /], [pattern([_, _, bool(false)])]).
 
 % dchisq/2
 interval_(dchisq(number(A), number(Df)), Res, _Flags) :-
@@ -541,4 +439,4 @@ dchisq0_(A1...A2, Df1...Df2, Res) :-
     dchisq_(Mode, Df1, U),
     !, Res = L...U.
 
-macro(dchisq/2, mixed).
+macro(dchisq/2, interval_, []).
