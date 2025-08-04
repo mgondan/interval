@@ -6,7 +6,7 @@
 :- initialization(init).
 
 init :-
-    interval(1 + 1, _Res).
+    interval(0.5 + 2...3 / (5 * 2)^2 - 1, _Res).
 
 log_file(Path) :-
     source_file(test_performance:test_performance, Module),  

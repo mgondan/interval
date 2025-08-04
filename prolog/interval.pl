@@ -1,11 +1,34 @@
 :- module(interval, [interval/2, interval/3, op(150, xfx, ...)]).
 
-:- multifile int_hook/4.
-:- multifile eval_hook/2.
-:- multifile mono/2.
-:- multifile interval_/3.
-:- multifile instantiate/2.
-:- multifile interval_hook/3.
+/** <module> Perform arithmetic operations with intervals.
+
+This module adds interval arithmetic to Prolog using the clpBNR library for arithmetic evaluation.
+An interval is represented as L...U, where L stands for the lower bound and 
+U for the upper bound. If the upper bound is a negative number, it has to be written with 
+an additional space, e.g., -3... -2, or in the infix notation, ...(-3, -2).  
+The choice of using consult and not the module system is motivated by need for more flexibility.
+*/
+
+%%  interval(+A, ?Res) is nondet
+%
+%   True if A evalutes to Res. Atoms, numbers, and strings are not evaluated. 
+%   Supported operations: 
+%     - Comparison: '>', '<', '>=', '=<', '=\=', '=:='
+%     - Basic arithemtic: addition '+', subtraction '-', division '/', multiplication '*'
+%     - Square root for positive interval: 'interval(sqrt(A), Res)'
+%     - Square root for negative or mixed interval: 'interval(sqrt1(A), Res)'
+%     - Power: 'interval(A^atomic(N), Res)' or 'interval(A**atomic(N), Res)' with N being a natural number
+%     - Exponential: 'interval(exp(A)), Res)' 
+%     - Absolute value: 'interval(abs(A), Res)'
+%     - Sine: 'interval(sin(A), Res)'
+%     - Unary plus: 'interval(+(A), Res)'
+%     - Unary minus: 'interval(-(A), Res)'
+%     - Max: 'interval(max(A, B), Res)'
+%     - Min: 'interval(min(A, B), Res)'
+%     - Rounding: 'interval(round(1.356...1.634, atomic(2)), Res)' 
+%   
+%   @arg A is the expression to be evaluted.
+%   @arg Res is the result. This should always be unbound. For checking results, use 'interval(1...2 + 1, Res), Res = 2...3' instead of 'interval(1...2 + 1, 2...3)'
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -13,27 +36,9 @@
 
 :- nb_setval(digits, 2).
 
-:- consult(['../inst/prolog/lib/interface', '../inst/prolog/lib/core', '../inst/prolog/lib/op']).
-
-%% <module> Perform arithmetic operations with intervals.
-%
-% This module adds interval arithemtic to Prolog. 
-% An interval is represented as L...U, where L stands for the lower bound and 
-% U for the upper bound. If the upper bound is a negative number, it has to be written with 
-% an additional space, e.g., -3... -2, or in the infix notation, ...(-3, -2).  
-% The interval/2 parses and evaluates the arithemtic expression with such intervals
-% to a result.
-
-%%  interval(+A, ?Res)
-%   Evalutes an expression to an interval. If the first argument is already an interval, no evaluation is performed.
-%   Supported operations: 
-%     - Basic arithemtic: addition '+', subtraction '-', division '/', multiplication '*'
-%     - Square root for positive interval: 'interval(sqrt(X), Res)'
-%     - Square root for negative or mixed interval: 'interval(sqrt1(X), Res)'
-%     - Power: 'interval(X^atomic(N), Res)' with N being a natural number
-%     - Absolute value: 'interval(abs(X), Res)'
-%     - Comparison: '>', '<', '>=', '=<', '=\=', '=:='
-%     - Rounding: 'interval(round(1.356...1.634, atomic(2)), Res)' 
-%   
-%   @arg A is the expression to be evaluted.
-%   @arg Res is the result.
+:- consult(['../inst/prolog/lib/cleaning_clp', 
+            '../inst/prolog/lib/cleaning',
+            '../inst/prolog/lib/interface', 
+            '../inst/prolog/lib/op', 
+            '../inst/prolog/lib/eval',
+            '../inst/prolog/lib/utility']).

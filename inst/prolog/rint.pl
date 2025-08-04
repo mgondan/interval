@@ -1,14 +1,12 @@
 :- module(rint, [interval/2, interval/3, op(150, xfx, ...), op(800, xfx, <-)]).
 
-:- multifile r_hook/1.
-:- multifile r_hook/2.
-:- multifile int_hook/4.
-:- multifile eval_hook/2.
-:- multifile mono/2.
-:- multifile interval_/3.
-:- multifile interval_hook/3.
+/** <module> Interval arithmetic in R 
 
-:- dynamic instantiate/2.
+Used via the R package 'rolog'.
+
+The only difference to the 'rint' prologe module is that the moudle 'r' is not loaded, 
+because 'rolog' is already initialized on the R side.
+*/
 
 :- set_prolog_flag(float_overflow, infinity).
 :- set_prolog_flag(float_undefined, nan).
@@ -16,7 +14,7 @@
 
 :- nb_setval(digits, 2).
 
-:- consult([lib/interface, lib/core, lib/op, lib/rint_op]).
+:- consult(['lib/cleaning', 'lib/interface', 'lib/rint_op','lib/op', 'lib/eval_r', 'lib/utility']).
 
 % Call R
 r(Expr)

@@ -62,3 +62,27 @@ test8 | Inferences: 842 | Levels=8
 test9 | Inferences: 945 | Levels=9
 ---------
 
+---------
+2025-07-27 18:42:12 
+test1 | Inferences: 360
+test2 | Inferences: 663
+test3 | Inferences: 395
+test5 | Inferences: 129
+test6 | Inferences: 260 | Levels=6
+test7 | Inferences: 302 | Levels=7
+test8 | Inferences: 344 | Levels=8
+test9 | Inferences: 386 | Levels=9
+---------
+
+---------
+2025-08-03 18:39:42 
+test1 | Inferences: 356
+test2 | Inferences: 655
+test3 | Inferences: 387
+test5 | Inferences: 129
+test6 | Inferences: 254 | Levels=6
+test7 | Inferences: 295 | Levels=7
+test8 | Inferences: 336 | Levels=8
+test9 | Inferences: 377 | Levels=9
+---------
+
