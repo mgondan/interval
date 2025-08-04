@@ -22,6 +22,9 @@ clean(e, Cleaned)
 clean(L...U, Cleaned)
  => Cleaned = L...U.
 
+clean(User, A...A)
+ => User = A.
+
 clean(User, L...U)
  => User = L...U.
 
