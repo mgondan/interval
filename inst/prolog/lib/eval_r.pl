@@ -6,9 +6,22 @@ Depends on these externally defined predicates:
 Used by module 'rint'
 */
 
+:- dynamic eval/1.
+:- dynamic eval/2.
+:- dynamic eval/3.
+
 % Logical expression >, <, etc.
+eval(hook(Predicate, Expr)) :-
+    !,
+    call(Predicate, Expr).
+
 eval(Expr) :-
     Expr.
+
+% Custom predicate for evaluation
+eval(hook(Predicate, Expr), Res) :-
+    !,
+    call(Predicate, Expr, Res).
 
 % Evaluate in R
 eval(r(Expr), Res) :-
