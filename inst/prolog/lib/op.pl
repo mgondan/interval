@@ -550,8 +550,26 @@ interval_(round(A...B, number(Dig)), Res, _Flags) :-
  
 round0(A...B, Dig, Res) :-
     floor(A, Dig, A1),
+    floor_digits(Dig, A, A1, A2),
     ceiling(B, Dig, B1),
-    Res = A1...B1.
+    ceiling_digits(Dig, B, B1, B2),
+    Res = A2...B2.
+
+floor_digits(Dig, A, A1, A2) :-
+    eval(A =:= A1),
+    !,
+    eval(1 / (10^Dig), Mul),
+    eval(hook(is, A2), A - Mul).
+
+floor_digits(_Dig, _A, A1, A1).
+
+ceiling_digits(Dig, B, B1, B2) :-
+    eval(B =:= B1),
+    !,
+    eval(1 / (10^Dig), Mul),
+    eval(hook(is, B2), B + Mul).
+
+ceiling_digits(_Dig, _B, B1, B1).
 
 %
 % Sine

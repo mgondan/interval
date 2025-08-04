@@ -181,11 +181,11 @@ test(qbinom20) :-
 
 test(qbinom21) :-
     interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, true), Res),
-    equal(Res, 12...15).
+    equal(Res, 11.9999...15.0001).
 
 test(qbinom22) :-
     interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, false), Res),
-    equal(Res, 11...15).
+    equal(Res, 10.9999...15.0001).
 
 test(pbinom1) :-
     interval(pbinom(10, 20, 0.6), Res),
@@ -801,7 +801,7 @@ test(dchisq8) :-
 
 test(dchisq9) :-
     interval(dchisq(0.9...1.1, 2...3), Res),
-    equal(Res, 0.2413...0.5).
+    equal(Res, 0.2413...0.5001).
 
 :- end_tests(chisq).
 

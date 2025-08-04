@@ -483,6 +483,20 @@ test(round4) :-
     L = 0.33,
     U = 0.34.
 
+test(round5) :-
+    A = 42,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 41.99,
+    U = 42.01.
+
+test(round6) :-
+    A = 42.1,
+    Dig = 2,
+    interval(round(A, Dig), L...U),
+    L = 42.09,
+    U = 42.11.
+
 :- end_tests(round).
 
 :- begin_tests(sin).
@@ -497,13 +511,13 @@ test(sin_max) :-
     L = 1,
     U = 3,
     interval(sin(L...U), Res),
-    equal(Res, 0.1411...1).
+    equal(Res, 0.1411...1.0001).
 
 test(sin_min) :-
     L = 4,
     U = 5,
     interval(sin(L...U), Res),
-    equal(Res, -1... -0.7568).
+    equal(Res, -1.0001... -0.7568).
 
 test(sin_rising) :-
     L = 1,
