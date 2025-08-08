@@ -2,7 +2,6 @@
 
 /** <module> Perform arithmetic operations with intervals.
 
-This module adds interval arithmetic to Prolog using the clpBNR library for arithmetic evaluation.
 An interval is represented as L...U, where L stands for the lower bound and 
 U for the upper bound. If the upper bound is a negative number, it has to be written with 
 an additional space, e.g., -3... -2, or in the infix notation, ...(-3, -2).  
@@ -36,9 +35,7 @@ The choice of using consult and not the module system is motivated by need for m
 
 :- nb_setval(digits, 2).
 
-:- consult(['../inst/prolog/lib/cleaning_clp', 
-            '../inst/prolog/lib/cleaning',
-            '../inst/prolog/lib/interface', 
+:- consult(['../inst/prolog/lib/interface', 
             '../inst/prolog/lib/op', 
             '../inst/prolog/lib/eval',
             '../inst/prolog/lib/utility']).

@@ -3,7 +3,6 @@
 Depends on these externally defined predicates:
 - eval/1
 - eval/2
-- clean/2
 - positive/2
 - negative/2
 
@@ -19,6 +18,7 @@ For more information on the meaning of macro arguments, refer to the module 'exp
 */
 
 :- use_module(expansion).
+:- use_module(cleaning).
 
 :- multifile(interval_/3).
 

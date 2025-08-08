@@ -558,16 +558,14 @@ round0(A...B, Dig, Res) :-
 floor_digits(Dig, A, A1, A2) :-
     eval(A =:= A1),
     !,
-    eval(1 / (10^Dig), Mul),
-    eval(hook(is, A2), A - Mul).
+    eval(A - 1 / (10^Dig), A2).
 
 floor_digits(_Dig, _A, A1, A1).
 
 ceiling_digits(Dig, B, B1, B2) :-
     eval(B =:= B1),
     !,
-    eval(1 / (10^Dig), Mul),
-    eval(hook(is, B2), B + Mul).
+    eval(B + 1 / (10^Dig), B2).
 
 ceiling_digits(_Dig, _B, B1, B1).
 

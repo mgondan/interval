@@ -49,8 +49,7 @@ instead of the library clpBNR as in the module 'interval'.
 
 :- nb_setval(digits, 2).
 
-:- consult(['../inst/prolog/lib/cleaning', 
-            '../inst/prolog/lib/interface', 
+:- consult(['../inst/prolog/lib/interface', 
             '../inst/prolog/lib/rint_op', 
             '../inst/prolog/lib/op', 
             '../inst/prolog/lib/eval_r',

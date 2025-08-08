@@ -2,8 +2,7 @@
 
 :- use_module(library(plunit)).
 :- use_module(library(debug)).
-:- consult(['../inst/prolog/lib/cleaning_clp.pl',
-            '../inst/prolog/lib/cleaning.pl']).
+:- use_module('../inst/prolog/lib/cleaning.pl').
 
 test_cleaning :-
     run_tests([clean, unclean]).
@@ -101,48 +100,5 @@ test(unclean8) :-
 test(unclean9) :-
     clean(A, [number(1), atomic(a), string("a"), 1...2, number(1) + number(2)]),
     A = [1, a, "a", 1...2, 1 + 2].
-
-test(unclean10) :-
-    clpBNR:{B > 1},
-    clean(A, number(B)),
-    A = 1.0000000000000002...1.0Inf.
-
-test(unclean11) :-
-    clpBNR:{B < 1},
-    clean(A, number(B)),
-    A = -1.0Inf...0.9999999999999999.
-
-test(unclean12) :-
-    clpBNR:{_ is 5 + B},
-    clean(A, number(B)),
-    A = -1.0Inf...1.0Inf.
-
-test(unclean13) :-
-    clpBNR:{B is 1.0 / 3.0},
-    clean(A, number(B)),
-    A = 0.3333333333333333.
-
-test(unclean14) :-
-    clpBNR:{B is 1 / 3},
-    clean(A, number(B)),
-    A = 0.3333333333333333.
-
-test(unclean15) :-
-    clpBNR:{L is 1.0 / 3.0},
-    U is 1,
-    clean(A, L...U),
-    A = 0.3333333333333333...1.
-
-test(unclean16) :-
-    L is 0.2,
-    clpBNR:{U is 2.0 / 3.0},
-    clean(A, L...U),
-    A = 0.2...0.6666666666666667.
-
-test(unclean17) :-
-    clpBNR:{L is 1.0 / 3.0},
-    clpBNR:{U is 2.0 / 3.0},
-    clean(A, L...U),
-    A = 0.3333333333333333...0.6666666666666667.
 
 :- end_tests(unclean).
