@@ -1,4 +1,6 @@
-/** <file> Clean representations
+:- module(cleaning, [clean/2, op(150, xfx, ...)]).
+
+/** <module> Clean representations
 
 Mapping between expression from the user-level to clean representations 
 */

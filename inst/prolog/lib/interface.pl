@@ -1,9 +1,9 @@
 /** <file> User interface
-Depends on these externally defined predicates:
- - clean/2
 
-For the use of interval/2, refert to the module 'interval'
+For the use of interval/2, refer to the module 'interval'
 */
+
+:- use_module(cleaning).
 
 interval(Expr, Res) :-
     interval(Expr, Res, []).
