@@ -567,6 +567,14 @@ test(pt12) :-
     interval(pt(0.5...1, 2...5, false), Res),
     equal(Res, 0.1816...0.3334).
 
+test(pt13) :-
+    interval(pt(-0.5...0.2, 2...5, true), Res),
+    equal(Res, 0.4999...0.6809).
+
+test(pt14) :-
+    interval(pt(-0.5...0.2, 2...5, false), Res),
+    equal(Res, 0.3191...0.5001).
+
 test(qt1) :-
     interval(qt(0.4, 5), Res),
     equal(Res, -0.2672... -0.2671).
