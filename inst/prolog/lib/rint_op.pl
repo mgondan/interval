@@ -243,7 +243,7 @@ pt_(A1...A2, Df1...Df2, true, L...U) :-
 
 pt_(A1...A2, Df1...Df2, true, Res) :-
     eval(max(abs(A1), A2), Max),
-    pt0_(0...Max, Df1...Df2, Res0),
+    pt_(0...Max, Df1...Df2, true, Res0),
     !, Res = Res0.
 
 pt_(A1...A2, Df1...Df2, false, L...U) :-
@@ -260,7 +260,7 @@ pt_(A1...A2, Df1...Df2, false, L...U) :-
 
 pt_(A1...A2, Df1...Df2, false, Res) :-
     eval(max(abs(A1), A2), Max),
-    pt0_(0...Max, Df1...Df2, false, Res0),
+    pt_(0...Max, Df1...Df2, false, Res0),
     !, Res = Res0.    
     
 macro(pt/3, interval_, [], [pattern([_, _, bool(_)])]).
