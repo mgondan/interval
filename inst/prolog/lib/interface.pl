@@ -9,13 +9,9 @@ interval(Expr, Res) :-
     interval(Expr, Res, []).
 
 interval(Expr, Res, Flags) :-
-    copy_term(Expr, Expr0),
-    copy_term(Res, Res0),
-    clean(Expr0, Expr1),
-    clean(Res0, Res1),
+    clean(Expr, Expr1),
     default_digits(Dig, Flags),
     interval_(Expr1, Res1, [digits(Dig) | Flags]),
-    clean(Expr, Expr1),
     clean(Res, Res1).
     
 default_digits(Dig, Flags) 

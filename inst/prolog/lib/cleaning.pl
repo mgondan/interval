@@ -10,6 +10,10 @@ clean(A, Cleaned),
     number(A)
  => Cleaned = number(A).
 
+clean(L...U, number(A))
+ => L = A,
+    U = A.
+
 clean(User, number(A))
  => User = A.
 
