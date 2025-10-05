@@ -1,4 +1,4 @@
-Package: interval
+Package: intarith
 Title: Interval Arithmetic for R
 Version: 0.1
 Authors@R: c(person("Matthias", "Gondan", role=c("aut", "cre", "cph"),
