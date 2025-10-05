@@ -1,3 +1,3 @@
-exportPattern("^[[:alpha:]]+")
-exportPattern("^%.+%$")
+export("interval")
 import(rolog)
+importFrom("stats", "dbinom")
