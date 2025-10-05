@@ -2,7 +2,7 @@
   if(!rolog::rolog_ok())
     stop("Could not attach R package rolog.")
     
-  module <- system.file(file.path("prolog", "rint.pl"), package="interval")
+  module <- system.file(file.path("prolog", "rint.pl"), package="intarith")
   rolog::consult(module)
 }
 
@@ -12,7 +12,13 @@
 #'
 #' @param expr
 #' An arithmetic expression.
-#'
+#' 
+#' @param flags
+#' Optional flags.
+#' 
+#' @param env
+#' The environment to be used for the evaluation.
+#' 
 #' @return
 #' The numeric result of the expression.
 #' @export

@@ -4,7 +4,7 @@
 
 Used via the R package 'rolog'.
 
-The only difference to the 'rint' prologe module is that the moudle 'r' is not loaded, 
+The only difference to the 'rint' prolog module is that the module 'r' is not loaded, 
 because 'rolog' is already initialized on the R side.
 */
 
