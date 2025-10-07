@@ -1,3 +1,6 @@
-export("interval")
+export(interval)
+export(intarith)
+S3method(print,interval)
 import(rolog)
-importFrom("stats", "dbinom")
+importFrom(stats, dbinom)
+
