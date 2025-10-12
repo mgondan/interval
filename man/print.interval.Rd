@@ -12,5 +12,5 @@
 \item{...}{Further arguments.}
 }
 \description{
-Print intervals as "lower...upper"
+Print intervals as "lower...upper".
 }
