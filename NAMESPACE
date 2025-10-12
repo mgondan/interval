@@ -3,6 +3,6 @@ export("%...%")
 export("...")
 export(intarith)
 S3method(print,interval)
+S3method("+", interval)
 import(rolog)
 importFrom(stats, dbinom)
-
