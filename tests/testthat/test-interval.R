@@ -16,3 +16,17 @@ test_that("invalid values for bounds", {
   expect_error(interval(1, 0.9))
 })
 
+test_that("infix operator", {
+  actual <- 3%...%4
+  expect_s3_class(actual, "interval")
+  expect_equal(actual$l, 3)
+  expect_equal(actual$u, 4)
+})
+
+test_that("dots operator", {
+  actual <- ...(2, 3)
+  expect_s3_class(actual, "interval")
+  expect_equal(actual$l, 2)
+  expect_equal(actual$u, 3)
+})
+

@@ -1,4 +1,6 @@
 export(interval)
+export("%...%")
+export("...")
 export(intarith)
 S3method(print,interval)
 import(rolog)
