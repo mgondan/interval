@@ -18,9 +18,9 @@ The numeric result of the expression as interval.
 }
 \description{
 Evaluate an expression in interval arithmetic without having to create
-interval objects.
+interval objects. Intervals can be written as "...(a, b)" or "a...b".
 }
 \examples{
-intarith("1...2 + 3...4 + 5")
+intarith("1...2 + ...(3, 4) + 5")
 
 }
