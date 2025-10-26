@@ -40,6 +40,12 @@ jobs:
         run: swipl -t check_installation
         shell: bash
 
+      - name: Install json
+        run: |
+          export R_LIBS_USER=$HOME/Rlibs
+          swipl -t "pack_install(json, [interactive(false)])"
+        shell: bash
+
       - name: Install rolog
         run: |
           export R_LIBS_USER=$HOME/Rlibs
