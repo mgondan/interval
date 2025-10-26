@@ -17,3 +17,73 @@ test_that("addition4", {
   expr <- quote(...(6, 9) + 2 + ...(7, 9) + 3)
   expect_equal(eval(expr), ...(18, 23))
 })
+
+test_that("subtraction1", {
+  expr <- quote(...(4, 6) - ...(2, 3))
+  expect_equal(eval(expr), ...(1, 4))
+})
+
+test_that("subtraction2", {
+  expr <- quote(1 - ...(6, 9))
+  expect_equal(eval(expr), ...(-8, -5))
+})
+
+test_that("subtraction3", {
+  expr <- quote(...(6, 9) - 2)
+  expect_equal(eval(expr), ...(4, 7))
+})
+
+test_that("subtraction4", {
+  expr <- quote(...(10, 12) - 2 - ...(2, 3) - 3)
+  expect_equal(eval(expr), ...(2, 5))
+})
+
+test_that("multiplication1", {
+  expr <- quote(...(4, 6) * ...(2, 3))
+  expect_equal(eval(expr), ...(8, 18))
+})
+
+test_that("multiplication2", {
+  expr <- quote(2 * ...(6, 9))
+  expect_equal(eval(expr), ...(12, 18))
+})
+
+test_that("multiplication3", {
+  expr <- quote(...(6, 9) * 2)
+  expect_equal(eval(expr), ...(12, 18))
+})
+
+test_that("multiplication4", {
+  expr <- quote(...(1, 2) * 2 * ...(2, 3) * 3)
+  expect_equal(eval(expr), ...(12, 36))
+})
+
+test_that("division1", {
+  expr <- quote(...(4, 6) / ...(4, 5))
+  expect_equal(eval(expr), ...(0.8, 1.5))
+})
+
+test_that("division2", {
+  expr <- quote(2 / ...(4, 5))
+  expect_equal(eval(expr), ...(0.4, 0.5))
+})
+
+test_that("division3", {
+  expr <- quote(...(6, 9) / 2)
+  expect_equal(eval(expr), ...(3, 4.5))
+})
+
+test_that("division4", {
+  expr <- quote(...(5, 6) / 2 / ...(1, 2) / 2)
+  expect_equal(eval(expr), ...(0.625, 1.5))
+})
+
+test_that("power1", {
+  expr <- quote(...(2, 3) ^ 2)
+  expect_equal(eval(expr), ...(4, 9))
+})
+
+test_that("exp1", {
+  expr <- quote(exp(...(2, 3)))
+  expect_equal(eval(expr), ...(7.38905609893065, 20.085536923187668))
+})
