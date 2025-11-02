@@ -38,7 +38,7 @@
 
 .arg2char <- function(x) {
   if (.is_interval(x))
-    return(paste0(x$l, "...", x$u))
+    return(paste0("...(", x$l, ",", x$u, ")"))
   return(as.character(x))
 }
 
