@@ -19,6 +19,8 @@
 #' @export
 #' @md
 interval <- function(l, u) {
+  if (is.nan(l) || is.nan(u))
+    return(NaN)
   if (!(is.numeric(c(l, u))))
     stop("Non-numeric argument passed to constructor")
   if (l > u)

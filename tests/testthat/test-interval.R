@@ -30,3 +30,17 @@ test_that("dots operator", {
   expect_equal(actual$u, 3)
 })
 
+test_that("NaN argument right", {
+  actual <- (interval(NaN, 2))
+  expect_equal(actual, NaN)
+})
+
+test_that("NaN argument left", {
+  actual <- (interval(1, NaN))
+  expect_equal(actual, NaN)
+})
+
+test_that("NaN argument both", {
+  actual <- (interval(NaN, NaN))
+  expect_equal(actual, NaN)
+})
