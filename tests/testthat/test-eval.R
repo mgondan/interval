@@ -6,7 +6,7 @@ test_that(".eval", {
 
 test_that(".arg2char", {
   x <- interval(1, 2)
-  expect_equal(.arg2char(x), "1...2")
+  expect_equal(.arg2char(x), "...(1,2)")
   expect_equal(.arg2char(1), "1")
   expect_equal(.arg2char(0.1), "0.1")
 })
