@@ -21,7 +21,7 @@
 interval <- function(l, u) {
   if (!(is.numeric(c(l, u))))
     stop("Non-numeric argument passed to constructor")
-  if (l > u)
+  if (!is.nan(l) && !is.nan(u) && l > u )
     stop("Upper bound is required to be greater than the lower bound")
   structure(list(l = l, u = u), class = "interval")
 }
