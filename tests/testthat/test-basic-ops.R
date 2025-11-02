@@ -87,3 +87,43 @@ test_that("exp1", {
   expr <- quote(exp(...(2, 3)))
   expect_equal(eval(expr), ...(7.38905609893065, 20.085536923187668))
 })
+
+test_that("sqrt_1", {
+  expr <- quote(sqrt(...(4, 9)))
+  expect_equal(eval(expr), ...(2, 3))
+})
+
+test_that("sqrt_2", {
+  expr <- quote(sqrt(...(-2, 9)))
+  expect_equal(eval(expr), NaN)
+})
+
+test_that("sqrt_3", {
+  expr <- quote(sqrt(...(-2, 0)))
+  expect_equal(eval(expr), NaN)
+})
+
+test_that("sqrt_4", {
+  expr <- quote(sqrt(...(-2, -1)))
+  expect_equal(eval(expr), NaN)
+})
+
+test_that("sqrt0_1", {
+  expr <- quote(sqrt0(...(4, 9)))
+  expect_equal(eval(expr), ...(2, 3))
+})
+
+test_that("sqrt0_2", {
+  expr <- quote(sqrt0(...(-2, 9)))
+  expect_equal(eval(expr), ...(0, 3))
+})
+
+test_that("sqrt0_3", {
+  expr <- quote(sqrt0(...(-2, 0)))
+  expect_equal(eval(expr), 0)
+})
+
+test_that("sqrt0_4", {
+  expr <- quote(sqrt0(...(-2, -1)))
+  expect_equal(eval(expr), NaN)
+})
