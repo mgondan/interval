@@ -414,24 +414,27 @@ sqrt_(A, Res) :-
 
 sqrt_(_, 1.5NaN).
 
-macro(sqrt/1, sqrt_, [+]).
-
-% sqrt1/1: only for intervals, crops negative part of interval at 0
-interval_(sqrt1(A...B), Res, _Flags) :-
-    strictneg(A, B),
+interval_(sqrt(A..._), Res, _Flags) :-
+    eval(A < 0),
     !, Res = number(1.5NaN).
 
-interval_(sqrt1(A...B), Res, _Flags) :-
+interval_(sqrt(A...B), Res, _Flags) :-
+    sqrt_(A, L), 
+    sqrt_(B, U),
+    !, Res = L...U. 
+
+% sqrt0/1: only for intervals, crops negative part of interval at 0
+interval_(sqrt0(A...B), Res, _Flags) :-
     zeroneg(A, B),
     !, Res = number(0.0).
 
-interval_(sqrt1(A...B), Res, _Flags) :-
+interval_(sqrt0(A...B), Res, _Flags) :-
     mixed(A, B),
     !,
     sqrt_(B, U),
     Res = 0.0...U.
 
-interval_(sqrt1(A...B), Res, Flags) :-
+interval_(sqrt0(A...B), Res, Flags) :-
     !, interval_(sqrt(A...B), Res, Flags).
 
 %

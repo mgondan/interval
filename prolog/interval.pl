@@ -15,7 +15,7 @@ The choice of using consult and not the module system is motivated by need for m
 %     - Comparison: '>', '<', '>=', '=<', '=\=', '=:='
 %     - Basic arithemtic: addition '+', subtraction '-', division '/', multiplication '*'
 %     - Square root for positive interval: 'interval(sqrt(A), Res)'
-%     - Square root for negative or mixed interval: 'interval(sqrt1(A), Res)'
+%     - Square root for negative or mixed interval: 'interval(sqrt0(A), Res)'
 %     - Power: 'interval(A^atomic(N), Res)' or 'interval(A**atomic(N), Res)' with N being a natural number
 %     - Exponential: 'interval(exp(A)), Res)' 
 %     - Absolute value: 'interval(abs(A), Res)'
