@@ -1,6 +1,10 @@
 #' @title 
 #' Addition
 #'
+#' @description
+#' If two arguments are provided, performs addition. 
+#' If only one is provided, acts as unary plus.
+#' 
 #' @param x
 #' Left operand
 #'
@@ -14,10 +18,13 @@
 #' ...(1, 2) + ...(3, 4)
 #' 1 %...% 2 + 3 %...% 4
 #' interval(1, 2) + interval(3, 4)
+#' +...(1, 2)
+#' +(1 %...% 2)
+#' +interval(1, 2)
 #' 
 #' @export
 #' @md
-"+.interval" <- function(x, y) {
+"+.interval" <- function(x, y=NULL) {
   .eval("+", x, y)
 }
 
@@ -25,6 +32,10 @@
 #' @title 
 #' Subtraction
 #'
+#' @description
+#' If two arguments are provided, performs subtraction.
+#' If only one is provided, acts as unary minus.
+#' 
 #' @param x
 #' Left operand
 #'
@@ -38,10 +49,13 @@
 #' ...(3, 4) - ...(1, 2)
 #' 1 %...% 2 - 3 %...% 4
 #' interval(1, 2) - interval(3, 4)
+#' -...(3, 4)
+#' -(1 %...% 2)
+#' -interval(1, 2)
 #' 
 #' @export
 #' @md
-"-.interval" <- function(x, y) {
+"-.interval" <- function(x, y=NULL) {
   .eval("-", x, y)
 }
 
