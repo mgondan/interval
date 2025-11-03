@@ -186,3 +186,24 @@ sqrt.interval <- function(x) {
 sqrt0 <- function(x) {
   .eval("sqrt0", x)
 }
+
+
+#' @title 
+#' Absolute value
+#' 
+#' @param x
+#' An interval
+#' 
+#' @return
+#' The numeric result as interval or number.
+#' 
+#' @examples 
+#' abs(...(4, 9))
+#' abs(-4 %...% 9)
+#' abs(interval(4, 9))
+#' 
+#' @export
+#' @md
+abs.interval <- function(x) {
+  .eval("abs", x)
+}
