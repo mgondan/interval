@@ -4,7 +4,7 @@
 \alias{-.interval}
 \title{Subtraction}
 \usage{
-\method{-}{interval}(x, y)
+\method{-}{interval}(x, y = NULL)
 }
 \arguments{
 \item{x}{Left operand}
@@ -15,11 +15,15 @@
 The numeric result as interval or number.
 }
 \description{
-Subtraction
+If two arguments are provided, performs subtraction.
+#' If only one is provided, acts as unary minus.
 }
 \examples{
 ...(3, 4) - ...(1, 2)
 1 \%...\% 2 - 3 \%...\% 4
 interval(1, 2) - interval(3, 4)
+-...(3, 4)
+-(1 \%...\% 2)
+-interval(1, 2)
 
 }

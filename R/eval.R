@@ -30,7 +30,8 @@
 
 # General function used by S3 methods
 .eval <- function(op, ...) {
-  args <- sapply(list(...), .arg2char)
+  args <- Filter(Negate(is.null), list(...))
+  args <- sapply(args, .arg2char)
   args <- paste(args, collapse = ",")
   expr <- paste0(op, "(", args, ")")
   .intarith_string(expr)
