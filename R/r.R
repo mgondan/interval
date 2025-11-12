@@ -1,6 +1,3 @@
-`...` <- function(lo, hi)
-  call("...", lo, hi)
-
 dbinom_max = function(k, N, p1, p2)
   dbinom(k, N, ifelse(k > N * p2, p2, ifelse(k < N * p1, p1, k/N)))
 
