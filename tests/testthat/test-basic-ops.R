@@ -133,6 +133,21 @@ test_that("abs1", {
   expect_equal(eval(expr), ...(1, 2))
 })
 
+test_that("abs2", {
+  expr <- quote(abs(...(1, 2)))
+  expect_equal(eval(expr), ...(1, 2))
+})
+
+test_that("abs3", {
+  expr <- quote(abs(...(-1, 2)))
+  expect_equal(eval(expr), ...(0.0, 2))
+})
+
+test_that("abs4", {
+  expr <- quote(abs(...(-2, 1)))
+  expect_equal(eval(expr), ...(0.0, 2))
+})
+
 test_that("unary plus 1", {
   expr <- quote(+(...(-2, -1)))
   expect_equal(eval(expr), ...(-2, -1))
