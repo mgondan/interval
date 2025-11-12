@@ -16,7 +16,7 @@ The numeric result as interval or number.
 }
 \description{
 If two arguments are provided, performs subtraction.
-#' If only one is provided, acts as unary minus.
+If only one is provided, acts as unary minus.
 }
 \examples{
 ...(3, 4) - ...(1, 2)
