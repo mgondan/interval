@@ -221,3 +221,24 @@ sqrt0 <- function(x) {
 abs.interval <- function(x) {
   .eval("abs", x)
 }
+
+
+#' @title 
+#' Sin
+#' 
+#' @param x
+#' An interval
+#' 
+#' @return
+#' The numeric result as interval or number.
+#' 
+#' @examples 
+#' sin(...(4, 9))
+#' sin(-4 %...% 9)
+#' sin(interval(4, 9))
+#' 
+#' @export
+#' @md
+sin.interval <- function(x) {
+  .eval("sin", x)
+}

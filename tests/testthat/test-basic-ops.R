@@ -157,3 +157,8 @@ test_that("unary minus 1", {
   expr <- quote(-(...(-2, -1)))
   expect_equal(eval(expr), ...(1, 2))
 })
+
+test_that("sin1", {
+  expr <- quote(sin(...(2, 9)))
+  expect_equal(eval(expr), ...(-1, 1))
+})
