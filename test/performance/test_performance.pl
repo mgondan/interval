@@ -1,6 +1,6 @@
 :- module(test_performance, [test_performance/0, clear_log/0]).
 
-:- use_module(library(rint)).
+:- use_module('/home/jeremyirilli/interval/prolog/rint.pl').
 :- use_module(library(date)). 
 
 :- initialization(init).
