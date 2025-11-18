@@ -44,5 +44,5 @@
 }
 
 .is_interval <- function(x) {
-  class(x) == "interval"
+  inherits(x, "interval")
 }
