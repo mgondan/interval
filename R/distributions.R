@@ -29,14 +29,10 @@
 #' @export
 #' @md
 pbinom <- function(x, size, prob, lower.tail = TRUE, ...) {
-  if (any(sapply(list(x, size, prob), .is_interval))) {
-    .pbinom_interval(x, size, prob, lower.tail)
-  } else {
-    .pbinom_default(x, size, prob, lower.tail, ...)
-  }
+  .dispatch("pbinom", x, size, prob, lower.tail, ...)
 }
 
-.pbinom_interval <- function(x, size, prob, lower.tail = TRUE) {
+.pbinom_interval <- function(x, size, prob, lower.tail = TRUE, ...) {
   .eval("pbinom", x, size, prob, lower.tail)
 }
 

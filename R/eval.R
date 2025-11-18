@@ -44,5 +44,17 @@
 }
 
 .is_interval <- function(x) {
-  class(x) == "interval"
+  inherits(x, "interval")
+}
+
+# Manual dispatching instead of S3 system.
+# Requires that a function ".%name%_interval" and
+# ".%name%_default" is defined with at least the same number of arguments.
+.dispatch <- function(name, ...) {
+  dots <- list(...)
+  if (any(sapply(dots, .is_interval))) {
+    do.call(paste0(".", name, "_interval"), dots)
+  } else {
+    do.call(paste0(".", name, "_default"), dots)
+  }
 }
