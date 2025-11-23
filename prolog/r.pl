@@ -20,7 +20,7 @@ r_initialize,
 
 r_initialize
  => pack_property(interval, directory(Dir)),
-    directory_file_path(Dir, 'R', Dir1),
+    directory_file_path(Dir, 'R/rint', Dir1),
     r_source(r, Dir1),
     assert(initialized).
 
@@ -31,7 +31,7 @@ r_initialize(Session),
 r_initialize(Session)
  => rs_init(Session),
     pack_property(interval, directory(Dir)),
-    directory_file_path(Dir, 'R', Dir1),
+    directory_file_path(Dir, 'R/rint', Dir1),
     r_source(r, Dir1),
     assert(initialized(Session)).
 
