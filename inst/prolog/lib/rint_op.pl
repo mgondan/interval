@@ -131,8 +131,8 @@ dbinom0(X1...X2, N1...N2, P1...P2, L...U) :-
 
 % otherwise
 dbinom0(K1...K2, N1...N2, P1...P2, L...U) :-
-    eval(r(g <- 'expand.grid'('k'=K1:K2, 'N'=N1:N2))),
-    eval(r(g <- subset(g, '&'('$'(g, k) >= floor(P1 * '$'(g, 'N')), '$'(g, k) =< ceiling(P2 * '$'(g, 'N')))))),
+    eval(r(g <- 'expand.grid'('k'=K1:K2, 'N'=N1:N2)), _),
+    eval(r(g <- subset(g, '&'('$'(g, k) >= floor(P1 * '$'(g, 'N')), '<='('$'(g, k), ceiling(P2 * '$'(g, 'N')))))), _),
     eval(r(c(min(dbinom(c(K1, K2), c(N2, N1), c(P2, P1))), 
             max(dbinom('$'(g, k), '$'(g, 'N'), ifelse('$'(g, k) > '$'(g, 'N') * P2, P2, 
                 ifelse('$'(g, k) < '$'(g, 'N') * P1, P1, '$'(g, k)/'$'(g, 'N'))))))), ##(L, U)).
