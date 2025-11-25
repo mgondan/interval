@@ -157,12 +157,68 @@ macro(pnorm/4, all, [-,+,-,/], [hook(r), pattern([_, _, _, bool(false)])]).
 macro(qnorm/1, all, [+], [hook(r)]).
 
 % qnorm/3: lower.tail = TRUE
-macro(qnorm/3, all, [+,+,+], [hook(r)]).
+interval_(qnorm(number(P), number(Mu), number(Sigma)), Res, _Flags) :-
+    qnorm_lower(P, Mu, Sigma, Res0),
+    !, Res = number(Res0).
+
+qnorm_lower(P, Mu, Sigma, Res) :-
+    eval(r(qnorm(P, Mu, Sigma, 'lower.tail'=true)), Res).
+
+interval_(qnorm(P1...P2, Mu1...Mu2, Sigma1...Sigma2), Res, _Flags) :-
+    qnorm0(P1...P2, Mu1...Mu2, Sigma1...Sigma2, Res0),
+    !, Res = Res0.
+
+% p < 0.5: [+, +, -] (lower tail)
+qnorm0(P1...P2, Mu1...Mu2, Sigma1...Sigma2, Res) :-
+    eval(P2 < 0.5),
+    qnorm_lower(P1, Mu1, Sigma2, L),
+    qnorm_lower(P2, Mu2, Sigma1, U),
+    !, Res = L...U.
+    
+% p >= 0.5 || p1 =< 0.5, p2 >= 0.5: [+, +, +] (lower tail)
+qnorm0(P1...P2, Mu1...Mu2, Sigma1...Sigma2, Res) :-
+    qnorm_lower(P1, Mu1, Sigma1, L),
+    qnorm_lower(P2, Mu2, Sigma2, U),
+    !, Res = L...U.
+
+macro(qnorm/3, interval_, []).
 
 % qnorm/4: explicit tail argument
-macro(qnorm/4, all, [+,+,+,/], [hook(r), pattern([_, _, _, bool(true)])]).
+interval_(qnorm(number(P), number(Mu), number(Sigma), bool(true)), Res, _Flags) :-
+    qnorm_lower(P, Mu, Sigma, Res0),
+    !, Res = number(Res0).
 
-macro(qnorm/4, all, [-,+,-,/], [hook(r), pattern([_, _, _, bool(false)])]).
+interval_(qnorm(number(P), number(Mu), number(Sigma), bool(false)), Res, _Flags) :-
+    qnorm_upper(P, Mu, Sigma, Res0),
+    !, Res = number(Res0).
+
+qnorm_upper(P, Mu, Sigma, Res) :-
+    eval(r(qnorm(P, Mu, Sigma, 'lower.tail'=false)), Res).
+
+interval_(qnorm(P1...P2, Mu1...Mu2, Sigma1...Sigma2, bool(true)), Res, Flags) :-
+    interval_(qnorm(P1...P2, Mu1...Mu2, Sigma1...Sigma2), Res0, Flags),
+    !, Res = Res0.
+
+interval_(qnorm(P1...P2, Mu1...Mu2, Sigma1...Sigma2, bool(false)), Res, _Flags) :-
+    qnorm1(P1...P2, Mu1...Mu2, Sigma1...Sigma2, Res0),
+    !, Res = Res0.
+
+% p < 0.5: [-, +, +] (upper tail)
+qnorm1(P1...P2, Mu1...Mu2, Sigma1...Sigma2, Res) :-
+    eval(P2 < 0.5),
+    qnorm_upper(P2, Mu1, Sigma1, L),
+    qnorm_upper(P1, Mu2, Sigma2, U),
+    !, Res = L...U.
+
+% p >= 0.5 || p1 =< 0.5, p2 >= 0.5: [-, +, -] (upper tail) 
+qnorm1(P1...P2, Mu1...Mu2, Sigma1...Sigma2, Res) :-
+    qnorm_upper(P2, Mu1, Sigma2, L),
+    qnorm_upper(P1, Mu2, Sigma1, U),
+    !, Res = L...U.
+
+macro(qnorm/4, interval_, [], [pattern([_, _, _, bool(true)])]).
+
+macro(qnorm/4, interval_, [], [pattern([_, _, _, bool(false)])]).
 
 % dnorm/1: Mu = 0, Sd = 1
 interval_(dnorm(number(A)), Res, _Flags) :-
