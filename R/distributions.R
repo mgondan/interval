@@ -72,3 +72,78 @@ dbinom <- function(x, size, prob, ...) {
 .dbinom_default <- function(x, size, prob, ...) {
   stats::dbinom(x, size, prob, ...)
 }
+
+#' @title 
+#' The Normal Distribution
+#' 
+#' @name Normal
+#' 
+#' @description
+#' For more information, refer to the documentation
+#' of [dnorm()], [pnorm()], [qnorm()] from `stats`.
+#' 
+#' @param q,x
+#' vector of quantiles.
+#' 
+#' @param p
+#' vector of probabilities
+#' 
+#' @param mean
+#' vector of means
+#' 
+#' @param sd
+#' vector of standard deviations.
+#' 
+#' @param lower.tail
+#' logical; if TRUE (default), probabilities are 
+#' _P_\[_X&le;x_\], otherwise, _P_\[_X&ge;x_\]
+#' 
+#' @param ...
+#' further arguments
+#' 
+#' @return
+#' The numeric result as interval or number.
+#' 
+#' @examples 
+#' pnorm(...(8, 9), ...(10, 11), ...(2, 3))
+#' qnorm(...(0.3, 0.4), ...(10, 11), ...(2, 3))
+#' dnorm(...(8, 9), ...(10, 11), ...(2, 3))
+#' @export
+#' @md
+pnorm <- function(q, mean = 0, sd = 1, lower.tail = TRUE, ...) {
+  .dispatch("pnorm", q, mean, sd, lower.tail, ...)
+}
+
+.pnorm_interval <- function(q, mean = 0, sd = 1, lower.tail = TRUE, ...) {
+  .eval("pnorm", q, mean, sd, lower.tail)
+}
+
+.pnorm_default <- function(q, mean = 0, sd = 1, lower.tail = TRUE, ...) {
+  stats::pnorm(q, mean, sd, lower.tail, ...)
+}
+
+#' @rdname Normal
+qnorm <- function(p, mean = 0, sd = 1, lower.tail = TRUE, ...) {
+  .dispatch("qnorm", p, mean, sd, lower.tail, ...)
+}
+
+.qnorm_interval <- function(p, mean = 0, sd = 1, lower.tail = TRUE, ...) {
+  .eval("qnorm", p, mean, sd, lower.tail)
+}
+
+.qnorm_default <- function(p, mean = 0, sd = 1, lower.tail = TRUE, ...) {
+  stats::qnorm(p, mean, sd, lower.tail, ...)
+}
+
+#' @rdname Normal
+dnorm <- function(x, mean = 0, sd = 1, ...) {
+  .dispatch("dnorm", x, mean, sd, ...)
+}
+
+.dnorm_interval <- function(x, mean = 0, sd = 1, ...) {
+  .eval("dnorm", x, mean, sd)
+}
+
+.dnorm_default <- function(x, mean = 0, sd = 1, ...) {
+  stats::dnorm(x, mean, sd, ...)
+}
