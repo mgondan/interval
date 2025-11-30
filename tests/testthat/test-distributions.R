@@ -94,23 +94,33 @@ test_that("dbinom 1", {
 })
 
 test_that("dbinom 2", {
+  expr <- quote(dbinom(6, 20, 0.4, log=TRUE))
+  expect_equal(rnd(eval(expr)), -2.084159)
+})
+
+test_that("dbinom 3", {
   expr <- quote(dbinom(...(6, 8), 20, 0.3))
   expect_equal(rnd(eval(expr)), ...(0.114396, 0.191639))
 })
 
-test_that("dbinom 3", {
+test_that("dbinom 4", {
   expr <- quote(dbinom(6, ...(20, 21), 0.3))
   expect_equal(rnd(eval(expr)), ...(0.187806, 0.191639))
 })
 
-test_that("dbinom 4", {
+test_that("dbinom 5", {
   expr <- quote(dbinom(6, 20, ...(0.3, 0.5)))
   expect_equal(rnd(eval(expr)), ...(0.036964, 0.191639))
 })
 
-test_that("dbinom 5", {
+test_that("dbinom 6", {
   expr <- quote(dbinom(...(6, 8), ...(20, 22), ...(0.3, 0.4)))
   expect_equal(rnd(eval(expr)), ...(0.086217, 0.191639))
+})
+
+test_that("dbinom 7", {
+  expr <- quote(dbinom(...(6, 8), ...(20, 22), ...(0.3, 0.4), log=TRUE))
+  expect_equal(rnd(eval(expr)), ...(-2.450885, -1.652141))
 })
 
 test_that("pnorm 1", {

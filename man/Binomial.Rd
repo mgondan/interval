@@ -11,7 +11,7 @@ pbinom(x, size, prob, lower.tail = TRUE, log.p = FALSE)
 
 qbinom(p, size, prob, lower.tail = TRUE, log.p = FALSE)
 
-dbinom(x, size, prob, ...)
+dbinom(x, size, prob, log = FALSE)
 }
 \arguments{
 \item{x}{Number of successes}
@@ -23,11 +23,9 @@ dbinom(x, size, prob, ...)
 \item{lower.tail}{logical; if TRUE (default), probabilities are
 \emph{P}[\emph{X≤x}], otherwise, \emph{P}[\emph{X≥x}]}
 
-\item{log.p}{logical; if TRUE, probabilities p are given as log(p)}
+\item{log.p, log}{logical; if TRUE, probabilities p are given as log(p)}
 
 \item{p}{probability}
-
-\item{...}{further arguments}
 }
 \value{
 The numeric result as interval or number.

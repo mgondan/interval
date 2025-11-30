@@ -23,11 +23,8 @@
 #' logical; if TRUE (default), probabilities are 
 #' _P_\[_X&le;x_\], otherwise, _P_\[_X&ge;x_\]
 #' 
-#' @param log.p
+#' @param log.p,log
 #' logical; if TRUE, probabilities p are given as log(p)
-#' 
-#' @param ...
-#' further arguments
 #' 
 #' @return
 #' The numeric result as interval or number.
@@ -64,16 +61,16 @@ qbinom <- function(p, size, prob, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @rdname Binomial
-dbinom <- function(x, size, prob, ...) {
-  .dispatch("dbinom", x, size, prob, ...)
+dbinom <- function(x, size, prob, log=FALSE) {
+  .dispatch("dbinom", x, size, prob, log)
 }
 
-.dbinom_interval <- function(x, size, prob, ...) {
-  .eval("dbinom", x, size, prob)
+.dbinom_interval <- function(x, size, prob, log=FALSE) {
+  .eval("dbinom", x, size, prob, log)
 }
 
-.dbinom_default <- function(x, size, prob, ...) {
-  stats::dbinom(x, size, prob, ...)
+.dbinom_default <- function(x, size, prob, log=FALSE) {
+  stats::dbinom(x, size, prob, log)
 }
 
 #' @title 
