@@ -4,8 +4,6 @@
 
 This module expands the 'interval' module with R functions. 
 For general information on the use of interval/2 and interval/3, please refer to that module. 
-For better compatibility with R, the standard built-in arithmetic evaluation is used 
-instead of the library clpBNR as in the module 'interval'. 
 */
 
 % Supported functions:
@@ -20,6 +18,7 @@ instead of the library clpBNR as in the module 'interval'.
 %       - Quantile with explicit tail argument: interval(qbinom(Alpha, N, P, true), Res)
 %       - Quantile with explicit tail and log.p argument: interval(qbinom(Alpha, N, P, false, true), Res)
 %       - Density: interval(dbinom(X, N, P), Res)
+%       - Density with log argument: interval(dbinom(X, N, P, true), Res)
 %
 %   Normal distribution
 %       - Cumulated density with defaults: interval(pnorm(X), Res)
