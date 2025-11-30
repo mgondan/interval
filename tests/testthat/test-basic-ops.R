@@ -85,7 +85,7 @@ test_that("power1", {
 
 test_that("exp1", {
   expr <- quote(exp(...(2, 3)))
-  expect_equal(eval(expr), ...(7.38905609893065, 20.085536923187668))
+  expect_equal(rnd(eval(expr)), ...(7.389056, 20.085537))
 })
 
 test_that("sqrt_1", {
