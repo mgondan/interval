@@ -44,33 +44,48 @@ test_that("pbinom 9", {
 })
 
 test_that("qbinom 1", {
-  expr <- quote(qbinom(0.5, 20, 0.2))
-  expect_equal(eval(expr), 4.0)
+  expr <- quote(qbinom(0.9, 20, 0.2))
+  expect_equal(eval(expr), 6.0)
 })
 
 test_that("qbinom 2", {
+  expr <- quote(qbinom(0.9, 20, 0.2, lower.tail=FALSE))
+  expect_equal(eval(expr), 2.0)
+})
+
+test_that("qbinom 3", {
+  expr <- quote(qbinom(-0.11, 20, 0.2, log.p=TRUE))
+  expect_equal(eval(expr), 6.0)
+})
+
+test_that("qbinom 4", {
   expr <- quote(qbinom(...(0.5, 0.7), 20, 0.2))
   expect_equal(eval(expr), ...(4.0, 5.0))
 })
 
-test_that("qbinom 3", {
+test_that("qbinom 5", {
   expr <- quote(qbinom(0.5, ...(20, 24), 0.2))
   expect_equal(eval(expr), ...(4.0, 5.0))
 })
 
-test_that("qbinom 4", {
+test_that("qbinom 6", {
   expr <- quote(qbinom(0.5, 20, ...(0.2, 0.4)))
   expect_equal(eval(expr), ...(4.0, 8.0))
 })
 
-test_that("qbinom 5", {
+test_that("qbinom 7", {
   expr <- quote(qbinom(...(0.5, 0.7), ...(20, 22), ...(0.2, 0.4)))
   expect_equal(eval(expr), ...(4.0, 10.0))
 })
 
-test_that("qbinom 6", {
+test_that("qbinom 8", {
   expr <- quote(qbinom(...(0.5, 0.7), ...(20, 22), ...(0.2, 0.4), lower.tail=FALSE))
   expect_equal(eval(expr), ...(3.0, 9.0))
+})
+
+test_that("qbinom 9", {
+  expr <- quote(qbinom(...(-0.69, -0.36), ...(20, 22), ...(0.2, 0.4), log.p=TRUE))
+  expect_equal(eval(expr), ...(4.0, 10.0))
 })
 
 test_that("dbinom 1", {

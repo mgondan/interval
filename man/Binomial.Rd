@@ -9,7 +9,7 @@
 \usage{
 pbinom(x, size, prob, lower.tail = TRUE, log.p = FALSE)
 
-qbinom(p, size, prob, lower.tail = TRUE, ...)
+qbinom(p, size, prob, lower.tail = TRUE, log.p = FALSE)
 
 dbinom(x, size, prob, ...)
 }

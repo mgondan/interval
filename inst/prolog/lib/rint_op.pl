@@ -108,6 +108,11 @@ macro(qbinom/4, all, [+, +, +, /], [hook(r), pattern([_, _, _, bool(true)])]).
 
 macro(qbinom/4, all, [-, +, +, /], [hook(r), pattern([_, _, _, bool(false)])]).
 
+% qbinom/5: explicit tail and log.p arguments
+macro(qbinom/5, all, [+, +, +, /, /], [hook(r), pattern([_, _, _, bool(true), bool(_)])]).
+
+macro(qbinom/5, all, [-, +, +, /, /], [hook(r), pattern([_, _, _, bool(false), bool(_)])]).
+
 % dbinom
 interval_(dbinom(number(Alpha), number(N), number(P)), Res, _Flags) :-
     dbinom_(Alpha, N, P, Res0),
