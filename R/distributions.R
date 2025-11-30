@@ -23,6 +23,9 @@
 #' logical; if TRUE (default), probabilities are 
 #' _P_\[_X&le;x_\], otherwise, _P_\[_X&ge;x_\]
 #' 
+#' @param log.p
+#' logical; if TRUE, probabilities p are given as log(p)
+#' 
 #' @param ...
 #' further arguments
 #' 
@@ -35,16 +38,16 @@
 #' qbinom(...(0.5, 0.6), ...(20, 21), ...(0.3, 0.5))
 #' @export
 #' @md
-pbinom <- function(x, size, prob, lower.tail = TRUE, ...) {
-  .dispatch("pbinom", x, size, prob, lower.tail, ...)
+pbinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE) {
+  .dispatch("pbinom", x, size, prob, lower.tail, log.p)
 }
 
-.pbinom_interval <- function(x, size, prob, lower.tail = TRUE, ...) {
-  .eval("pbinom", x, size, prob, lower.tail)
+.pbinom_interval <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE) {
+  .eval("pbinom", x, size, prob, lower.tail, log.p)
 }
 
-.pbinom_default <- function(x, size, prob, lower.tail = TRUE, ...) {
-  stats::pbinom(x, size, prob, lower.tail, ...)
+.pbinom_default <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE) {
+  stats::pbinom(x, size, prob, lower.tail, log.p)
 }
 
 #' @rdname Binomial
