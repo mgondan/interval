@@ -187,6 +187,134 @@ test(qbinom22) :-
     interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, false), Res),
     equal(Res, 10.9999...15.0001).
 
+test(qbinom23) :-
+    interval(qbinom(0.6, 20, 0.3, true, false), Res),
+    Res = 6.0.
+
+test(qbinom24) :-
+    interval(qbinom(-0.51, 20, 0.3, true, true), Res),
+    Res = 6.0.
+
+test(qbinom25) :-
+    interval(qbinom(0.6, 20, 0.3, false, false), Res),
+    Res = 5.0.
+
+test(qbinom26) :-
+    interval(qbinom(-0.51, 20, 0.3, false, true), Res),
+    Res = 5.0.
+
+test(qbinom26) :-
+    interval(qbinom(0.4...0.6, 20, 0.3, true, false), Res),
+    Res = 5.0...6.0.
+
+test(qbinom27) :-
+    interval(qbinom(-0.92... -0.51, 20, 0.3, true, true), Res),
+    Res = 5.0...6.0.
+
+test(qbinom28) :-
+    interval(qbinom(0.4...0.6, 20, 0.3, false, false), Res),
+    Res = 5.0...6.0.
+
+test(qbinom29) :-
+    interval(qbinom(-0.92... -0.51, 20, 0.3, false, true), Res),
+    Res = 5.0...6.0.
+
+test(qbinom30) :-
+    interval(qbinom(0.6, 20...21, 0.3, true, false), Res),
+    Res = 6.0...7.0.
+
+test(qbinom31) :-
+    interval(qbinom(-0.51, 20...21, 0.3, true, true), Res),
+    Res = 6.0...7.0.
+
+test(qbinom32) :-
+    interval(qbinom(0.6, 20...21, 0.3, false, false), Res),
+    Res = 5.0...6.0.
+
+test(qbinom33) :-
+    interval(qbinom(-0.51, 20...21, 0.3, false, true), Res),
+    Res = 5.0...6.0.
+
+test(qbinom34) :-
+    interval(qbinom(0.6, 20, 0.3...0.4, true, false), Res),
+    Res = 6.0...9.0.
+
+test(qbinom35) :-
+    interval(qbinom(-0.51, 20, 0.3...0.4, true, true), Res),
+    Res = 6.0...9.0.
+
+test(qbinom36) :-
+    interval(qbinom(0.6, 20, 0.3...0.4, false, false), Res),
+    Res = 5.0...7.0.
+
+test(qbinom37) :-
+    interval(qbinom(-0.51, 20, 0.3...0.4, false, true), Res),
+    Res = 5.0...7.0.
+
+test(qbinom38) :-
+    interval(qbinom(0.4...0.6, 20...21, 0.3, true, false), Res),
+    Res = 5.0...7.0.
+
+test(qbinom39) :-
+    interval(qbinom(-0.92... -0.51, 20...21, 0.3, true, true), Res),
+    Res = 5.0...7.0.
+
+test(qbinom40) :-
+    interval(qbinom(0.4...0.6, 20...21, 0.3, false, false), Res),
+    Res = 5.0...7.0.
+
+test(qbinom41) :-
+    interval(qbinom(-0.92... -0.51, 20...21, 0.3, false, true), Res),
+    Res = 5.0...7.0.
+
+test(qbinom42) :-
+    interval(qbinom(0.6, 20...21, 0.3...0.4, true, false), Res),
+    Res = 6.0...9.0.
+
+test(qbinom43) :-
+    interval(qbinom(-0.51, 20...21, 0.3...0.4, true, true), Res),
+    Res = 6.0...9.0.
+
+test(qbinom44) :-
+    interval(qbinom(0.6, 20...21, 0.3...0.4, false, false), Res),
+    Res = 5.0...8.0.
+
+test(qbinom45) :-
+    interval(qbinom(-0.51, 20...21, 0.3...0.4, false, true), Res),
+    Res = 5.0...8.0.
+
+test(qbinom46) :-
+    interval(qbinom(0.4...0.6, 20, 0.3...0.4, true, false), Res),
+    Res = 5.0...9.0.
+
+test(qbinom47) :-
+    interval(qbinom(-0.92... -0.51, 20, 0.3...0.4, true, true), Res),
+    Res = 5.0...9.0.
+
+test(qbinom48) :-
+    interval(qbinom(0.4...0.6, 20, 0.3...0.4, false, false), Res),
+    Res = 5.0...9.0.
+
+test(qbinom49) :-
+    interval(qbinom(-0.92... -0.51, 20, 0.3...0.4, false, true), Res),
+    Res = 5.0...9.0.
+
+test(qbinom50) :-
+    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, true, false), Res),
+    equal(Res, 11.9999...15.0001).
+
+test(qbinom51) :-
+    interval(qbinom(-0.69... -0.51, 20...21, 0.6...0.7, true, true), Res),
+    equal(Res, 11.9999...15.0001).
+
+test(qbinom52) :-
+    interval(qbinom(0.5...0.6, 20...21, 0.6...0.7, false, false), Res),
+    equal(Res, 10.9999...15.0001).
+
+test(qbinom53) :-
+    interval(qbinom(-0.69... -0.51, 20...21, 0.6...0.7, false, true), Res),
+    equal(Res, 10.9999...15.0001).
+
 test(pbinom1) :-
     interval(pbinom(10, 20, 0.6), Res),
     equal(Res, 0.2446...0.2447).
