@@ -267,6 +267,102 @@ test(pbinom19) :-
     interval(pbinom(10...12, 20...21, 0.6...0.7, false), Res),
     equal(Res, 0.4158...0.9737).
 
+test(pbinom20) :-
+    interval(pbinom(10, 20, 0.6, true, false), Res),
+    equal(Res, 0.2446...0.2447). 
+
+test(pbinom21) :-
+    interval(pbinom(10, 20, 0.6, true, true), Res),
+    equal(Res, -1.4079... -1.4078).
+
+test(pbinom22) :-
+    interval(pbinom(10, 20, 0.6, false, false), Res),
+    equal(Res, 0.7553...0.7554).
+
+test(pbinom23) :-
+    interval(pbinom(10, 20, 0.6, false, true), Res),
+    equal(Res, -0.2806... -0.2805).
+
+test(pbinom24) :-
+    interval(pbinom(10...12, 20, 0.6, true, false), Res),
+    equal(Res, 0.2446...0.5842).
+
+test(pbinom25) :-
+    interval(pbinom(10...12, 20, 0.6, true, true), Res),
+    equal(Res, -1.4079... -0.5376).
+
+test(pbinom26) :-
+    interval(pbinom(10...12, 20, 0.6, false, false), Res),
+    equal(Res, 0.4158...0.7554).
+
+test(pbinom27) :-
+    interval(pbinom(10...12, 20, 0.6, false, true), Res),
+    equal(Res, -0.8774... -0.2805).
+
+test(pbinom28) :-
+    interval(pbinom(10...12, 20...21, 0.6, true, false), Res),
+    equal(Res, 0.1743...0.5842).
+
+test(pbinom29) :-
+    interval(pbinom(10...12, 20...21, 0.6, true, true), Res),
+    equal(Res, -1.7466... -0.5376).
+
+test(pbinom30) :-
+    interval(pbinom(10...12, 20...21, 0.6, false, false), Res),
+    equal(Res, 0.4158...0.8257).
+
+test(pbinom31) :-
+    interval(pbinom(10...12, 20...21, 0.6, false, true), Res),
+    equal(Res, -0.8774... -0.1916).
+
+test(pbinom32) :-
+    interval(pbinom(10...12, 20, 0.6...0.7, true, false), Res),
+    equal(Res, 0.0479...0.5842).
+
+test(pbinom33) :-
+    interval(pbinom(10...12, 20, 0.6...0.7, true, true), Res),
+    equal(Res, -3.0374... -0.5376).
+
+test(pbinom34) :-
+    interval(pbinom(10...12, 20, 0.6...0.7, false, false), Res),
+    equal(Res, 0.4158...0.9521).
+
+test(pbinom35) :-
+    interval(pbinom(10...12, 20, 0.6...0.7, false, true), Res),
+    equal(Res, -0.8774... -0.0491).
+
+test(pbinom36) :-
+    interval(pbinom(10, 20...21, 0.6...0.7, true, false), Res),
+    equal(Res, 0.0263...0.2447).
+
+test(pbinom37) :-
+    interval(pbinom(10, 20...21, 0.6...0.7, true, true), Res),
+    equal(Res, -3.6348... -1.4078).
+
+test(pbinom38) :-
+    interval(pbinom(10, 20...21, 0.6...0.7, false, false), Res),
+    equal(Res, 0.7553...0.9737).
+
+test(pbinom39) :-
+    interval(pbinom(10, 20...21, 0.6...0.7, false, true), Res),
+    equal(Res, -0.2806... -0.0267).
+
+test(pbinom40) :-
+    interval(pbinom(10...12, 20...21, 0.6...0.7, true, false), Res),
+    equal(Res, 0.0263...0.5842).
+
+test(pbinom41) :-
+    interval(pbinom(10...12, 20...21, 0.6...0.7, true, true), Res),
+    equal(Res, -3.6348... -0.5376).
+
+test(pbinom42) :-
+    interval(pbinom(10...12, 20...21, 0.6...0.7, false, false), Res),
+    equal(Res, 0.4158...0.9737).
+
+test(pbinom43) :-
+    interval(pbinom(10...12, 20...21, 0.6...0.7, false, true), Res),
+    equal(Res, -0.8774... -0.0267).
+
 :- end_tests(binom).
 
 :- begin_tests(normal).

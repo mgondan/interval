@@ -95,6 +95,11 @@ macro(pbinom/4, all, [+, -, -, /], [hook(r), pattern([_, _, _, bool(true)])]).
 
 macro(pbinom/4, all, [-, +, +, /], [hook(r), pattern([_, _, _, bool(false)])]).
 
+% pbinom/5: explicit tail and log.p arguments
+macro(pbinom/5, all, [+, -, -, /, /], [hook(r), pattern([_, _, _, bool(true), bool(_)])]).
+
+macro(pbinom/5, all, [-, +, +, /, /], [hook(r), pattern([_, _, _, bool(false), bool(_)])]).
+
 % qbinom/3: default lower.tail = TRUE
 macro(qbinom/3, all, [+, +, +], [hook(r)]).
 
