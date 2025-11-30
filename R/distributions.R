@@ -51,16 +51,16 @@ pbinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @rdname Binomial
-qbinom <- function(p, size, prob, lower.tail = TRUE, ...) {
-  .dispatch("qbinom", p, size, prob, lower.tail, ...)
+qbinom <- function(p, size, prob, lower.tail = TRUE, log.p = FALSE) {
+  .dispatch("qbinom", p, size, prob, lower.tail, log.p)
 }
 
-.qbinom_interval <- function(p, size, prob, lower.tail = TRUE, ...) {
-  .eval("qbinom", p, size, prob, lower.tail)
+.qbinom_interval <- function(p, size, prob, lower.tail = TRUE, log.p = FALSE) {
+  .eval("qbinom", p, size, prob, lower.tail, log.p)
 }
 
-.qbinom_default <- function(p, size, prob, lower.tail = TRUE, ...) {
-  stats::qbinom(p, size, prob, lower.tail, ...)
+.qbinom_default <- function(p, size, prob, lower.tail = TRUE, log.p = FALSE) {
+  stats::qbinom(p, size, prob, lower.tail, log.p)
 }
 
 #' @rdname Binomial
