@@ -23,6 +23,11 @@ test_that("pbinom 5", {
   expect_equal(eval(expr), ...(0.15844366131574084, 0.8866685371230216))
 })
 
+test_that("pbinom 6", {
+  expr <- quote(pbinom(...(6, 8), ...(20, 22), ...(0.3, 0.4), lower.tail=FALSE))
+  expect_equal(eval(expr), ...(0.11333146287697841, 0.8415563386842592))
+})
+
 test_that("qbinom 1", {
   expr <- quote(qbinom(0.5, 20, 0.2))
   expect_equal(eval(expr), 4.0)
@@ -46,6 +51,11 @@ test_that("qbinom 4", {
 test_that("qbinom 5", {
   expr <- quote(qbinom(...(0.5, 0.7), ...(20, 22), ...(0.2, 0.4)))
   expect_equal(eval(expr), ...(4.0, 10.0))
+})
+
+test_that("qbinom 6", {
+  expr <- quote(qbinom(...(0.5, 0.7), ...(20, 22), ...(0.2, 0.4), lower.tail=FALSE))
+  expect_equal(eval(expr), ...(3.0, 9.0))
 })
 
 test_that("dbinom 1", {
@@ -98,6 +108,11 @@ test_that("pnorm 5", {
   expect_equal(eval(expr), ...(0.06680720126885807, 0.36944134018176367))
 })
 
+test_that("pnorm 6", {
+  expr <- quote(pnorm(...(8, 9), ...(10, 11), ...(2, 3), lower.tail=FALSE))
+  expect_equal(eval(expr), ...(0.6305586598182363, 0.9331927987311419))
+})
+
 test_that("qnorm 1", {
   expr <- quote(qnorm(0.3, 10, 2))
   expect_equal(eval(expr), 8.951199)
@@ -121,6 +136,11 @@ test_that("qnorm 4", {
 test_that("qnorm 5", {
   expr <- quote(qnorm(...(0.3, 0.4), ...(10, 11), ...(2, 3)))
   expect_equal(eval(expr), ...(8.426798461875878, 10.4933057937284))
+})
+
+test_that("qnorm 6", {
+  expr <- quote(qnorm(...(0.3, 0.4), ...(10, 11), ...(2, 3), lower.tail=FALSE))
+  expect_equal(eval(expr), ...(10.5066942062716, 12.573201538124122))
 })
 
 test_that("dnorm 1", {

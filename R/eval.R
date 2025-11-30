@@ -40,6 +40,8 @@
 .arg2char <- function(x) {
   if (.is_interval(x))
     return(paste0("...(", x$l, ",", x$u, ")"))
+  if (is.logical(x))
+    return(tolower(as.character(x)))
   return(as.character(x))
 }
 
