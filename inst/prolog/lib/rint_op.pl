@@ -113,41 +113,52 @@ macro(qbinom/5, all, [+, +, +, /, /], [hook(r), pattern([_, _, _, bool(true), bo
 
 macro(qbinom/5, all, [-, +, +, /, /], [hook(r), pattern([_, _, _, bool(false), bool(_)])]).
 
-% dbinom
+% dbinom/3
 interval_(dbinom(number(Alpha), number(N), number(P)), Res, _Flags) :-
-    dbinom_(Alpha, N, P, Res0),
+    dbinom_(Alpha, N, P, false, Res0),
     !, Res = number(Res0).
 
-dbinom_(Alpha, N, P, Res) :-
-    eval(r(dbinom(Alpha, N, P)), Res).
+dbinom_(Alpha, N, P, Log, Res) :-
+    eval(r(dbinom(Alpha, N, P, 'log'=Log)), Res).
 
 interval_(dbinom(X1...X2, N1...N2, P1...P2), Res, _Flags) :-
-    dbinom0(X1...X2, N1...N2, P1...P2, Res0),
+    dbinom0(X1...X2, N1...N2, P1...P2, false, Res0),
     !, Res = Res0.
 
 % left to X / N: [+, -, -]
-dbinom0(X1...X2, N1...N2, P1...P2, L...U) :-
+dbinom0(X1...X2, N1...N2, P1...P2, Log, L...U) :-
     eval(X2 < N1 * P1),
     !,
-    dbinom_(X1, N2, P2, L),
-    dbinom_(X2, N1, P1, U).
+    dbinom_(X1, N2, P2, Log, L),
+    dbinom_(X2, N1, P1, Log, U).
 
 % right to X / N: [-, +, +]
-dbinom0(X1...X2, N1...N2, P1...P2, L...U) :-
+dbinom0(X1...X2, N1...N2, P1...P2, Log, L...U) :-
     eval(X1 > N2 * P2),
     !,
-    dbinom_(X2, N1, P1, L),
-    dbinom_(X1, N2, P2, U).
+    dbinom_(X2, N1, P1, Log, L),
+    dbinom_(X1, N2, P2, Log, U).
 
 % otherwise
-dbinom0(K1...K2, N1...N2, P1...P2, L...U) :-
+dbinom0(K1...K2, N1...N2, P1...P2, Log, L...U) :-
     eval(r(g <- 'expand.grid'('k'=K1:K2, 'N'=N1:N2)), _),
     eval(r(g <- subset(g, '&'('$'(g, k) >= floor(P1 * '$'(g, 'N')), '<='('$'(g, k), ceiling(P2 * '$'(g, 'N')))))), _),
-    eval(r(c(min(dbinom(c(K1, K2), c(N2, N1), c(P2, P1))), 
+    eval(r(c(min(dbinom(c(K1, K2), c(N2, N1), c(P2, P1), 'log'=Log)), 
             max(dbinom('$'(g, k), '$'(g, 'N'), ifelse('$'(g, k) > '$'(g, 'N') * P2, P2, 
-                ifelse('$'(g, k) < '$'(g, 'N') * P1, P1, '$'(g, k)/'$'(g, 'N'))))))), ##(L, U)).
+                ifelse('$'(g, k) < '$'(g, 'N') * P1, P1, '$'(g, k)/'$'(g, 'N'))), 'log'=Log)))), ##(L, U)).
 
 macro(dbinom/3, interval_, []).
+
+% dbinom/4
+interval_(dbinom(number(Alpha), number(N), number(P), bool(Log)), Res, _Flags) :-
+    dbinom_(Alpha, N, P, Log, Res0),
+    !, Res = number(Res0).
+
+interval_(dbinom(X1...X2, N1...N2, P1...P2, bool(Log)), Res, _Flags) :-
+    dbinom0(X1...X2, N1...N2, P1...P2, Log, Res0),
+    !, Res = Res0.
+
+macro(dbinom/4, interval_, [], [pattern([_, _, _, bool(_)])]).
 
 %
 % Normal distribution

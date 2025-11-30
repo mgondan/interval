@@ -53,47 +53,127 @@ test(colon1) :-
 
 :- begin_tests(binom).
 
-test(dbinom1) :-
+test(dbinom1a) :-
     interval(dbinom(11, 20, 0.6), Res),
     equal(Res, 0.1597...0.1598).
 
-test(dbinom2) :-
+test(dbinom1b) :-
+    interval(dbinom(11, 20, 0.6, false), Res),
+    equal(Res, 0.1597...0.1598).
+
+test(dbinom1c) :-
+    interval(dbinom(11, 20, 0.6, true), Res),
+    equal(Res, -1.8343... -1.8342).
+
+test(dbinom2a) :-
     interval(dbinom(11...12, 20, 0.6...0.7), Res),
     equal(Res, 0.0653...0.1798).
 
-test(dbinom3) :-
+test(dbinom2b) :-
+    interval(dbinom(11...12, 20, 0.6...0.7, false), Res),
+    equal(Res, 0.0653...0.1798).
+
+test(dbinom2c) :-
+    interval(dbinom(11...12, 20, 0.6...0.7, true), Res),
+    equal(Res, -2.7277... -1.7164).
+
+test(dbinom3a) :-
     interval(dbinom(11...12, 20, 0.6), Res),
     equal(Res, 0.1597...0.1798).
 
-test(dbinom4) :-
+test(dbinom3b) :-
+    interval(dbinom(11...12, 20, 0.6, false), Res),
+    equal(Res, 0.1597...0.1798).
+
+test(dbinom3c) :-
+    interval(dbinom(11...12, 20, 0.6, true), Res),
+    equal(Res, -1.8343... -1.7164).
+
+test(dbinom4a) :-
     interval(dbinom(11...12, 20...21, 0.6...0.7), Res),
     equal(Res, 0.0411...0.1798).
 
+test(dbinom4b) :-
+    interval(dbinom(11...12, 20...21, 0.6...0.7, false), Res),
+    equal(Res, 0.0411...0.1798).
+
+test(dbinom4c) :-
+    interval(dbinom(11...12, 20...21, 0.6...0.7, true), Res),
+    equal(Res, -3.1898... -1.7164).
+
 % left to X / N
-test(dbinom5) :- 
+test(dbinom5a) :- 
     interval(dbinom(10...11, 20...21, 0.6...0.7), Res),
     equal(Res, 0.0176...0.1598).
 
+test(dbinom5b) :- 
+    interval(dbinom(10...11, 20...21, 0.6...0.7, false), Res),
+    equal(Res, 0.0176...0.1598).
+
+test(dbinom5c) :- 
+    interval(dbinom(10...11, 20...21, 0.6...0.7, true), Res),
+    equal(Res, -4.0371... -1.8342).
+
 % right to X / N
-test(dbinom6) :- 
+test(dbinom6a) :- 
     interval(dbinom(15...16, 20...21, 0.6...0.7), Res),
     equal(Res, 0.0349...0.1879).
 
-test(dbinom7) :- 
+test(dbinom6b) :- 
+    interval(dbinom(15...16, 20...21, 0.6...0.7, false), Res),
+    equal(Res, 0.0349...0.1879).
+
+test(dbinom6c) :- 
+    interval(dbinom(15...16, 20...21, 0.6...0.7, true), Res),
+    equal(Res, -3.3527... -1.6723).
+
+test(dbinom7a) :- 
     interval(dbinom(11, 20...21, 0.6), Res),
     equal(Res, 0.1341...0.1598).
 
-test(dbinom8) :- 
+test(dbinom7b) :- 
+    interval(dbinom(11, 20...21, 0.6, false), Res),
+    equal(Res, 0.1341...0.1598).
+
+test(dbinom7c) :- 
+    interval(dbinom(11, 20...21, 0.6, true), Res),
+    equal(Res, -2.0086... -1.8342).
+
+test(dbinom8a) :- 
     interval(dbinom(11, 20, 0.6...0.7), Res),
     equal(Res, 0.0653...0.1598).
 
-test(dbinom9) :- 
+test(dbinom8b) :- 
+    interval(dbinom(11, 20, 0.6...0.7, false), Res),
+    equal(Res, 0.0653...0.1598).
+
+test(dbinom8c) :- 
+    interval(dbinom(11, 20, 0.6...0.7, true), Res),
+    equal(Res, -2.7277... -1.8342).
+
+test(dbinom9a) :- 
     interval(dbinom(11...12, 20...21, 0.6), Res),
     equal(Res, 0.1341...0.1798).
 
-test(dbinom10) :- 
+test(dbinom9b) :- 
+    interval(dbinom(11...12, 20...21, 0.6, false), Res),
+    equal(Res, 0.1341...0.1798).
+
+test(dbinom9c) :- 
+    interval(dbinom(11...12, 20...21, 0.6, true), Res),
+    equal(Res, -2.0086... -1.7164).
+
+test(dbinom10a) :- 
     interval(dbinom(11, 20...21, 0.6...0.7), Res),
     equal(Res, 0.0411...0.1598).
+
+test(dbinom10b) :- 
+    interval(dbinom(11, 20...21, 0.6...0.7, false), Res),
+    equal(Res, 0.0411...0.1598).
+
+test(dbinom10c) :- 
+    interval(dbinom(11, 20...21, 0.6...0.7, true), Res),
+    equal(Res, -3.1898... -1.8342).
 
 test(qbinom1) :-
     interval(qbinom(0.6, 20, 0.3), Res),
