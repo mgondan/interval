@@ -15,8 +15,9 @@ instead of the library clpBNR as in the module 'interval'.
 %   Binomial distribution
 %       - Cumulated density with default lower tail: interval(pbinom(X, N, P), Res)
 %       - Cumulated density with explicit tail argument: interval(pbinom(X, N, P, true), Res)
+%       - Cumulated density with explicit tail and log.p argument: interval(pbinom(X, N, P, false, true), Res)
 %       - Quantile with default lower tail: interval(qbinom(Alpha, N, P), Res)
-%       - Quantilewith explicit tail argument: interval(qbinom(Alpha, N, P, true), Res)
+%       - Quantile with explicit tail argument: interval(qbinom(Alpha, N, P, true), Res)
 %       - Density: interval(dbinom(X, N, P), Res)
 %
 %   Normal distribution
