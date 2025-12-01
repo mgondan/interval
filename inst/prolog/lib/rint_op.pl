@@ -174,6 +174,11 @@ macro(pnorm/4, all, [+,-,+,/], [hook(r), pattern([_, _, _, bool(true)])]).
 
 macro(pnorm/4, all, [-,+,-,/], [hook(r), pattern([_, _, _, bool(false)])]).
 
+% pnorm/5: explicit tail and log.p arguments
+macro(pnorm/5, all, [+,-,+,/,/], [hook(r), pattern([_, _, _, bool(true), bool(_)])]).
+
+macro(pnorm/5, all, [-,+,-,/,/], [hook(r), pattern([_, _, _, bool(false), bool(_)])]).
+
 % qnorm/1: Mu = 0, Sd = 1, lower tail
 macro(qnorm/1, all, [+], [hook(r)]).
 

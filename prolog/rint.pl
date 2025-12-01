@@ -24,6 +24,7 @@ For general information on the use of interval/2 and interval/3, please refer to
 %       - Cumulated density with defaults: interval(pnorm(X), Res)
 %       - Cumulated density with default lower tail: interval(pnorm(X, Mu, Sd), Res)
 %       - Cumulated density with explicit tail argument: interval(pnorm(X, Mu, Sd, false), Res)
+%       - Cumulated density with explicit tail and log.p argument: interval(pnorm(X, Mu, Sd, false, true), Res)
 %       - Quantile with defaults: interval(qnorm(P), Res)
 %       - Quantile with default lower tail: interval(qnorm(P, Mu, Sigma), Res)
 %       - Quantile with explicit tail argument: interval(qnorm(P, Mu, Sigma, true), Res)
