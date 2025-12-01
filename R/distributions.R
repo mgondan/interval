@@ -98,6 +98,9 @@ dbinom <- function(x, size, prob, log=FALSE) {
 #' logical; if TRUE (default), probabilities are 
 #' _P_\[_X&le;x_\], otherwise, _P_\[_X&ge;x_\]
 #' 
+#' @param log.p,log
+#' logical; if TRUE, probabilities p are given as log(p)
+#' 
 #' @param ...
 #' further arguments
 #' 
@@ -110,16 +113,16 @@ dbinom <- function(x, size, prob, log=FALSE) {
 #' dnorm(...(8, 9), ...(10, 11), ...(2, 3))
 #' @export
 #' @md
-pnorm <- function(q, mean = 0, sd = 1, lower.tail = TRUE, ...) {
-  .dispatch("pnorm", q, mean, sd, lower.tail, ...)
+pnorm <- function(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
+  .dispatch("pnorm", q, mean, sd, lower.tail, log.p)
 }
 
-.pnorm_interval <- function(q, mean = 0, sd = 1, lower.tail = TRUE, ...) {
-  .eval("pnorm", q, mean, sd, lower.tail)
+.pnorm_interval <- function(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
+  .eval("pnorm", q, mean, sd, lower.tail, log.p)
 }
 
-.pnorm_default <- function(q, mean = 0, sd = 1, lower.tail = TRUE, ...) {
-  stats::pnorm(q, mean, sd, lower.tail, ...)
+.pnorm_default <- function(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
+  stats::pnorm(q, mean, sd, lower.tail, log.p)
 }
 
 #' @rdname Normal

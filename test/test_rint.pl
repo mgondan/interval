@@ -679,6 +679,134 @@ test(pnorm25) :-
     interval(pnorm(90...91, 100...101, 10...11, false), Res),
     equal(Res, 0.7933...0.8644).
 
+test(pnorm26) :-
+    interval(pnorm(90, 100, 10, true, false), Res),
+    equal(Res, 0.1586...0.1587).
+
+test(pnorm27) :-
+    interval(pnorm(90, 100, 10, true, true), Res),
+    equal(Res, -1.8411... -1.8410).
+
+test(pnorm28) :-
+    interval(pnorm(90, 100, 10, false, false), Res),
+    equal(Res, 0.8413...0.8414).
+
+test(pnorm29) :-
+    interval(pnorm(90, 100, 10, false, true), Res),
+    equal(Res, -0.1728... -0.1727).
+
+test(pnorm30) :-
+    interval(pnorm(90...92, 100, 10, true, false), Res),
+    equal(Res, 0.1586...0.2119).
+
+test(pnorm31) :-
+    interval(pnorm(90...92, 100, 10, true, true), Res),
+    equal(Res, -1.8411... -1.5518).
+
+test(pnorm32) :-
+    interval(pnorm(90...92, 100, 10, false, false), Res),
+    equal(Res, 0.7881...0.8414).
+
+test(pnorm33) :-
+    interval(pnorm(90...92, 100, 10, false, true), Res),
+    equal(Res, -0.2381... -0.1727).
+
+test(pnorm34) :-
+    interval(pnorm(90, 100...102, 10, true, false), Res),
+    equal(Res, 0.1150...0.1587).
+
+test(pnorm35) :-
+    interval(pnorm(90, 100...102, 10, true, true), Res),
+    equal(Res, -2.1623... -1.8410).
+
+test(pnorm36) :-
+    interval(pnorm(90, 100...102, 10, false, false), Res),
+    equal(Res, 0.8413...0.8850).
+
+test(pnorm37) :-
+    interval(pnorm(90, 100...102, 10, false, true), Res),
+    equal(Res, -0.1728... -0.1222).
+
+test(pnorm38) :-
+    interval(pnorm(90, 100, 10...12, true, false), Res),
+    equal(Res, 0.1586...0.2024).
+
+test(pnorm39) :-
+    interval(pnorm(90, 100, 10...12, true, true), Res),
+    equal(Res, -1.8411... -1.5978).
+
+test(pnorm40) :-
+    interval(pnorm(90, 100, 10...12, false, false), Res),
+    equal(Res, 0.7976...0.8414).
+
+test(pnorm41) :-
+    interval(pnorm(90, 100, 10...12, false, true), Res),
+    equal(Res, -0.2261... -0.1727).
+
+test(pnorm42) :-
+    interval(pnorm(90...92, 100...102, 10, true, false), Res),
+    equal(Res, 0.1150...0.2119).
+
+test(pnorm43) :-
+    interval(pnorm(90...92, 100...102, 10, true, true), Res),
+    equal(Res, -2.1623... -1.5518).
+
+test(pnorm44) :-
+    interval(pnorm(90...92, 100...102, 10, false, false), Res),
+    equal(Res, 0.7881...0.8850).
+
+test(pnorm45) :-
+    interval(pnorm(90...92, 100...102, 10, false, true), Res),
+    equal(Res, -0.2381... -0.1222).
+
+test(pnorm46) :-
+    interval(pnorm(90...92, 100, 10...11, true, false), Res),
+    equal(Res, 0.1586...0.2336).
+
+test(pnorm47) :-
+    interval(pnorm(90...92, 100, 10...11, true, true), Res),
+    equal(Res, -1.8411... -1.4544).
+
+test(pnorm48) :-
+    interval(pnorm(90...92, 100, 10...11, false, false), Res),
+    equal(Res, 0.7664...0.8414).
+
+test(pnorm49) :-
+    interval(pnorm(90...92, 100, 10...11, false, true), Res),
+    equal(Res, -0.2660... -0.1727).
+
+test(pnorm50) :-
+    interval(pnorm(90, 100...102, 10...11, true, false), Res),
+    equal(Res, 0.1150...0.1817).
+
+test(pnorm51) :-
+    interval(pnorm(90, 100...102, 10...11, true, true), Res),
+    equal(Res, -2.1623... -1.7056).
+
+test(pnorm52) :-
+    interval(pnorm(90, 100...102, 10...11, false, false), Res),
+    equal(Res, 0.8183...0.8850).
+
+test(pnorm53) :-
+    interval(pnorm(90, 100...102, 10...11, false, true), Res),
+    equal(Res, -0.2005... -0.1222).
+
+test(pnorm54) :-
+    interval(pnorm(90...91, 100...101, 10...11, true, false), Res),
+    equal(Res, 0.1356...0.2067).
+
+test(pnorm55) :-
+    interval(pnorm(90...91, 100...101, 10...11, true, true), Res),
+    equal(Res, -1.9976... -1.5768).
+
+test(pnorm56) :-
+    interval(pnorm(90...91, 100...101, 10...11, false, false), Res),
+    equal(Res, 0.7933...0.8644).
+
+test(pnorm57) :-
+    interval(pnorm(90...91, 100...101, 10...11, false, true), Res),
+    equal(Res, -0.2315... -0.1457).
+
 test(qnorm1) :-
     interval(qnorm(0.6), Res),
     equal(Res, 0.2533...0.2534).
