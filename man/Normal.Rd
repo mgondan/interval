@@ -7,7 +7,7 @@
 \alias{dnorm}
 \title{The Normal Distribution}
 \usage{
-pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, ...)
+pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
 
 qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, ...)
 
@@ -23,9 +23,11 @@ dnorm(x, mean = 0, sd = 1, ...)
 \item{lower.tail}{logical; if TRUE (default), probabilities are
 \emph{P}[\emph{X≤x}], otherwise, \emph{P}[\emph{X≥x}]}
 
-\item{...}{further arguments}
+\item{log.p, log}{logical; if TRUE, probabilities p are given as log(p)}
 
 \item{p}{vector of probabilities}
+
+\item{...}{further arguments}
 }
 \value{
 The numeric result as interval or number.
