@@ -174,28 +174,43 @@ test_that("qnorm 1", {
 })
 
 test_that("qnorm 2", {
+  expr <- quote(qnorm(0.3, 10, 2, lower.tail=FALSE))
+  expect_equal(rnd(eval(expr)), 11.048801)
+})
+
+test_that("qnorm 3", {
+  expr <- quote(qnorm(-1.2, 10, 2, log.p=TRUE))
+  expect_equal(rnd(eval(expr)), 8.958062)
+})
+
+test_that("qnorm 4", {
   expr <- quote(qnorm(...(0.3, 0.4), 10, 2))
   expect_equal(rnd(eval(expr)), ...(8.951198, 9.493306))
 })
 
-test_that("qnorm 3", {
+test_that("qnorm 5", {
   expr <- quote(qnorm(0.3, ...(10, 11), 2))
   expect_equal(rnd(eval(expr)), ...(8.951198, 9.951199))
 })
 
-test_that("qnorm 4", {
+test_that("qnorm 6", {
   expr <- quote(qnorm(0.3, 10, ...(2, 3)))
   expect_equal(rnd(eval(expr)), ...(8.426798, 8.951199))
 })
 
-test_that("qnorm 5", {
+test_that("qnorm 7", {
   expr <- quote(qnorm(...(0.3, 0.4), ...(10, 11), ...(2, 3)))
   expect_equal(rnd(eval(expr)), ...(8.426798, 10.493306))
 })
 
-test_that("qnorm 6", {
+test_that("qnorm 8", {
   expr <- quote(qnorm(...(0.3, 0.4), ...(10, 11), ...(2, 3), lower.tail=FALSE))
   expect_equal(rnd(eval(expr)), ...(10.506694, 12.573202))
+})
+
+test_that("qnorm 9", {
+  expr <- quote(qnorm(...(-1.2, -0.92), ...(10, 11), ...(2, 3), log.p=TRUE))
+  expect_equal(rnd(eval(expr)), ...(8.437093, 10.485636))
 })
 
 test_that("dnorm 1", {

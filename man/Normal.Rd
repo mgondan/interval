@@ -9,7 +9,7 @@
 \usage{
 pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
 
-qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, ...)
+qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
 
 dnorm(x, mean = 0, sd = 1, ...)
 }

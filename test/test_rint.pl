@@ -1019,6 +1019,278 @@ test(qnorm23c) :-
     interval(qnorm(0.4...0.6, 100...101, 10...11, false), Res),
     equal(Res, 97.2131...103.5335).
 
+test(qnorm24) :-
+    interval(qnorm(0.6, 100, 10, true, false), Res),
+    equal(Res, 102.5334...102.5335).
+
+test(qnorm25) :-
+    interval(qnorm(-0.51, 100, 10, true, true), Res),
+    equal(Res, 102.5463...102.5464).
+    
+test(qnorm26) :-
+    interval(qnorm(0.6, 100, 10, false, false), Res),
+    equal(Res, 97.4665...97.4666).
+
+test(qnorm27) :-
+    interval(qnorm(-0.51, 100, 10, false, true), Res),
+    equal(Res, 97.4536...97.4537).
+
+test(qnorm28a) :-
+    interval(qnorm(0.6...0.8, 100, 10, true, false), Res),
+    equal(Res, 102.5334...108.4163).
+
+test(qnorm29a) :-
+    interval(qnorm(-0.51... -0.22, 100, 10, true, true), Res),
+    equal(Res, 102.5463...108.5066).
+
+test(qnorm28b) :-
+    interval(qnorm(0.3...0.4, 100, 10, true, false), Res),
+    equal(Res, 94.7559...97.4666).
+
+test(qnorm29b) :-
+    interval(qnorm(-1.20... -0.92, 100, 10, true, true), Res),
+    equal(Res, 94.7903...97.4282).
+
+test(qnorm28c) :-
+    interval(qnorm(0.4...0.6, 100, 10, true, false), Res),
+    equal(Res, 97.4665...102.5335).
+
+test(qnorm29c) :-
+    interval(qnorm(-0.92... -0.51, 100, 10, true, true), Res),
+    equal(Res, 97.4281...102.5464).
+
+test(qnorm30a) :-
+    interval(qnorm(0.6...0.8, 100, 10, false, false), Res),
+    equal(Res, 91.5837...97.4666).
+
+test(qnorm31a) :-
+    interval(qnorm(-0.51... -0.22, 100, 10, false, true), Res),
+    equal(Res, 91.4934...97.4537).
+
+test(qnorm30b) :-
+    interval(qnorm(0.3...0.4, 100, 10, false, false), Res),
+    equal(Res, 102.5334...105.2441).
+
+test(qnorm31b) :-
+    interval(qnorm(-1.20... -0.92, 100, 10, false, true), Res),
+    equal(Res, 102.5718...105.2097).
+
+test(qnorm30c) :-
+    interval(qnorm(0.4...0.6, 100, 10, false, false), Res),
+    equal(Res, 97.4665...102.5335).
+
+test(qnorm31c) :-
+    interval(qnorm(-0.92... -0.51, 100, 10, false, true), Res),
+    equal(Res, 97.4536...102.5719).
+
+test(qnorm32a) :-
+    interval(qnorm(0.6, 100...101, 10, true, false), Res),
+    equal(Res, 102.5334...103.5335).
+
+test(qnorm33a) :-
+    interval(qnorm(-0.51, 100...101, 10, true, true), Res),
+    equal(Res, 102.5463...103.5464).
+
+test(qnorm32b) :-
+    interval(qnorm(0.4, 100...101, 10, true, false), Res),
+    equal(Res, 97.4665...98.4666).
+
+test(qnorm33b) :-
+    interval(qnorm(-0.92, 100...101, 10, true, true), Res),
+    equal(Res, 97.4281...98.4282).
+
+test(qnorm34a) :-
+    interval(qnorm(0.6, 100...101, 10, false, false), Res),
+    equal(Res, 97.4665...98.4666).
+
+test(qnorm35a) :-
+    interval(qnorm(-0.51, 100...101, 10, false, true), Res),
+    equal(Res, 97.4536...98.4537).
+
+test(qnorm34b) :-
+    interval(qnorm(0.4, 100...101, 10, false, false), Res),
+    equal(Res, 102.5334...103.5335).
+
+test(qnorm35b) :-
+    interval(qnorm(-0.92, 100...101, 10, false, true), Res),
+    equal(Res, 102.5718...103.5719).
+
+test(qnorm36a) :-
+    interval(qnorm(0.6, 100, 10...11, true, false), Res),
+    equal(Res, 102.5334...102.7869).
+
+test(qnorm37a) :-
+    interval(qnorm(-0.51, 100, 10...11, true, true), Res),
+    equal(Res, 102.5463...102.8010).
+
+test(qnorm36b) :-
+    interval(qnorm(0.4, 100, 10...11, true, false), Res),
+    equal(Res, 97.2131...97.4666).
+
+test(qnorm37b) :-
+    interval(qnorm(-0.92, 100, 10...11, true, true), Res),
+    equal(Res, 97.1709...97.4282).
+
+test(qnorm38a) :-
+    interval(qnorm(0.6, 100, 10...11, false, false), Res),
+    equal(Res, 97.2131...97.4666).
+
+test(qnorm39a) :-
+    interval(qnorm(-0.51, 100, 10...11, false, true), Res),
+    equal(Res, 97.1990...97.4537).
+
+test(qnorm38b) :-
+    interval(qnorm(0.4, 100, 10...11, false, false), Res),
+    equal(Res, 102.5334...102.7869).
+
+test(qnorm39b) :-
+    interval(qnorm(-0.92, 100, 10...11, false, true), Res),
+    equal(Res, 102.5718...102.8291).
+
+test(qnorm40a) :-
+    interval(qnorm(0.6...0.8, 100...101, 10, true, false), Res),
+    equal(Res, 102.5334...109.4163).
+    
+test(qnorm41a) :-
+    interval(qnorm(-0.51... -0.22, 100...101, 10, true, true), Res),
+    equal(Res, 102.5463...109.5066).
+
+test(qnorm40b) :-
+    interval(qnorm(0.3...0.4, 100...101, 10, true, false), Res),
+    equal(Res, 94.7559...98.4666).
+
+test(qnorm41b) :-
+    interval(qnorm(-1.20... -0.92, 100...101, 10, true, true), Res),
+    equal(Res, 94.7903...98.4282).
+
+test(qnorm40c) :-
+    interval(qnorm(0.4...0.6, 100...101, 10, true, false), Res),
+    equal(Res, 97.4665...103.5335).
+
+test(qnorm41c) :-
+    interval(qnorm(-0.92... -0.51, 100...101, 10, true, true), Res),
+    equal(Res, 97.4281...103.5464).
+
+test(qnorm42a) :-
+    interval(qnorm(0.6...0.8, 100...101, 10, false, false), Res),
+    equal(Res, 91.5837...98.4666).
+
+test(qnorm43a) :-
+    interval(qnorm(-0.51... -0.22, 100...101, 10, false, true), Res),
+    equal(Res, 91.4934...98.4537).
+
+test(qnorm42b) :-
+    interval(qnorm(0.3...0.4, 100...101, 10, false, false), Res),
+    equal(Res, 102.5334...106.2441).
+
+test(qnorm43b) :-
+    interval(qnorm(-1.20... -0.92, 100...101, 10, false, true), Res),
+    equal(Res, 102.5718...106.2097).
+
+test(qnorm42c) :-
+    interval(qnorm(0.4...0.6, 100...101, 10, false, false), Res),
+    equal(Res, 97.4665...103.5335).
+
+test(qnorm43c) :-
+    interval(qnorm(-0.92... -0.51, 100...101, 10, false, true), Res),
+    equal(Res, 97.4536...103.5719).
+
+test(qnorm44a) :-
+    interval(qnorm(0.6...0.8, 100, 10...11, true, false), Res),
+    equal(Res, 102.5334...109.2579).
+
+test(qnorm45a) :-
+    interval(qnorm(-0.51... -0.22, 100, 10...11, true, true), Res),
+    equal(Res, 102.5463...109.3572).
+
+test(qnorm44b) :-
+    interval(qnorm(0.3...0.4, 100, 10...11, true, false), Res),
+    equal(Res, 94.2315...97.4666).
+
+test(qnorm45b) :-
+    interval(qnorm(-1.20... -0.92, 100, 10...11, true, true), Res),
+    equal(Res, 94.2693...97.4282).
+
+test(qnorm44c) :-
+    interval(qnorm(0.4...0.6, 100, 10...11, true, false), Res),
+    equal(Res, 97.4665...102.7869).
+
+test(qnorm45c) :-
+    interval(qnorm(-0.92... -0.51, 100, 10...11, true, true), Res),
+    equal(Res, 97.4281...102.8010).
+
+test(qnorm46a) :-
+    interval(qnorm(0.6...0.8, 100, 10...11, false, false), Res),
+    equal(Res, 90.7421...97.4666).
+
+test(qnorm47a) :-
+    interval(qnorm(-0.51... -0.22, 100, 10...11, false, true), Res),
+    equal(Res, 90.6428...97.4537).
+
+test(qnorm46b) :-
+    interval(qnorm(0.3...0.4, 100, 10...11, false, false), Res),
+    equal(Res, 102.5334...105.7685).
+
+test(qnorm47b) :-
+    interval(qnorm(-1.20... -0.92, 100, 10...11, false, true), Res),
+    equal(Res, 102.5718...105.7307).
+
+test(qnorm46c) :-
+    interval(qnorm(0.4...0.6, 100, 10...11, false, false), Res),
+    equal(Res, 97.2131...102.5335).
+
+test(qnorm47c) :-
+    interval(qnorm(-0.92... -0.51, 100, 10...11, false, true), Res),
+    equal(Res, 97.1990...102.5719).
+
+test(qnorm48a) :-
+    interval(qnorm(0.6...0.7, 100...101, 10...11, true, false), Res),
+    equal(Res, 102.5334...106.7685).
+
+test(qnorm49a) :-
+    interval(qnorm(-0.51... -0.36, 100...101, 10...11, true, true), Res),
+    equal(Res, 102.5463...106.6951).
+
+test(qnorm48b) :-
+    interval(qnorm(0.3...0.4, 100...101, 10...11, true, false), Res),
+    equal(Res, 94.2315...98.4666).
+
+test(qnorm49b) :-
+    interval(qnorm(-1.20... -0.92, 100...101, 10...11, true, true), Res),
+    equal(Res, 94.2693...98.4282).
+
+test(qnorm48c) :-
+    interval(qnorm(0.4...0.6, 100...101, 10...11, true, false), Res),
+    equal(Res, 97.4665...103.7869).
+
+test(qnorm49c) :-
+    interval(qnorm(-0.92... -0.51, 100...101, 10...11, true, true), Res),
+    equal(Res, 97.4281...103.8010).
+
+test(qnorm50a) :-
+    interval(qnorm(0.6...0.7, 100...101, 10...11, false, false), Res),
+    equal(Res, 94.2315...98.4666).
+
+test(qnorm51a) :-
+    interval(qnorm(-0.51... -0.36, 100...101, 10...11, false, true), Res),
+    equal(Res, 94.3049...98.4537).
+
+test(qnorm50b) :-
+    interval(qnorm(0.3...0.4, 100...101, 10...11, false, false), Res),
+    equal(Res, 102.5334...106.7685).
+
+test(qnorm51b) :-
+    interval(qnorm(-1.20... -0.92, 100...101, 10...11, false, true), Res),
+    equal(Res, 102.5718...106.7307).
+
+test(qnorm50c) :-
+    interval(qnorm(0.4...0.6, 100...101, 10...11, false, false), Res),
+    equal(Res, 97.2131...103.5335).
+
+test(qnorm51c) :-
+    interval(qnorm(-0.91... -0.51, 100...101, 10...11, false, true), Res),
+    equal(Res, 97.1990...103.4682).
+
 test(dnorm1) :-
     interval(dnorm(0.5), Res),
     equal(Res, 0.3520...0.3521).

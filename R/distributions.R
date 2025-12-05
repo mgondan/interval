@@ -126,16 +126,16 @@ pnorm <- function(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @rdname Normal
-qnorm <- function(p, mean = 0, sd = 1, lower.tail = TRUE, ...) {
-  .dispatch("qnorm", p, mean, sd, lower.tail, ...)
+qnorm <- function(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
+  .dispatch("qnorm", p, mean, sd, lower.tail, log.p)
 }
 
-.qnorm_interval <- function(p, mean = 0, sd = 1, lower.tail = TRUE, ...) {
-  .eval("qnorm", p, mean, sd, lower.tail)
+.qnorm_interval <- function(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
+  .eval("qnorm", p, mean, sd, lower.tail, log.p)
 }
 
-.qnorm_default <- function(p, mean = 0, sd = 1, lower.tail = TRUE, ...) {
-  stats::qnorm(p, mean, sd, lower.tail, ...)
+.qnorm_default <- function(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
+  stats::qnorm(p, mean, sd, lower.tail, log.p)
 }
 
 #' @rdname Normal
