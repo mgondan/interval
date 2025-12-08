@@ -28,6 +28,7 @@ For general information on the use of interval/2 and interval/3, please refer to
 %       - Quantile with defaults: interval(qnorm(P), Res)
 %       - Quantile with default lower tail: interval(qnorm(P, Mu, Sigma), Res)
 %       - Quantile with explicit tail argument: interval(qnorm(P, Mu, Sigma, true), Res)
+%       - Quantile with explicit tail and log.p argument: interval(qnorm(P, Mu, Sigma, true, true), Res)
 %       - Density with defaults: interval(dnorm(X), Res)
 %       - Density: interval(dnorm(X, Mu, Sigma), Res)
 %
