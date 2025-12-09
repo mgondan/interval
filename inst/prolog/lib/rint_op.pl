@@ -264,50 +264,75 @@ interval_(qnorm(P1...P2, Mu1...Mu2, Sigma1...Sigma2, bool(false), bool(LogP)), R
 
 macro(qnorm/5, interval_, [], [pattern([_, _, _, bool(_), bool(_)])]).
 
-% dnorm/1: Mu = 0, Sd = 1
+% dnorm/1: Mu = 0, Sd = 1, log = FALSE
 interval_(dnorm(number(A)), Res, _Flags) :-
-    dnorm_(A, Res0),
+    dnorm_(A, false, Res0),
     !, Res = number(Res0).
 
-dnorm_(A, Res) :-
-    eval(r(dnorm(A)), Res).
+dnorm_(A, Log, Res) :-
+    eval(r(dnorm(A, 'log'=Log)), Res).
 
 interval_(dnorm(L...U), Res, _Flags) :-
-    dnorm0(L...U, Res0),
+    dnorm0(L...U, false, Res0),
     !, Res = Res0.
 
-dnorm0(A...B, Res) :-
+dnorm0(A...B, Log, Res) :-
     negative(A, B),
-    dnorm_(A, L),
-    dnorm_(B, U),
+    dnorm_(A, Log, L),
+    dnorm_(B, Log, U),
     !, Res = L...U.
 
-dnorm0(A...B, Res) :-
+dnorm0(A...B, Log, Res) :-
     positive(A, B),
-    dnorm_(A, U),
-    dnorm_(B, L),
+    dnorm_(A, Log, U),
+    dnorm_(B, Log, L),
     !, Res = L...U.
 
-dnorm0(A...B, Res) :-
+dnorm0(A...B, Log, Res) :-
     eval(max(abs(A), B), Max),
-    dnorm0(0...Max, Res).
+    dnorm0(0...Max, Log, Res).
 
-% dnorm/3
-interval_(dnorm(number(A), number(Mu), number(Sigma)), Res, _Flags) :-
-    dnorm_(A, Mu, Sigma, Res0),
+% dnorm/2: log argument
+interval_(dnorm(number(A), bool(Log)), Res, _Flags) :-
+    dnorm_(A, Log, Res0),
     !, Res = number(Res0).
 
-dnorm_(A, Mu, Sigma, Res) :-
-    eval(r(dnorm(A, Mu, Sigma)), Res).
+interval_(dnorm(L...U), Log, Res, _Flags) :-
+    dnorm0(L...U, Log, Res0),
+    !, Res = Res0.
+
+% dnorm/3: mu and sd argument
+interval_(dnorm(number(A), number(Mu), number(Sigma)), Res, _Flags) :-
+    dnorm_(A, Mu, Sigma, false, Res0),
+    !, Res = number(Res0).
+
+dnorm_(A, Mu, Sigma, Log, Res) :-
+    eval(r(dnorm(A, Mu, Sigma, 'log'=Log)), Res).
 
 interval_(dnorm(A1...A2, Mu1...Mu2, Sigma1...Sigma2), Res, Flags) :-
     interval_((A1...A2 - Mu1...Mu2) / Sigma1...Sigma2, Z, Flags),
-    dnorm0(Z, Res0),
+    dnorm0(Z, false, Res0),
     interval_(number(1)/Sigma1...Sigma2 * Res0, Res1, Flags),
     !, Res = Res1.
 
 macro(dnorm/3, interval_, []).
 
+% dnorm/4: mu, sd, log argument
+interval_(dnorm(number(A), number(Mu), number(Sigma), bool(Log)), Res, _Flags) :-
+    dnorm_(A, Mu, Sigma, Log, Res0),
+    !, Res = number(Res0).
+
+interval_(dnorm(A1...A2, Mu1...Mu2, Sigma1...Sigma2, bool(false)), Res, Flags) :-
+    !, interval_(dnorm(A1...A2, Mu1...Mu2, Sigma1...Sigma2), Res, Flags).
+
+interval_(dnorm(A1...A2, Mu1...Mu2, Sigma1...Sigma2, bool(true)), Res, Flags) :-
+    interval_((A1...A2 - Mu1...Mu2) / Sigma1...Sigma2, Z, Flags),
+    dnorm0(Z, false, Res0),
+    interval_(number(1)/Sigma1...Sigma2 * Res0, L0...U0, Flags),
+    eval(log(L0), log(U0), Res1),
+    !, Res = Res1.
+
+macro(dnorm/4, interval_, [], [pattern([_, _, _, bool(_)])]).
 %
 % t distribution
 %
