@@ -219,21 +219,31 @@ test_that("dnorm 1", {
 })
 
 test_that("dnorm 2", {
+  expr <- quote(dnorm(8, 10, 2, log=TRUE))
+  expect_equal(rnd(eval(expr)), -2.112086)
+})
+
+test_that("dnorm 3", {
   expr <- quote(dnorm(...(8, 9), 10, 2))
   expect_equal(rnd(eval(expr)), ...(0.120985, 0.176033))
 })
 
-test_that("dnorm 3", {
+test_that("dnorm 4", {
   expr <- quote(dnorm(8, ...(10, 11), 2))
   expect_equal(rnd(eval(expr)), ...(0.064758, 0.120986))
 })
 
-test_that("dnorm 4", {
+test_that("dnorm 5", {
   expr <- quote(dnorm(8, 10, ...(2, 3)))
   expect_equal(rnd(eval(expr)), ...(0.080656, 0.159725))
 })
 
-test_that("dnorm 5", {
+test_that("dnorm 6", {
   expr <- quote(dnorm(...(8, 9), ...(10, 11), ...(2, 3)))
   expect_equal(rnd(eval(expr)), ...(0.043172, 0.188692))
+})
+
+test_that("dnorm 7", {
+  expr <- quote(dnorm(...(8, 9), ...(10, 11), ...(2, 3), log=TRUE))
+  expect_equal(rnd(eval(expr)), ...(-3.142551, -1.667641))
 })

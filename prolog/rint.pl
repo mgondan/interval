@@ -30,8 +30,10 @@ For general information on the use of interval/2 and interval/3, please refer to
 %       - Quantile with explicit tail argument: interval(qnorm(P, Mu, Sigma, true), Res)
 %       - Quantile with explicit tail and log.p argument: interval(qnorm(P, Mu, Sigma, true, true), Res)
 %       - Density with defaults: interval(dnorm(X), Res)
-%       - Density: interval(dnorm(X, Mu, Sigma), Res)
-%
+%       - Density with log argument: interval(dnorm(X, true), Res)
+%       - Density with mu and sd argument: interval(dnorm(X, Mu, Sigma), Res)
+%       - Density with mu, sd, and log argument: interval(dnorm(X, Mu, Sigma, true), Res)
+
 %   T distribution
 %       - Cumulated density with default lower tail: interval(pt(X, Df), Res)
 %       - Cumulated density explicit tail argument: interval(pt(X, Df, false), Res)

@@ -11,7 +11,7 @@ pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
 
 qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
 
-dnorm(x, mean = 0, sd = 1, ...)
+dnorm(x, mean = 0, sd = 1, log = FALSE)
 }
 \arguments{
 \item{q, x}{vector of quantiles.}
@@ -26,8 +26,6 @@ dnorm(x, mean = 0, sd = 1, ...)
 \item{log.p, log}{logical; if TRUE, probabilities p are given as log(p)}
 
 \item{p}{vector of probabilities}
-
-\item{...}{further arguments}
 }
 \value{
 The numeric result as interval or number.

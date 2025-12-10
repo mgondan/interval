@@ -1300,44 +1300,132 @@ test(dnorm2) :-
     equal(Res, 0.3332...0.3521).
 
 test(dnorm3) :-
+    interval(dnorm(0.5, false), Res),
+    equal(Res, 0.3520...0.3521).
+
+test(dnorm4) :-
+    interval(dnorm(0.5, true), Res),
+    equal(Res, -1.0440... -1.0439).
+
+test(dnorm5) :-
     interval(dnorm(90, 100, 10), Res),
     equal(Res, 0.0241...0.0242).
 
-test(dnorm4) :-
+test(dnorm6) :-
     interval(dnorm(90...92, 100, 10), Res),
     equal(Res, 0.0241...0.029).
 
-test(dnorm5) :-
+test(dnorm7) :-
     interval(dnorm(90, 100...102, 10), Res),
     equal(Res, 0.0194...0.0242).
 
-test(dnorm6) :-
+test(dnorm8) :-
     interval(dnorm(90, 100, 10...12), Res),
     equal(Res, 0.0201...0.0282).
 
-test(dnorm7) :-
+test(dnorm9) :-
     interval(dnorm(90...92, 100...102, 10), Res),
     equal(Res, 0.0194...0.029).
 
-test(dnorm8) :-
+test(dnorm10) :-
     interval(dnorm(90...92, 100, 10...11), Res),
     equal(Res, 0.0219...0.0307).
 
-test(dnorm9) :-
+test(dnorm11) :-
     interval(dnorm(90, 100...102, 10...11), Res),
     equal(Res, 0.0176...0.0264).
 
-test(dnorm10) :-
+test(dnorm12) :-
     interval(dnorm(90...91, 100...101, 10...11), Res),
     equal(Res, 0.0198...0.0286).
 
-test(dnorm11) :-
+test(dnorm13) :-
     interval(dnorm(110...111, 100...101, 10...11), Res),
     equal(Res, 0.0198...0.0286).
 
-test(dnorm12) :-
+test(dnorm14) :-
     interval(dnorm(99...102, 100...101, 10...11), Res),
     equal(Res, 0.0355...0.0399).
+
+test(dnorm15) :-
+    interval(dnorm(90, 100, 10, false), Res),
+    equal(Res, 0.0241...0.0242).
+
+test(dnorm16) :-
+    interval(dnorm(90, 100, 10, true), Res),
+    equal(Res, -3.7216... -3.7215).
+
+test(dnorm17) :-
+    interval(dnorm(90...92, 100, 10, false), Res),
+    equal(Res, 0.0241...0.029).
+
+test(dnorm18) :-
+    interval(dnorm(90...92, 100, 10, true), Res),
+    equal(Res, -3.7216... -3.5415).
+
+test(dnorm19) :-
+    interval(dnorm(90, 100...102, 10, false), Res),
+    equal(Res, 0.0194...0.0242).
+
+test(dnorm20) :-
+    interval(dnorm(90, 100...102, 10, true), Res),
+    equal(Res, -3.9416... -3.7215).
+
+test(dnorm21) :-
+    interval(dnorm(90, 100, 10...12, false), Res),
+    equal(Res, 0.0201...0.0282).
+
+test(dnorm22) :-
+    interval(dnorm(90, 100, 10...12, true), Res),
+    equal(Res, -3.9039... -3.5687).
+
+test(dnorm23) :-
+    interval(dnorm(90...92, 100...102, 10, false), Res),
+    equal(Res, 0.0194...0.029).
+
+test(dnorm24) :-
+    interval(dnorm(90...92, 100...102, 10, true), Res),
+    equal(Res, -3.9416... -3.5415).
+
+test(dnorm25) :-
+    interval(dnorm(90...92, 100, 10...11, false), Res),
+    equal(Res, 0.0219...0.0307).
+
+test(dnorm26) :-
+    interval(dnorm(90...92, 100, 10...11, true), Res),
+    equal(Res, -3.8169... -3.4859).
+
+test(dnorm27) :-
+    interval(dnorm(90, 100...102, 10...11, false), Res),
+    equal(Res, 0.0176...0.0264).
+
+test(dnorm28) :-
+    interval(dnorm(90, 100...102, 10...11, true), Res),
+    equal(Res, -4.0369... -3.6347).
+
+test(dnorm29) :-
+    interval(dnorm(90...91, 100...101, 10...11, false), Res),
+    equal(Res, 0.0198...0.0286).
+
+test(dnorm30) :-
+    interval(dnorm(90...91, 100...101, 10...11, true), Res),
+    equal(Res, -3.9219... -3.5562).
+
+test(dnorm31) :-
+    interval(dnorm(110...111, 100...101, 10...11, false), Res),
+    equal(Res, 0.0198...0.0286).
+
+test(dnorm32) :-
+    interval(dnorm(110...111, 100...101, 10...11, true), Res),
+    equal(Res, -3.9219... -3.5562).
+
+test(dnorm33) :-
+    interval(dnorm(99...102, 100...101, 10...11, false), Res),
+    equal(Res, 0.0355...0.0399).
+    
+test(dnorm34) :-
+    interval(dnorm(99...102, 100...101, 10...11, true), Res),
+    equal(Res, -3.3369... -3.2215).
 
 :- end_tests(normal).
 

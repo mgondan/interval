@@ -101,9 +101,6 @@ dbinom <- function(x, size, prob, log=FALSE) {
 #' @param log.p,log
 #' logical; if TRUE, probabilities p are given as log(p)
 #' 
-#' @param ...
-#' further arguments
-#' 
 #' @return
 #' The numeric result as interval or number.
 #' 
@@ -139,14 +136,14 @@ qnorm <- function(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @rdname Normal
-dnorm <- function(x, mean = 0, sd = 1, ...) {
-  .dispatch("dnorm", x, mean, sd, ...)
+dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
+  .dispatch("dnorm", x, mean, sd, log)
 }
 
-.dnorm_interval <- function(x, mean = 0, sd = 1, ...) {
-  .eval("dnorm", x, mean, sd)
+.dnorm_interval <- function(x, mean = 0, sd = 1, log = FALSE) {
+  .eval("dnorm", x, mean, sd, log)
 }
 
-.dnorm_default <- function(x, mean = 0, sd = 1, ...) {
-  stats::dnorm(x, mean, sd, ...)
+.dnorm_default <- function(x, mean = 0, sd = 1, log = FALSE) {
+  stats::dnorm(x, mean, sd, log)
 }
