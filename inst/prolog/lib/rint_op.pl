@@ -336,63 +336,67 @@ macro(dnorm/4, interval_, [], [pattern([_, _, _, bool(_)])]).
 %
 % t distribution
 %
-% pt/2: lower.tail = TRUE
+% pt/2: lower.tail = TRUE, log.p = FALSE
 macro(pt/2, all, [+,+], [hook(r)]).
 
-% pt/3
-interval_(pt(number(A), number(Df), bool(true)), Res, _Flags) :-
-    pt_lower(A, Df, Res0),
+% pt/3 log.p = FALSE
+interval_(pt(number(A), number(Df), bool(Tail)), Res, _Flags) :-
+    pt_(A, Df, Tail, false, Res0),
     !, Res = number(Res0).
 
-interval_(pt(number(A), number(Df), bool(false)), Res, _Flags) :-
-    pt_upper(A, Df, Res0),
-    !, Res = number(Res0).
-
-pt_lower(A, Df, Res) :-
-    eval(r(pt(A, Df, 'lower.tail'=true)), Res).
-
-pt_upper(A, Df, Res) :-
-    eval(r(pt(A, Df, 'lower.tail'=false)), Res).
+pt_(A, Df, Tail, LogP, Res) :-
+    eval(r(pt(A, Df, 'lower.tail'=Tail, 'log.p'=LogP)), Res).
 
 interval_(pt(A1...A2, Df1...Df2, bool(Tail)), Res, _Flags) :-
-    pt_(A1...A2, Df1...Df2, Tail, Res0),
+    pt0(A1...A2, Df1...Df2, Tail, false, Res0),
     !, Res = Res0.
 
-pt_(A1...A2, Df1...Df2, true, L...U) :-
+pt0(A1...A2, Df1...Df2, true, LogP, L...U) :-
     negative(A1, A2),
     !,
-    pt_lower(A1, Df2, L),
-    pt_lower(A2, Df1, U).
+    pt_(A1, Df2, true, LogP, L),
+    pt_(A2, Df1, true, LogP, U).
 
-pt_(A1...A2, Df1...Df2, true, L...U) :-
+pt0(A1...A2, Df1...Df2, true, LogP, L...U) :-
     positive(A1, A2),
     !,
-    pt_lower(A1, Df1, L),
-    pt_lower(A2, Df2, U).
+    pt_(A1, Df1, true, LogP, L),
+    pt_(A2, Df2, true, LogP, U).
 
-pt_(A1...A2, Df1...Df2, true, Res) :-
+pt0(A1...A2, Df1...Df2, true, LogP, Res) :-
     eval(max(abs(A1), A2), Max),
-    pt_(0...Max, Df1...Df2, true, Res0),
+    pt0(0...Max, Df1...Df2, true, LogP, Res0),
     !, Res = Res0.
 
-pt_(A1...A2, Df1...Df2, false, L...U) :-
+pt0(A1...A2, Df1...Df2, false, LogP, L...U) :-
     negative(A1, A2),
     !,
-    pt_upper(A2, Df1, L),
-    pt_upper(A1, Df2, U).
+    pt_(A2, Df1, false, LogP, L),
+    pt_(A1, Df2, false, LogP, U).
 
-pt_(A1...A2, Df1...Df2, false, L...U) :-
+pt0(A1...A2, Df1...Df2, false, LogP, L...U) :-
     positive(A1, A2),
     !,
-    pt_upper(A2, Df2, L),
-    pt_upper(A1, Df1, U).
+    pt_(A2, Df2, false, LogP, L),
+    pt_(A1, Df1, false, LogP, U).
 
-pt_(A1...A2, Df1...Df2, false, Res) :-
+pt0(A1...A2, Df1...Df2, false, LogP, Res) :-
     eval(max(abs(A1), A2), Max),
-    pt_(0...Max, Df1...Df2, false, Res0),
+    pt0(0...Max, Df1...Df2, false, LogP, Res0),
     !, Res = Res0.    
     
 macro(pt/3, interval_, [], [pattern([_, _, bool(_)])]).
+
+% pt/4 
+interval_(pt(number(A), number(Df), bool(Tail), bool(LogP)), Res, _Flags) :-
+    pt_(A, Df, Tail, LogP, Res0),
+    !, Res = number(Res0).
+
+interval_(pt(A1...A2, Df1...Df2, bool(Tail), bool(LogP)), Res, _Flags) :-
+    pt0(A1...A2, Df1...Df2, Tail, LogP, Res0),
+    !, Res = Res0.
+
+macro(pt/4, interval_, [], [pattern([_, _, bool(_), bool(_)])]).
 
 % qt/2: lower.tail = TRUE
 interval_(qt(number(P), number(Df)), Res, _Flags) :-
