@@ -398,59 +398,75 @@ interval_(pt(A1...A2, Df1...Df2, bool(Tail), bool(LogP)), Res, _Flags) :-
 
 macro(pt/4, interval_, [], [pattern([_, _, bool(_), bool(_)])]).
 
-% qt/2: lower.tail = TRUE
+% qt/2: lower.tail = TRUE, log.p = TRUE
 interval_(qt(number(P), number(Df)), Res, _Flags) :-
-    qt_lower(P, Df, Res0),
+    qt_(P, Df, true, false, Res0),
     !, Res = number(Res0).
 
-qt_lower(P, Df, Res) :-
-    eval(r(qt(P, Df, 'lower.tail'=true)), Res).
+qt_(P, Df, Tail, LogP, Res) :-
+    eval(r(qt(P, Df, 'lower.tail'=Tail, 'log.p'=LogP)), Res).
 
 interval_(qt(P1...P2, Df1...Df2), Res, _Flags) :-
-    qt_(P1...P2, Df1...Df2, true, Res0),
+    qt0(P1...P2, Df1...Df2, true, false, Res0),
     !, Res = Res0.
 
 macro(qt/2, interval_, []).
 
-% qt/3
-interval_(qt(number(P), number(Df), bool(true)), Res, _Flags) :-
-    qt_lower(P, Df, Res0),
+% qt/3 log.p = TRUE
+interval_(qt(number(P), number(Df), bool(Tail)), Res, _Flags) :-
+    qt_(P, Df, Tail, false, Res0),
     !, Res = number(Res0).
-
-interval_(qt(number(P), number(Df), bool(false)), Res, _Flags) :-
-    qt_upper(P, Df, Res0),
-    !, Res = number(Res0).
-
-qt_upper(P, Df, Res) :-
-    eval(r(qt(P, Df, 'lower.tail'=false)), Res).
 
 interval_(qt(P1...P2, Df1...Df2, bool(Tail)), Res, _Flags) :-
-    qt_(P1...P2, Df1...Df2, Tail, Res0),
+    qt0(P1...P2, Df1...Df2, Tail, false, Res0),
     !, Res = Res0.
 
-qt_(P1...P2, Df1...Df2, true, L...U) :-
+qt0(P1...P2, Df1...Df2, true, false, L...U) :-
     eval(P1 >= 0.5),
     !,
-    qt_lower(P1, Df2, L),
-    qt_lower(P2, Df1, U).
+    qt_(P1, Df2, true, false, L),
+    qt_(P2, Df1, true, false, U).
 
-qt_(P1...P2, Df1...Df2, true, L...U) :-
+qt0(P1...P2, Df1...Df2, true, true, L...U) :-
+    eval(exp(P1) >= 0.5),
     !,
-    qt_lower(P1, Df1, L),
-    qt_lower(P2, Df2, U).
+    qt_(P1, Df2, true, true, L),
+    qt_(P2, Df1, true, true, U).
 
-qt_(P1...P2, Df1...Df2, false, L...U) :-
+qt0(P1...P2, Df1...Df2, true, LogP, L...U) :-
+    !,
+    qt_(P1, Df1, true, LogP, L),
+    qt_(P2, Df2, true, LogP, U).
+
+qt0(P1...P2, Df1...Df2, false, false, L...U) :-
     eval(P1 >= 0.5),
     !,
-    qt_upper(P2, Df1, L),
-    qt_upper(P1, Df2, U).
-
-qt_(P1...P2, Df1...Df2, false, L...U) :-
+    qt_(P2, Df1, false, false, L),
+    qt_(P1, Df2, false, false, U).
+    
+qt0(P1...P2, Df1...Df2, false, true, L...U) :-
+    eval(exp(P1) >= 0.5),
     !,
-    qt_upper(P2, Df2, L),
-    qt_upper(P1, Df1, U).
+    qt_(P2, Df1, false, true, L),
+    qt_(P1, Df2, false, true, U).
+
+qt0(P1...P2, Df1...Df2, false, LogP, L...U) :-
+    !,
+    qt_(P2, Df2, false, LogP, L),
+    qt_(P1, Df1, false, LogP, U).
 
 macro(qt/3, interval_, [], [pattern([_, _, bool(_)])]).
+
+% qt/4
+interval_(qt(number(P), number(Df), bool(Tail), bool(LogP)), Res, _Flags) :-
+    qt_(P, Df, Tail, LogP, Res0),
+    !, Res = number(Res0).
+
+interval_(qt(P1...P2, Df1...Df2, bool(Tail), bool(LogP)), Res, _Flags) :-
+    qt0(P1...P2, Df1...Df2, Tail, LogP, Res0),
+    !, Res = Res0.
+
+macro(qt/4, interval_, [], [pattern([_, _, bool(_), bool(_)])]).
 
 % dt/2
 interval_(dt(number(A), number(Df)), Res, _Flags) :-

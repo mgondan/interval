@@ -37,8 +37,10 @@ For general information on the use of interval/2 and interval/3, please refer to
 %   T distribution
 %       - Cumulated density with default lower tail: interval(pt(X, Df), Res)
 %       - Cumulated density explicit tail argument: interval(pt(X, Df, false), Res)
+%       - Cumulated density explicit tail and log.p argument: interval(pt(X, Df, false, true), Res)
 %       - Quantile with default lower tail: interval(qt(P, Df), Res)
 %       - Quantile with explicit tail argument: interval(qt(P, Df, true), Res)
+%       - Quantile with explicit tail and log.p argument: interval(qt(P, Df, true, true), Res)
 %       - Density: interval(dt(X, Df), Res)
 %
 %   Chi-square distribution

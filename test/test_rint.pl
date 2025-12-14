@@ -1647,6 +1647,134 @@ test(qt19) :-
     interval(qt(0.4...0.7, 2...5, false), Res),
     equal(Res, -0.5595...0.2887).
 
+test(qt20) :-
+    interval(qt(0.4, 5, true, false), Res),
+    equal(Res, -0.2672... -0.2671).
+
+test(qt21) :-
+    interval(qt(-0.91629, 5, true, true), Res),
+    equal(Res, -0.2672... -0.2671).
+
+test(qt22) :-
+    interval(qt(0.6, 5, true, false), Res),
+    equal(Res, 0.2671... 0.2672).
+
+test(qt23) :-
+    interval(qt(-0.51082, 5, true, true), Res),
+    equal(Res, 0.2671... 0.2672).
+
+test(qt24) :-
+    interval(qt(0.4, 5, false, false), Res),
+    equal(Res, 0.2671...0.2672).
+
+test(qt25) :-
+    interval(qt(-0.91629, 5, false, true), Res),
+    equal(Res, 0.2671...0.2672).
+
+test(qt26) :-
+    interval(qt(0.6, 5, false, false), Res),
+    equal(Res, -0.2672... -0.2671).
+
+test(qt27) :-
+    interval(qt(-0.51082, 5, false, true), Res),
+    equal(Res, -0.2672... -0.2671).
+
+test(qt28) :-
+    interval(qt(0.3...0.4, 5, true, false), Res),
+    equal(Res, -0.5595... -0.2671).
+
+test(qt29) :-
+    interval(qt(-1.20397... -0.91629, 5, true, true), Res),
+    equal(Res, -0.5595... -0.2671).
+
+test(qt30) :-
+    interval(qt(0.6...0.7, 5, true, false), Res),
+    equal(Res, 0.2671... 0.5595).
+
+test(qt31) :-
+    interval(qt(-0.51082... -0.35667, 5, true, true), Res),
+    equal(Res, 0.2671... 0.5595).
+
+test(qt32) :-
+    interval(qt(0.4...0.7, 5, true, false), Res),
+    equal(Res, -0.2672...0.5595).
+
+test(qt33) :-
+    interval(qt(-0.91629... -0.35667, 5, true, true), Res),
+    equal(Res, -0.2672...0.5595).
+
+test(qt34) :-
+    interval(qt(0.3...0.4, 5, false, false), Res),
+    equal(Res, 0.2671...0.5595).
+
+test(qt35) :-
+    interval(qt(-1.20397... -0.91629, 5, false, true), Res),
+    equal(Res, 0.2671...0.5595).
+
+test(qt36) :-
+    interval(qt(0.6...0.7, 5, false, false), Res),
+    equal(Res, -0.5595... -0.2671).
+
+test(qt37) :-
+    interval(qt(-0.51082... -0.35667, 5, false, true), Res),
+    equal(Res, -0.5595... -0.2671).
+
+test(qt38) :-
+    interval(qt(0.4...0.7, 5, false, false), Res),
+    equal(Res, -0.5595...0.2672).
+
+test(qt39) :-
+    interval(qt(-0.91629... -0.35667, 5, false, true), Res),
+    equal(Res, -0.5595...0.2672).
+
+test(qt40) :-
+    interval(qt(0.4, 5...6, true, false), Res),
+    equal(Res, -0.2672... -0.2648).
+
+test(qt41) :-
+    interval(qt(-0.91629, 5...6, true, true), Res),
+    equal(Res, -0.2672... -0.2648).
+
+test(qt42) :-
+    interval(qt(0.6, 5...6, true, false), Res),
+    equal(Res, 0.2648...0.2672).
+
+test(qt43) :-
+    interval(qt(-0.51082, 5...6, true, true), Res),
+    equal(Res, 0.2648...0.2672).
+
+test(qt44) :-
+    interval(qt(0.4, 5...6, false, false), Res),
+    equal(Res, 0.2648...0.2672).
+
+test(qt45) :-
+    interval(qt(-0.91629, 5...6, false, true), Res),
+    equal(Res, 0.2648...0.2672).
+
+test(qt46) :-
+    interval(qt(0.6, 5...6, false, false), Res),
+    equal(Res, -0.2672... -0.2648).
+
+test(qt47) :-
+    interval(qt(-0.51082, 5...6, false, true), Res),
+    equal(Res, -0.2672... -0.2648).
+
+test(qt48) :-
+    interval(qt(0.4...0.7, 2...5, true, false), Res),
+    equal(Res, -0.2887...0.5595).
+
+test(qt49) :-
+    interval(qt(-0.91629... -0.35667, 2...5, true, true), Res),
+    equal(Res, -0.2887...0.5595).
+
+test(qt50) :-
+    interval(qt(0.4...0.7, 2...5, false, false), Res),
+    equal(Res, -0.5595...0.2887).
+
+test(qt51) :-
+    interval(qt(-0.91629... -0.35667, 2...5, false, true), Res),
+    equal(Res, -0.5595...0.2887).
+
 test(dt1) :-
     interval(dt(-0.5, 5), Res),
     equal(Res, 0.3279...0.3280).
