@@ -468,36 +468,47 @@ interval_(qt(P1...P2, Df1...Df2, bool(Tail), bool(LogP)), Res, _Flags) :-
 
 macro(qt/4, interval_, [], [pattern([_, _, bool(_), bool(_)])]).
 
-% dt/2
+% dt/2: log = FALSE
 interval_(dt(number(A), number(Df)), Res, _Flags) :-
-    dt_(A, Df, Res0),
+    dt_(A, Df, false, Res0),
     !, Res = number(Res0).
 
-dt_(A, Df, Res) :-
-    eval(r(dt(A, Df), Res)).
+dt_(A, Df, Log, Res) :-
+    eval(r(dt(A, Df, log=Log), Res)).
 
 interval_(dt(A1...A2, Df1...Df2), Res, _Flags) :-
-    dt0(A1...A2, Df1...Df2, Res0),
+    dt0(A1...A2, Df1...Df2, false, Res0),
     !, Res = Res0.
     
-dt0(A1...A2, Df1...Df2, Res) :-
+dt0(A1...A2, Df1...Df2, Log, Res) :-
     negative(A1, A2),
-    dt_(A1, Df1, L),
-    dt_(A2, Df2, U),
+    dt_(A1, Df1, Log, L),
+    dt_(A2, Df2, Log, U),
     !, Res = L...U.
 
-dt0(A1...A2, Df1...Df2, Res) :-
+dt0(A1...A2, Df1...Df2, Log, Res) :-
     positive(A1, A2),
-    dt_(A2, Df1, L),
-    dt_(A1, Df2, U),
+    dt_(A2, Df1, Log, L),
+    dt_(A1, Df2, Log, U),
     !, Res = L...U.
 
-dt0(A1...A2, Df1...Df2, Res) :-
+dt0(A1...A2, Df1...Df2, Log, Res) :-
     eval(max(abs(A1), A2), Max),
-    dt0(0...Max, Df1...Df2, Res0),
+    dt0(0...Max, Df1...Df2, Log, Res0),
     !, Res = Res0.
 
 macro(dt/2, interval_, []).
+
+% dt/3
+interval_(dt(number(A), number(Df), bool(Log)), Res, _Flags) :-
+    dt_(A, Df, Log, Res0),
+    !, Res = number(Res0).
+
+interval_(dt(A1...A2, Df1...Df2, bool(Log)), Res, _Flags) :-
+    dt0(A1...A2, Df1...Df2, Log, Res0),
+    !, Res = Res0.
+
+macro(dt/3, interval_, [], [pattern([_, _, bool(_)])]).
 
 %
 % Chi-squared distribution

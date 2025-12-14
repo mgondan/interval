@@ -1811,6 +1811,78 @@ test(dt9) :-
     interval(dt(-0.4... 0.5, 5...6), Res),
     equal(Res, 0.3279...0.3828).
 
+test(dt10) :-
+    interval(dt(-0.5, 5, false), Res),
+    equal(Res, 0.3279...0.3280).
+
+test(dt10) :-
+    interval(dt(-0.5, 5, true), Res),
+    equal(Res, -1.1150... -1.1149).
+
+test(dt11) :-
+    interval(dt(-0.5... -0.4, 5, false), Res),
+    equal(Res, 0.3279...0.3454).
+
+test(dt12) :-
+    interval(dt(-0.5... -0.4, 5, true), Res),
+    equal(Res, -1.1150... -1.0631).
+
+test(dt13) :-
+    interval(dt(0.4...0.5, 5, false), Res),
+    equal(Res, 0.3279...0.3454).
+
+test(dt14) :-
+    interval(dt(0.4...0.5, 5, true), Res),
+    equal(Res, -1.1150... -1.0631).
+
+test(dt15) :-
+    interval(dt(-0.4... 0.5, 5, false), Res),
+    equal(Res, 0.3279...0.3797).
+
+test(dt16) :-
+    interval(dt(-0.4... 0.5, 5, true), Res),
+    equal(Res, -1.1150... -0.9686).
+
+test(dt17) :-
+    interval(dt(-0.5, 5...6, false), Res),
+    equal(Res, 0.3279...0.3318).
+
+test(dt18) :-
+    interval(dt(-0.5, 5...6, true), Res),
+    equal(Res, -1.1150... -1.1032).
+
+test(dt19) :-
+    interval(dt(0.4, 5...6, false), Res),
+    equal(Res, 0.3453...0.3491).
+
+test(dt20) :-
+    interval(dt(0.4, 5...6, true), Res),
+    equal(Res, -1.0632... -1.0525).
+
+test(dt21) :-
+    interval(dt(-0.5... -0.4, 5...6, false), Res),
+    equal(Res, 0.3279...0.3491).
+
+test(dt22) :-
+    interval(dt(-0.5... -0.4, 5...6, true), Res),
+    equal(Res, -1.1150... -1.0525).
+
+test(dt23) :-
+    interval(dt(0.4...0.5, 5...6, false), Res),
+    equal(Res, 0.3279...0.3491).
+
+test(dt24) :-
+    interval(dt(0.4...0.5, 5...6, true), Res),
+    equal(Res, -1.1150... -1.0525).
+
+test(dt25) :-
+    interval(dt(-0.4... 0.5, 5...6, false), Res),
+    equal(Res, 0.3279...0.3828).
+
+test(dt26) :-
+    interval(dt(-0.4... 0.5, 5...6, true), Res),
+    equal(Res, -1.1150... -0.9604).
+
 :- end_tests(t).
 
 :- begin_tests(chisq).
