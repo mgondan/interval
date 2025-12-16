@@ -1896,36 +1896,108 @@ test(pchisq2) :-
     equal(Res, 0.0023...0.0047).
 
 test(pchisq3) :-
+    interval(pchisq(0.3, 5...6), Res),
+    equal(Res, 0.0005...0.0024).
+
+test(pchisq4) :-
+    interval(pchisq(0.3...0.4, 5...6), Res),
+    equal(Res, 0.0005...0.0047).
+
+test(pchisq5) :-
     interval(pchisq(0.3, 5, true), Res),
     equal(Res, 0.0023...0.0024).
 
-test(pchisq4) :-
+test(pchisq6) :-
     interval(pchisq(0.3, 5, false), Res),
     equal(Res, 0.9976...0.9977).
 
-test(pchisq5) :-
+test(pchisq7) :-
     interval(pchisq(0.3...0.4, 5, true), Res),
     equal(Res, 0.0023...0.0047).
 
-test(pchisq6) :-
+test(pchisq8) :-
     interval(pchisq(0.3...0.4, 5, false), Res),
     equal(Res, 0.9953...0.9977).
 
-test(pchisq7) :-
+test(pchisq9) :-
     interval(pchisq(0.3, 5...6, true), Res),
     equal(Res, 0.0005...0.0024).
 
-test(pchisq8) :-
+test(pchisq10) :-
     interval(pchisq(0.3, 5...6, false), Res),
     equal(Res, 0.9976...0.9995).
 
-test(pchisq9) :-
+test(pchisq11) :-
     interval(pchisq(0.3...0.4, 5...6, true), Res),
     equal(Res, 0.0005...0.0047).
 
-test(pchisq10) :-
+test(pchisq12) :-
     interval(pchisq(0.3...0.4, 5...6, false), Res),
     equal(Res, 0.9953...0.9995).
+
+test(pchisq13) :-
+    interval(pchisq(0.3, 5, true, false), Res),
+    equal(Res, 0.0023...0.0024).
+
+test(pchisq14) :-
+    interval(pchisq(0.3, 5, true, true), Res),
+    equal(Res, -6.0505... -6.0504).
+
+test(pchisq15) :-
+    interval(pchisq(0.3, 5, false, false), Res),
+    equal(Res, 0.9976...0.9977).
+
+test(pchisq16) :-
+    interval(pchisq(0.3, 5, false, true), Res),
+    equal(Res, -0.0024... -0.0023).
+
+test(pchisq17) :-
+    interval(pchisq(0.3...0.4, 5, true, false), Res),
+    equal(Res, 0.0023...0.0047).
+
+test(pchisq18) :-
+    interval(pchisq(0.3...0.4, 5, true, true), Res),
+    equal(Res, -6.0505... -5.3665).
+
+test(pchisq19) :-
+    interval(pchisq(0.3...0.4, 5, false, false), Res),
+    equal(Res, 0.9953...0.9977).
+
+test(pchisq20) :-
+    interval(pchisq(0.3...0.4, 5, false, true), Res),
+    equal(Res, -0.0047... -0.0023).
+
+test(pchisq21) :-
+    interval(pchisq(0.3, 5...6, true, false), Res),
+    equal(Res, 0.0005...0.0024).
+
+test(pchisq22) :-
+    interval(pchisq(0.3, 5...6, true, true), Res),
+    equal(Res, -7.5952... -6.0504).
+
+test(pchisq23) :-
+    interval(pchisq(0.3, 5...6, false, false), Res),
+    equal(Res, 0.9976...0.9995).
+
+test(pchisq24) :-
+    interval(pchisq(0.3, 5...6, false, true), Res),
+    equal(Res, -0.0024... -0.0005).
+
+test(pchisq25) :-
+    interval(pchisq(0.3...0.4, 5...6, true, false), Res),
+    equal(Res, 0.0005...0.0047).
+
+test(pchisq26) :-
+    interval(pchisq(0.3...0.4, 5...6, true, true), Res),
+    equal(Res, -7.5952... -5.3665).
+
+test(pchisq27) :-
+    interval(pchisq(0.3...0.4, 5...6, false, false), Res),
+    equal(Res, 0.9953...0.9995).
+
+test(pchisq28) :-
+    interval(pchisq(0.3...0.4, 5...6, false, true), Res),
+    equal(Res, -0.0047... -0.0005).
 
 test(qchisq1) :-
     interval(qchisq(0.3, 5), Res),
