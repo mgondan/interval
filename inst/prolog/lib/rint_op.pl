@@ -539,25 +539,29 @@ macro(pchisq/4, pchisq_, [+, -, /, /], [pattern([_, _, bool(true), bool(_)])]).
 macro(pchisq/4, pchisq_, [-, +, /, /], [pattern([_, _, bool(false), bool(_)])]).
 
 % qchisq/2: lower.tail = TRUE
-macro(qchisq/2, all, [+,-], [hook(r)]).
+macro(qchisq/2, all, [+,+], [hook(r)]).
 
-% qchisq/3
-interval_(qchisq(number(P), number(Df), bool(true)), Res, _Flags) :-
-    qchisq_lower(P, Df, true, Res0),
+% qchisq/3: log.p = FALSE
+interval_(qchisq(number(P), number(Df), bool(Tail)), Res, _Flags) :-
+    qchisq_(P, Df, Tail, Res0),
     !, Res = number(Res0).
 
-interval_(qchisq(number(P), number(Df), bool(false)), Res, _Flags) :-
-    qchisq_upper(P, Df, false, Res0),
+qchisq_(P, Df, Tail, Res) :-
+    eval(r(qchisq(P, Df, 'lower.tail'=Tail)), Res).
+
+macro(qchisq/3, qchisq_, [+, +, /], [pattern([_, _, bool(true)])]).
+macro(qchisq/3, qchisq_, [-, +, /], [pattern([_, _, bool(false)])]).
+
+% qchisq/4
+interval_(qchisq(number(P), number(Df), bool(Tail), bool(LogP)), Res, _Flags) :-
+    qchisq_(P, Df, Tail, LogP, Res0),
     !, Res = number(Res0).
 
-qchisq_lower(P, Df, Tail, Res) :-
-    eval(r(qchisq(P, Df, 'lower.tail'=Tail)), Res).
+qchisq_(P, Df, Tail, LogP, Res) :-
+    eval(r(qchisq(P, Df, 'lower.tail'=Tail, 'log.p'=LogP)), Res).
 
-qchisq_upper(P, Df, Tail, Res) :-
-    eval(r(qchisq(P, Df, 'lower.tail'=Tail)), Res).
-
-macro(qchisq/3, qchisq_lower, [+, +, /], [pattern([_, _, bool(true)])]).
-macro(qchisq/3, qchisq_upper, [-, +, /], [pattern([_, _, bool(false)])]).
+macro(qchisq/4, qchisq_, [+, +, /, /], [pattern([_, _, bool(true), bool(_)])]).
+macro(qchisq/4, qchisq_, [-, +, /, /], [pattern([_, _, bool(false), bool(_)])]).
 
 % dchisq/2
 interval_(dchisq(number(A), number(Df)), Res, _Flags) :-

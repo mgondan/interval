@@ -50,6 +50,7 @@ For general information on the use of interval/2 and interval/3, please refer to
 %       - Cumulated density explicit tail and log.p argument: interval(pchisq(X, Df, false, true), Res)
 %       - Quantile with default lower tail: interval(qchisq(P, Df), Res)
 %       - Quantile with explicit tail argument: interval(qchisq(P, Df, true), Res)
+%       - Quantile with explicit tail and log.p argument: interval(qchisq(P, Df, true, true), Res)
 %       - Density: interval(dchisq(X, Df), Res)
 
 :- set_prolog_flag(float_overflow, infinity).
