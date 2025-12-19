@@ -575,14 +575,44 @@ interval_(dchisq(A1...A2, Df1...Df2), Res, _Flags) :-
     dchisq0_(A1...A2, Df1...Df2, Res0),
     !, Res = Res0.
 
-% for df<=2
+% for df2 =< 2
 dchisq0_(A1...A2, Df1...Df2, Res) :-
     eval(Df2 =< 2),
-    dchisq_(A2, Df2, L),
-    dchisq_(A1, Df1, U),
+    dchisq_(A1, Df1, X1),
+    dchisq_(A1, Df2, X2),
+    dchisq_(A2, Df1, X3),
+    dchisq_(A2, Df2, X4),
+    min_list([X1, X2, X3, X4], L),
+    max_list([X1, X2, X3, X4], U),
     !, Res = L...U.
 
-% for x < mode
+% for df1 == 2, df2 > 2, L < mode, U > mode
+dchisq0_(A1...A2, 2...Df2, Res) :-
+    dif(Df2, 2),
+    eval(Df2 - 2, Mode),
+    eval(A1 < Mode),
+    eval(A2 > Mode),
+    dchisq_(A1, 2, X1),
+    dchisq_(A2, 2, X2),
+    dchisq_(A1, Df2, X3),
+    dchisq_(A2, Df2, X4),
+    dchisq_(Mode, Df2, U),
+    min_list([X1, X2, X3, X4], L),
+    max_list([X1, X2, X3, X4, Mode], U),
+    !, Res = L...U.
+
+% for df1 == 2, df2 > 2
+dchisq0_(A1...A2, 2...Df2, Res) :-
+    dif(Df2, 2),
+    dchisq_(A1, 2, X1),
+    dchisq_(A2, 2, X2),
+    dchisq_(A1, Df2, X3),
+    dchisq_(A2, Df2, X4),
+    min_list([X1, X2, X3, X4], L),
+    max_list([X1, X2, X3, X4], U),
+    !, Res = L...U.
+
+% for df1 > 2, x < mode
 dchisq0_(A1...A2, Df1...Df2, Res) :-
     eval(Df1 - 2, Mode),
     eval(A2 =< Mode),
@@ -590,7 +620,7 @@ dchisq0_(A1...A2, Df1...Df2, Res) :-
     dchisq_(A2, Df1, U),
     !, Res = L...U.
 
-% for x > mode
+% for df1 > 2, x > mode
 dchisq0_(A1...A2, Df1...Df2, Res) :-
     eval(Df2 - 2, Mode),
     eval(A1 >= Mode),
@@ -598,7 +628,7 @@ dchisq0_(A1...A2, Df1...Df2, Res) :-
     dchisq_(A1, Df1, U),
     !, Res = L...U.
 
-% for L < mode, U > mode
+% for df1 > 2, L < mode, U > mode
 dchisq0_(A1...A2, Df1...Df2, Res) :-
     dchisq_(A1, Df2, L0),
     dchisq_(A2, Df1, U0),
