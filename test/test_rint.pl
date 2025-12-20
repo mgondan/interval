@@ -2179,6 +2179,134 @@ test(dchisq17) :-
     interval(dchisq(0.9...1.1, 3...4), Res),
     equal(Res, 0.1434...0.2420).
 
+test(dchisq18) :-
+    interval(dchisq(0.3, 2, false), Res),
+    equal(Res, 0.4303...0.4304).
+
+test(dchisq19) :-
+    interval(dchisq(0.3, 2, true), Res),
+    equal(Res, -0.8432... -0.8431).
+
+test(dchisq20) :-
+    interval(dchisq(1.4, 4, false), Res),
+    equal(Res, 0.1738...0.1739).
+
+test(dchisq21) :-
+    interval(dchisq(1.4, 4, true), Res),
+    equal(Res, -1.7499... -1.7498).
+
+test(dchisq22) :-
+    interval(dchisq(2.1, 4, false), Res),
+    equal(Res, 0.1837...0.1838).
+
+test(dchisq23) :-
+    interval(dchisq(2.1, 4, true), Res),
+    equal(Res, -1.6944... -1.6943).
+
+test(dchisq24) :-
+    interval(dchisq(0.3...0.4, 2, false), Res),
+    equal(Res, 0.4093...0.4304).
+
+test(dchisq25) :-
+    interval(dchisq(0.3...0.4, 2, true), Res),
+    equal(Res, -0.8932... -0.8431).
+
+test(dchisq26) :-
+    interval(dchisq(0.8...0.9, 3, false), Res),
+    equal(Res, 0.2391...0.2414).
+
+test(dchisq27) :-
+    interval(dchisq(0.8...0.9, 3, true), Res),
+    equal(Res, -1.4306... -1.4216).
+
+test(dchisq28) :-
+    interval(dchisq(1.3...1.4, 3, false), Res),
+    equal(Res, 0.2344...0.2375).
+
+test(dchisq29) :-
+    interval(dchisq(1.3...1.4, 3, true), Res),
+    equal(Res, -1.4508... -1.4377).
+
+test(dchisq30) :-
+    interval(dchisq(0.9...1.1, 3, false), Res),
+    equal(Res, 0.2413...0.2420).
+
+test(dchisq31) :-
+    interval(dchisq(0.9...1.1, 3, true), Res),
+    equal(Res, -1.4217... -1.4189).
+
+test(dchisq32) :-
+    interval(dchisq(0.3, 1...2, false), Res),
+    equal(Res, 0.4303...0.627).
+
+test(dchisq33) :-
+    interval(dchisq(0.3, 1...2, true), Res),
+    equal(Res, -0.8432... -0.4669).
+
+test(dchisq34) :-
+    interval(dchisq(1.1, 2...3, false), Res),
+    equal(Res, 0.2414...0.2885).
+
+test(dchisq35) :-
+    interval(dchisq(1.1, 2...3, true), Res),
+    equal(Res, -1.4213... -1.2431).
+
+test(dchisq36) :-
+    interval(dchisq(0.3, 3...4, false), Res),
+    equal(Res, 0.0645...0.1881).
+
+test(dchisq37) :-
+    interval(dchisq(0.3, 3...4, true), Res),
+    equal(Res, -2.7403... -1.6709).
+
+test(dchisq38) :-
+    interval(dchisq(2.2, 3...4, false), Res),
+    equal(Res, 0.1830...0.1970).
+
+test(dchisq39) :-
+    interval(dchisq(2.2, 3...4, true), Res),
+    equal(Res, -1.6979... -1.6247).
+
+test(dchisq40) :-
+    interval(dchisq(0.9...1.1, 1...2, false), Res),
+    equal(Res, 0.2194...0.3189).
+
+test(dchisq41) :-
+    interval(dchisq(0.9...1.1, 1...2, true), Res),
+    equal(Res, -1.5166... -1.1431).
+
+test(dchisq42) :-
+    interval(dchisq(2...3, 2...3, false), Res),
+    equal(Res, 0.1115...0.2076).
+
+test(dchisq43) :-
+    interval(dchisq(2...3, 2...3, true), Res),
+    equal(Res, -2.1932... -1.5723).
+
+test(dchisq44) :-
+    interval(dchisq(0.9...1.1, 2...3, false), Res),
+    equal(Res, 0.2413...0.3189).
+
+test(dchisq45) :-
+    interval(dchisq(0.8...0.9, 3...4, true), Res),
+    equal(Res, -2.0095... -1.4216).
+
+test(dchisq46) :-
+    interval(dchisq(2.1...2.2, 3...4, false), Res),
+    equal(Res, 0.1830...0.2024).
+
+test(dchisq47) :-
+    interval(dchisq(2.1...2.2, 3...4, true), Res),
+    equal(Res, -1.6979... -1.5979).
+
+test(dchisq48) :-
+    interval(dchisq(0.9...1.1, 3...4, false), Res),
+    equal(Res, 0.1434...0.2420).
+
+test(dchisq49) :-
+    interval(dchisq(0.9...1.1, 3...4, true), Res),
+    equal(Res, -1.9417... -1.4189).
+
 :- end_tests(chisq).
 
 % Helper predicate to check equality
