@@ -563,78 +563,89 @@ qchisq_(P, Df, Tail, LogP, Res) :-
 macro(qchisq/4, qchisq_, [+, +, /, /], [pattern([_, _, bool(true), bool(_)])]).
 macro(qchisq/4, qchisq_, [-, +, /, /], [pattern([_, _, bool(false), bool(_)])]).
 
-% dchisq/2
+% dchisq/2: log = FALSE
 interval_(dchisq(number(A), number(Df)), Res, _Flags) :-
-    dchisq_(A, Df, Res0),
+    dchisq_(A, Df, false, Res0),
     !, Res = number(Res0).
 
-dchisq_(A, Df, Res) :-
-    eval(r(dchisq(A, Df)), Res).
+dchisq_(A, Df, Log, Res) :-
+    eval(r(dchisq(A, Df, log=Log)), Res).
 
 interval_(dchisq(A1...A2, Df1...Df2), Res, _Flags) :-
-    dchisq0_(A1...A2, Df1...Df2, Res0),
+    dchisq0_(A1...A2, Df1...Df2, false, Res0),
     !, Res = Res0.
 
 % for df2 =< 2
-dchisq0_(A1...A2, Df1...Df2, Res) :-
+dchisq0_(A1...A2, Df1...Df2, Log, Res) :-
     eval(Df2 =< 2),
-    dchisq_(A1, Df1, X1),
-    dchisq_(A1, Df2, X2),
-    dchisq_(A2, Df1, X3),
-    dchisq_(A2, Df2, X4),
+    dchisq_(A1, Df1, Log, X1),
+    dchisq_(A1, Df2, Log, X2),
+    dchisq_(A2, Df1, Log, X3),
+    dchisq_(A2, Df2, Log, X4),
     min_list([X1, X2, X3, X4], L),
     max_list([X1, X2, X3, X4], U),
     !, Res = L...U.
 
 % for df1 == 2, df2 > 2, L < mode, U > mode
-dchisq0_(A1...A2, 2...Df2, Res) :-
+dchisq0_(A1...A2, 2...Df2, Log, Res) :-
     dif(Df2, 2),
     eval(Df2 - 2, Mode),
     eval(A1 < Mode),
     eval(A2 > Mode),
-    dchisq_(A1, 2, X1),
-    dchisq_(A2, 2, X2),
-    dchisq_(A1, Df2, X3),
-    dchisq_(A2, Df2, X4),
-    dchisq_(Mode, Df2, U),
+    dchisq_(A1, 2, Log, X1),
+    dchisq_(A2, 2, Log, X2),
+    dchisq_(A1, Df2, Log, X3),
+    dchisq_(A2, Df2, Log, X4),
+    dchisq_(Mode, Df2, Log, U),
     min_list([X1, X2, X3, X4], L),
     max_list([X1, X2, X3, X4, Mode], U),
     !, Res = L...U.
 
 % for df1 == 2, df2 > 2
-dchisq0_(A1...A2, 2...Df2, Res) :-
+dchisq0_(A1...A2, 2...Df2, Log, Res) :-
     dif(Df2, 2),
-    dchisq_(A1, 2, X1),
-    dchisq_(A2, 2, X2),
-    dchisq_(A1, Df2, X3),
-    dchisq_(A2, Df2, X4),
+    dchisq_(A1, 2, Log, X1),
+    dchisq_(A2, 2, Log, X2),
+    dchisq_(A1, Df2, Log, X3),
+    dchisq_(A2, Df2, Log, X4),
     min_list([X1, X2, X3, X4], L),
     max_list([X1, X2, X3, X4], U),
     !, Res = L...U.
 
 % for df1 > 2, x < mode
-dchisq0_(A1...A2, Df1...Df2, Res) :-
+dchisq0_(A1...A2, Df1...Df2, Log, Res) :-
     eval(Df1 - 2, Mode),
     eval(A2 =< Mode),
-    dchisq_(A1, Df2, L),
-    dchisq_(A2, Df1, U),
+    dchisq_(A1, Df2, Log, L),
+    dchisq_(A2, Df1, Log, U),
     !, Res = L...U.
 
 % for df1 > 2, x > mode
-dchisq0_(A1...A2, Df1...Df2, Res) :-
+dchisq0_(A1...A2, Df1...Df2, Log, Res) :-
     eval(Df2 - 2, Mode),
     eval(A1 >= Mode),
-    dchisq_(A2, Df2, L),
-    dchisq_(A1, Df1, U),
+    dchisq_(A2, Df2, Log, L),
+    dchisq_(A1, Df1, Log, U),
     !, Res = L...U.
 
 % for df1 > 2, L < mode, U > mode
-dchisq0_(A1...A2, Df1...Df2, Res) :-
-    dchisq_(A1, Df2, L0),
-    dchisq_(A2, Df1, U0),
+dchisq0_(A1...A2, Df1...Df2, Log, Res) :-
+    dchisq_(A1, Df2, Log, L0),
+    dchisq_(A2, Df1, Log, U0),
     eval(min(L0, U0), L),
     eval(Df1 - 2, Mode),
-    dchisq_(Mode, Df1, U),
+    dchisq_(Mode, Df1, Log, U),
     !, Res = L...U.
 
 macro(dchisq/2, interval_, []).
+
+% dchisq/3
+interval_(dchisq(number(A), number(Df), bool(Log)), Res, _Flags) :-
+    dchisq_(A, Df, Log, Res0),
+    !, Res = number(Res0).
+
+interval_(dchisq(A1...A2, Df1...Df2, bool(Log)), Res, _Flags) :-
+    dchisq0_(A1...A2, Df1...Df2, Log, Res0),
+    !, Res = Res0.
+
+macro(dchisq/3, interval_, [], [pattern([_, _, bool(_)])]).
