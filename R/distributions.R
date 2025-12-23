@@ -147,3 +147,52 @@ dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 .dnorm_default <- function(x, mean = 0, sd = 1, log = FALSE) {
   stats::dnorm(x, mean, sd, log)
 }
+
+
+#' @title 
+#' The Student t Distribution
+#' 
+#' @name TDist
+#' 
+#' @description
+#' For more information, refer to the documentation
+#' of [dt()], [pt()], [qt()] from `stats`.
+#' 
+#' @param q
+#' vector of quantiles.
+#' 
+#' @param p
+#' vector of probabilities
+#' 
+#' @param df
+#' degree of freedoms
+#' 
+#' @param ncp
+#' non-centrality parameter. This is only provided for the base `stats::pt` function.
+#' Not supported by the interval version of `pt`.
+#' 
+#' @param lower.tail
+#' logical; if TRUE (default), probabilities are 
+#' _P_\[_X&le;x_\], otherwise, _P_\[_X&ge;x_\]
+#' 
+#' @param log.p
+#' logical; if TRUE, probabilities p are given as log(p)
+#' 
+#' @return
+#' The numeric result as interval or number.
+#' 
+#' @examples 
+#' pt(...(2, 3), ...(10, 11))
+#' @export
+#' @md
+pt <- function(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
+  .dispatch("pt", q, df, ncp, lower.tail, log.p)
+}
+
+.pt_interval <- function(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
+  .eval("pt", q, df, lower.tail, log.p)
+}
+
+.pt_default <- function(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
+  stats::pt(q, df, ncp, lower.tail = lower.tail, log.p = log.p)
+}
