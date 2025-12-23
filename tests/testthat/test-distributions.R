@@ -247,3 +247,48 @@ test_that("dnorm 7", {
   expr <- quote(dnorm(...(8, 9), ...(10, 11), ...(2, 3), log=TRUE))
   expect_equal(rnd(eval(expr)), ...(-3.142551, -1.667641))
 })
+
+test_that("pt 1", {
+  expr <- quote(pt(2, 10))
+  expect_equal(rnd(eval(expr)), 0.963306)
+})
+
+test_that("pt 2", {
+  expr <- quote(pt(2, 10, lower.tail=FALSE))
+  expect_equal(rnd(eval(expr)), 0.036694)
+})
+
+test_that("pt 3", {
+  expr <- quote(pt(2, 10, 1))
+  expect_equal(rnd(eval(expr)), 0.807612)
+})
+
+test_that("pt 4", {
+  expr <- quote(pt(...(2, 3), 10))
+  expect_equal(rnd(eval(expr)), ...(0.963305, 0.993329))
+})
+
+test_that("pt 5", {
+  expr <- quote(pt(2, ...(10, 11)))
+  expect_equal(rnd(eval(expr)), ...(0.963305, 0.964599))
+})
+
+test_that("pt 6", {
+  expr <- quote(pt(...(2, 3), ...(10, 11)))
+  expect_equal(rnd(eval(expr)), ...(0.963305, 0.993961))
+})
+
+test_that("pt 7", {
+  expr <- quote(pt(...(2, 3), ...(10, 11), lower.tail=FALSE))
+  expect_equal(rnd(eval(expr)), ...(0.006039, 0.036695))
+})
+
+test_that("pt 8", {
+  expr <- quote(pt(...(2, 3), ...(10, 11), log.p=TRUE))
+  expect_equal(rnd(eval(expr)), ...(-0.037385, -0.006058))
+})
+
+test_that("pt 9", {
+  expr <- quote(pt(...(2, 3), ...(10, 11), lower.tail=FALSE, log.p=TRUE))
+  expect_equal(rnd(eval(expr)), ...(-5.109365, -3.305141))
+})
