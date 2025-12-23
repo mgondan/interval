@@ -4,14 +4,17 @@
 \alias{TDist}
 \alias{pt}
 \alias{qt}
+\alias{dt}
 \title{The Student t Distribution}
 \usage{
 pt(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE)
 
 qt(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE)
+
+dt(x, df, ncp = 0, log = FALSE)
 }
 \arguments{
-\item{q}{vector of quantiles.}
+\item{q, x}{vector of quantiles.}
 
 \item{df}{degree of freedoms}
 
@@ -21,7 +24,7 @@ Not supported by the interval version of \code{pt}.}
 \item{lower.tail}{logical; if TRUE (default), probabilities are
 \emph{P}[\emph{X≤x}], otherwise, \emph{P}[\emph{X≥x}]}
 
-\item{log.p}{logical; if TRUE, probabilities p are given as log(p)}
+\item{log.p, log}{logical; if TRUE, probabilities p are given as log(p)}
 
 \item{p}{vector of probabilities}
 }
@@ -35,4 +38,5 @@ of \code{\link[=dt]{dt()}}, \code{\link[=pt]{pt()}}, \code{\link[=qt]{qt()}} fro
 \examples{
 pt(...(2, 3), ...(10, 11))
 qt(...(0.6, 0.7), ...(10, 11))
+dt(...(2, 3), ...(10, 11))
 }
