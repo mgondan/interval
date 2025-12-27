@@ -183,6 +183,7 @@ dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 #' 
 #' @examples 
 #' pt(...(2, 3), ...(10, 11))
+#' qt(...(0.6, 0.7), ...(10, 11))
 #' @export
 #' @md
 pt <- function(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
@@ -195,4 +196,17 @@ pt <- function(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
 
 .pt_default <- function(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
   stats::pt(q, df, ncp, lower.tail = lower.tail, log.p = log.p)
+}
+
+#' @rdname TDist
+qt <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
+  .dispatch("qt", p, df, ncp, lower.tail, log.p)
+}
+
+.qt_interval <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
+  .eval("qt", p, df, lower.tail, log.p)
+}
+
+.qt_default <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
+  stats::qt(p, df, ncp, lower.tail = lower.tail, log.p = log.p)
 }

@@ -3,9 +3,12 @@
 \name{TDist}
 \alias{TDist}
 \alias{pt}
+\alias{qt}
 \title{The Student t Distribution}
 \usage{
 pt(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE)
+
+qt(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE)
 }
 \arguments{
 \item{q}{vector of quantiles.}
@@ -31,4 +34,5 @@ of \code{\link[=dt]{dt()}}, \code{\link[=pt]{pt()}}, \code{\link[=qt]{qt()}} fro
 }
 \examples{
 pt(...(2, 3), ...(10, 11))
+qt(...(0.6, 0.7), ...(10, 11))
 }
