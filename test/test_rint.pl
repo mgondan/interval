@@ -1883,6 +1883,10 @@ test(dt26) :-
     interval(dt(-0.4... 0.5, 5...6, true), Res),
     equal(Res, -1.1150... -0.9604).
 
+test(dt27) :-
+    interval(dt(2, 10...15), Res),
+    equal(Res, 0.0592...0.0612).
+
 :- end_tests(t).
 
 :- begin_tests(chisq).
