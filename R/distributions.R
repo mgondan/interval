@@ -158,7 +158,7 @@ dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 #' For more information, refer to the documentation
 #' of [dt()], [pt()], [qt()] from `stats`.
 #' 
-#' @param q
+#' @param q,x
 #' vector of quantiles.
 #' 
 #' @param p
@@ -175,7 +175,7 @@ dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 #' logical; if TRUE (default), probabilities are 
 #' _P_\[_X&le;x_\], otherwise, _P_\[_X&ge;x_\]
 #' 
-#' @param log.p
+#' @param log.p,log
 #' logical; if TRUE, probabilities p are given as log(p)
 #' 
 #' @return
@@ -184,6 +184,7 @@ dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 #' @examples 
 #' pt(...(2, 3), ...(10, 11))
 #' qt(...(0.6, 0.7), ...(10, 11))
+#' dt(...(2, 3), ...(10, 11))
 #' @export
 #' @md
 pt <- function(q, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
@@ -209,4 +210,17 @@ qt <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
 
 .qt_default <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
   stats::qt(p, df, ncp, lower.tail = lower.tail, log.p = log.p)
+}
+
+#' @rdname TDist
+dt <- function(x, df, ncp = 0, log = FALSE) {
+  .dispatch("dt", x, df, ncp, log)
+}
+
+.dt_interval <- function(x, df, ncp = 0, log = FALSE) {
+  .eval("dt", x, df, log)
+}
+
+.dt_default <- function(x, df, ncp = 0, log = FALSE) {
+  stats::dt(x, df, ncp, log = log)
 }
