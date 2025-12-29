@@ -1,0 +1,66 @@
+:- module(test_utility, [test_utility/0]).
+
+:- use_module(library(plunit)).
+:- use_module(library(debug)).
+:- use_module('../prolog/rint.pl').
+
+test_utility :-
+    run_tests([arrange_args, eval_min_max]).
+
+:- begin_tests(arrange_args).
+
+test(arrange_args1) :-
+  Args = [1],
+  rint:arrange_args(Args, Res),
+  Res = [#(1)].
+
+test(arrange_args2) :-
+  Args = [1...2],
+  rint:arrange_args(Args, Res),
+  Res = [#(2, 1)].
+
+test(arrange_args3) :-
+  Args = [1...2, 3...4],
+  rint:arrange_args(Args, Res),
+  Res = [#(2, 2, 1, 1), #(4, 3, 4, 3)].
+
+test(arrange_args4) :-
+  Args = [1...2, 3...4, 5...6],
+  rint:arrange_args(Args, Res),
+  Res = [#(2, 2, 2, 2, 1, 1, 1, 1), #(4, 4, 3, 3, 4, 4, 3, 3), #(6, 5, 6, 5, 6, 5, 6, 5)].
+
+test(arrange_args5) :-
+  Args = [true],
+  rint:arrange_args(Args, Res),
+  Res = [#(true)].
+
+test(arrange_args6) :-
+  Args = [1...2, false],
+  rint:arrange_args(Args, Res),
+  Res = [#(2, 1), #(false, false)].
+
+test(arrange_args7) :-
+  Args = [1...2, true, 3...4],
+  rint:arrange_args(Args, Res),
+  Res = [#(2, 2, 1, 1), #(true, true, true, true), #(4, 3, 4, 3)].
+
+:- end_tests(arrange_args).
+
+:- begin_tests(eval_min_max).
+
+test(eval_min_max1) :-
+  rint:eval_min_max(dt, [1...2, 10...20], Res),
+  rint:interval(r(dt(1, 10)), X1),
+  rint:interval(r(dt(1, 20)), X2),
+  rint:interval(r(dt(2, 10)), X3),
+  rint:interval(r(dt(2, 20)), X4),
+  rint:min_list([X1, X2, X3, X4], L),
+  rint:max_list([X1, X2, X3, X4], U),
+  equal(Res, L...U).
+
+:- end_tests(eval_min_max).
+
+% Helper predicate to check equality
+equal(Res0, Res1) :-
+    interval(round(Res0, 4), Res),
+    interval(round(Res1, 4), Res).
