@@ -94,13 +94,20 @@ arrange_args(Args0, Args) :-
     maplist(arg_list, Args0, Args1),
     variations(N, [], Args1, Args2), 
     arrange(Args2, N, Args3),
-    maplist(list_hashtag, Args3, Args).
+    maplist(list_hashtag, Args3, Args4),
+    maplist(name_args, Args4, Args).
 
 arg_list(L...U, [L, U]) :- !.
 arg_list(A, [A]) :- !.
 
 list_hashtag(List, Term) :-
     compound_name_arguments(Term, #, List).
+
+name_args(Vector, Args) :-
+    compound_name_arguments(Vector, #, [Name=_Value | _]),
+    !, compound_name_arguments(Args, =, [Name, Vector]).
+
+name_args(Vector, Vector).
 
 % From lists representing variations build separate lists containing 
 % the elements that were at the same position. 
