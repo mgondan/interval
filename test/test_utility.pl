@@ -49,6 +49,16 @@ test(arrange_args8) :-
   rint:arrange_args(Args, Res),
   Res = [#(2, 2, 1, 1), log= #(log=true, log=true, log=true, log=true), #(4, 3, 4, 3)].
 
+test(arrange_args9) :-
+  Args = [1...1, log=true, 3...4],
+  rint:arrange_args(Args, Res),
+  Res = [#(1, 1), log= #(log=true, log=true), #(4, 3)].
+
+test(arrange_args10) :-
+  Args = [1...1, log=true, 3...3],
+  rint:arrange_args(Args, Res),
+  Res = [#(1), log= #(log=true), #(3)].
+
 :- end_tests(arrange_args).
 
 :- begin_tests(eval_min_max).

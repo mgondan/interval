@@ -97,6 +97,7 @@ arrange_args(Args0, Args) :-
     maplist(list_hashtag, Args3, Args4),
     maplist(name_args, Args4, Args).
 
+arg_list(A...A, [A]) :- !.
 arg_list(L...U, [L, U]) :- !.
 arg_list(A, [A]) :- !.
 
