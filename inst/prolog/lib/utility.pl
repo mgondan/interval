@@ -136,3 +136,31 @@ select_args([], _, Acc, Acc).
 select_args([H | T], N, Acc, L) :-
     nth1(N, H, Element),
     select_args(T, N, [Element | Acc], L).
+
+% Convenience function for calling the 'optimize' function in R
+% The first argument must be an interval. In case of intervals in
+% the remaining arguments, these are combined, and the optimize function 
+% is called for each combination.
+%
+% Example:  
+% optimize_(dt, [A1...A2, Df1...Df2, Ncp1...Ncp2, Log], true, Values).
+%
+% calls:
+% eval(r(optimize(dt, #(A1, A2), Df1, Ncp1, Log, maximum=true)), _)
+% eval(r(optimize(dt, #(A1, A2), Df2, Ncp1, Log, maximum=true)), _)
+% eval(r(optimize(dt, #(A1, A2), Df1, Ncp2, Log, maximum=true)), _)
+% eval(r(optimize(dt, #(A1, A2), Df2, Ncp2, Log, maximum=true)), _)
+%
+% and collects the results as list in 'Values'
+optimize_(Fun, [A1...A2 | Args0], Max, Values) :-
+    length(Args0, N),
+    maplist(arg_list, Args0, Args1),
+    variations(N, [], Args1, Args2), 
+    maplist(f(Fun, #(A1, A2), Max), Args2, Values).
+
+f(Fun, Range, Max, Args0, Y) :-
+    append([Fun, Range], Args0, Args1),
+    append(Args1, [maximum=Max], Args2),
+    compound_name_arguments(Optimize, optimize, Args2),
+    eval(r(Optimize), [_, _-Y]).
+
