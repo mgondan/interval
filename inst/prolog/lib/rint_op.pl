@@ -482,23 +482,11 @@ interval_(dt(A1...A2, Df1...Df2), Res, _Flags) :-
     
 dt0(A1...A2, Df1...Df2, Log, Res) :-
     negative(A1, A2),
-    dt_(A1, Df1, Log, X1),
-    dt_(A1, Df2, Log, X2),
-    dt_(A2, Df1, Log, X3),
-    dt_(A2, Df2, Log, X4),
-    min_list([X1, X2, X3, X4], L),
-    max_list([X1, X2, X3, X4], U),
-    !, Res = L...U.
+    !, eval_min_max(dt, [A1...A2, Df1...Df2, log=Log], Res).
 
 dt0(A1...A2, Df1...Df2, Log, Res) :-
     positive(A1, A2),
-    dt_(A1, Df1, Log, X1),
-    dt_(A1, Df2, Log, X2),
-    dt_(A2, Df1, Log, X3),
-    dt_(A2, Df2, Log, X4),
-    min_list([X1, X2, X3, X4], L),
-    max_list([X1, X2, X3, X4], U),
-    !, Res = L...U.
+    !, eval_min_max(dt, [A1...A2, Df1...Df2, log=Log], Res).
 
 dt0(A1...A2, Df1...Df2, Log, Res) :-
     eval(max(abs(A1), A2), Max),
