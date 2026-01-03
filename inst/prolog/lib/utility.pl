@@ -103,8 +103,7 @@ arg_list(A...A, List) :-
 arg_list(L...U, List) :- 
     !, List = [L, U].
 
-arg_list(A, List) :- 
-    !, List = [A].
+arg_list(A, [A]).
 
 list_hashtag(List, Term) :-
     compound_name_arguments(Term, #, List).
