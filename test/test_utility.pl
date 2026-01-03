@@ -5,7 +5,7 @@
 :- use_module('../prolog/rint.pl').
 
 test_utility :-
-    run_tests([arrange_args, eval_min_max]).
+    run_tests([arrange_args, eval_min_max, optimize]).
 
 :- begin_tests(arrange_args).
 
@@ -75,7 +75,40 @@ test(eval_min_max1) :-
 
 :- end_tests(eval_min_max).
 
+:- begin_tests(optimize).
+
+test(optimize1) :-
+  rint:optimize_(dt, [1...2, 2, 4], true, [Actual]),
+  rint:eval(r(optimize(dt, #(1, 2), 2, 4, maximum=true)), [_, _-Expected]),
+  equal(Actual, Expected).
+
+test(optimize2) :-
+  rint:optimize_(dt, [1...2, 2...3, 4], true, Actual),
+  rint:eval(r(optimize(dt, #(1, 2), 2, 4, maximum=true)), [_, _-Expected1]),
+  rint:eval(r(optimize(dt, #(1, 2), 3, 4, maximum=true)), [_, _-Expected2]),
+  equal(Actual, [Expected1, Expected2]).
+
+test(optimize3) :-
+  rint:optimize_(dt, [1...2, 2...3, 4...5], true, Actual),
+  rint:eval(r(optimize(dt, #(1, 2), 2, 4, maximum=true)), [_, _-Expected1]),
+  rint:eval(r(optimize(dt, #(1, 2), 2, 5, maximum=true)), [_, _-Expected2]),
+  rint:eval(r(optimize(dt, #(1, 2), 3, 4, maximum=true)), [_, _-Expected3]),
+  rint:eval(r(optimize(dt, #(1, 2), 3, 5, maximum=true)), [_, _-Expected4]),
+  equal(Actual, [Expected1, Expected2, Expected3, Expected4]).
+
+:- end_tests(optimize).
+
+
 % Helper predicate to check equality
+equal([A | B], [C | D]) :-
+  msort([A | B], List1),
+  msort([C | D], List2),
+  !, maplist(equal, List1, List2, _).
+
 equal(Res0, Res1) :-
-    interval(round(Res0, 4), Res),
-    interval(round(Res1, 4), Res).
+  interval(round(Res0, 4), Res),
+  interval(round(Res1, 4), Res).
+
+equal(A, B, Res) :-
+  equal(A, B),
+  !, Res = true. 
