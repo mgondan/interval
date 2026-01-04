@@ -12,52 +12,52 @@ test_utility :-
 test(arrange_args1) :-
   Args = [1],
   rint:arrange_args(Args, Res),
-  Res = [#(1)].
+  Res = [##(1)].
 
 test(arrange_args2) :-
   Args = [1...2],
   rint:arrange_args(Args, Res),
-  Res = [#(2, 1)].
+  Res = [##(2, 1)].
 
 test(arrange_args3) :-
   Args = [1...2, 3...4],
   rint:arrange_args(Args, Res),
-  Res = [#(2, 2, 1, 1), #(4, 3, 4, 3)].
+  Res = [##(2, 2, 1, 1), ##(4, 3, 4, 3)].
 
 test(arrange_args4) :-
   Args = [1...2, 3...4, 5...6],
   rint:arrange_args(Args, Res),
-  Res = [#(2, 2, 2, 2, 1, 1, 1, 1), #(4, 4, 3, 3, 4, 4, 3, 3), #(6, 5, 6, 5, 6, 5, 6, 5)].
+  Res = [##(2, 2, 2, 2, 1, 1, 1, 1), ##(4, 4, 3, 3, 4, 4, 3, 3), ##(6, 5, 6, 5, 6, 5, 6, 5)].
 
 test(arrange_args5) :-
   Args = [true],
   rint:arrange_args(Args, Res),
-  Res = [#(true)].
+  Res = [true].
 
 test(arrange_args6) :-
   Args = [1...2, false],
   rint:arrange_args(Args, Res),
-  Res = [#(2, 1), #(false, false)].
+  Res = [##(2, 1), false].
 
 test(arrange_args7) :-
   Args = [1...2, true, 3...4],
   rint:arrange_args(Args, Res),
-  Res = [#(2, 2, 1, 1), #(true, true, true, true), #(4, 3, 4, 3)].
+  Res = [##(2, 2, 1, 1), true, ##(4, 3, 4, 3)].
 
 test(arrange_args8) :-
   Args = [1...2, log=true, 3...4],
   rint:arrange_args(Args, Res),
-  Res = [#(2, 2, 1, 1), log= #(log=true, log=true, log=true, log=true), #(4, 3, 4, 3)].
+  Res = [##(2, 2, 1, 1), log=true, ##(4, 3, 4, 3)].
 
 test(arrange_args9) :-
   Args = [1...1, log=true, 3...4],
   rint:arrange_args(Args, Res),
-  Res = [#(1, 1), log= #(log=true, log=true), #(4, 3)].
+  Res = [##(1, 1), log=true, ##(4, 3)].
 
 test(arrange_args10) :-
   Args = [1...1, log=true, 3...3],
   rint:arrange_args(Args, Res),
-  Res = [#(1), log= #(log=true), #(3)].
+  Res = [##(1), log=true, ##(3)].
 
 :- end_tests(arrange_args).
 

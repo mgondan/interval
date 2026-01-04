@@ -94,7 +94,7 @@ arrange_args(Args0, Args) :-
     maplist(arg_list, Args0, Args1),
     variations(N, [], Args1, Args2), 
     arrange(Args2, N, Args3),
-    maplist(list_hashtag, Args3, Args4),
+    maplist(list_vector, Args3, Args4),
     maplist(name_args, Args4, Args).
 
 arg_list(A...A, List) :- 
@@ -105,11 +105,24 @@ arg_list(L...U, List) :-
 
 arg_list(A, [A]).
 
-list_hashtag(List, Term) :-
-    compound_name_arguments(Term, #, List).
+list_vector([true | _], Term) :-
+    !, Term = true.
+
+list_vector([false | _], Term) :-
+    !, Term = false.
+
+list_vector([Name=true | _], Term) :-
+    !, Term = (Name=true).
+
+list_vector([Name=false | _], Term) :-
+    !, Term = (Name=false).
+
+list_vector(List, Term) :-
+    compound_name_arguments(Term, ##, List).
 
 name_args(Vector, Args) :-
-    compound_name_arguments(Vector, #, [Name=_Value | _]),
+    compound(Vector),
+    compound_name_arguments(Vector, ##, [Name=_Value | _]),
     !, compound_name_arguments(Args, =, [Name, Vector]).
 
 name_args(Vector, Vector).
