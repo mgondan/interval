@@ -81,12 +81,20 @@ max_list_([H | T], Acc, Max) :-
 % the final interval from the minimum and the maximum of the return vector from R .
 % 
 eval_min_max(Func, Args, Res) :-
+    eval_min_max(Func, Args, [], Res).
+
+% Add an optional  list of values (not intervals) that are considered
+% for finding the minimum and the maximum of the final interval.
+% Typically used to add the maximum of a function that was computed separately. 
+eval_min_max(Func, Args, Opt, Res) :-
     arrange_args(Args, Args1),
     compound_name_arguments(Expr, Func, Args1),
     eval(r(Expr), Res1),
     compound_name_arguments(Res1, ##, Res2),
-    min_list(Res2, L),
-    max_list(Res2, U),
+    option(mode(Mode), Opt, []),
+    append(Mode, Res2, Res3),
+    min_list(Res3, L),
+    max_list(Res3, U),
     Res = L...U.
 
 arrange_args(Args0, Args) :-
