@@ -89,21 +89,21 @@ test(eval_min_max2) :-
 
 test(optimize1) :-
   rint:optimize_(dt, [1...2, 2, 4], true, [Actual]),
-  rint:eval(r(optimize(dt, #(1, 2), 2, 4, maximum=true)), [_, _-Expected]),
+  rint:eval(r(optimize(dt, ##(1, 2), 2, 4, maximum=true)), [_, _-Expected]),
   equal(Actual, Expected).
 
 test(optimize2) :-
   rint:optimize_(dt, [1...2, 2...3, 4], true, Actual),
-  rint:eval(r(optimize(dt, #(1, 2), 2, 4, maximum=true)), [_, _-Expected1]),
-  rint:eval(r(optimize(dt, #(1, 2), 3, 4, maximum=true)), [_, _-Expected2]),
+  rint:eval(r(optimize(dt, ##(1, 2), 2, 4, maximum=true)), [_, _-Expected1]),
+  rint:eval(r(optimize(dt, ##(1, 2), 3, 4, maximum=true)), [_, _-Expected2]),
   equal(Actual, [Expected1, Expected2]).
 
 test(optimize3) :-
   rint:optimize_(dt, [1...2, 2...3, 4...5], true, Actual),
-  rint:eval(r(optimize(dt, #(1, 2), 2, 4, maximum=true)), [_, _-Expected1]),
-  rint:eval(r(optimize(dt, #(1, 2), 2, 5, maximum=true)), [_, _-Expected2]),
-  rint:eval(r(optimize(dt, #(1, 2), 3, 4, maximum=true)), [_, _-Expected3]),
-  rint:eval(r(optimize(dt, #(1, 2), 3, 5, maximum=true)), [_, _-Expected4]),
+  rint:eval(r(optimize(dt, ##(1, 2), 2, 4, maximum=true)), [_, _-Expected1]),
+  rint:eval(r(optimize(dt, ##(1, 2), 2, 5, maximum=true)), [_, _-Expected2]),
+  rint:eval(r(optimize(dt, ##(1, 2), 3, 4, maximum=true)), [_, _-Expected3]),
+  rint:eval(r(optimize(dt, ##(1, 2), 3, 5, maximum=true)), [_, _-Expected4]),
   equal(Actual, [Expected1, Expected2, Expected3, Expected4]).
 
 :- end_tests(optimize).
