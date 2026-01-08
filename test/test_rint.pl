@@ -1887,6 +1887,90 @@ test(dt27) :-
     interval(dt(2, 10...15), Res),
     equal(Res, 0.0592...0.0612).
 
+test(dt28) :-
+    interval(dt(0.5, 5, 0), Res),
+    equal(Res, 0.3279...0.3280).
+
+test(dt29) :-
+    interval(dt(0.5, 5, 1), Res),
+    equal(Res, 0.3360...0.3361).
+
+test(dt30) :-
+    interval(dt(0.4...0.5, 5, 0), Res),
+    equal(Res, 0.3279...0.3454).
+
+test(dt31) :-
+    interval(dt(0.4...0.5, 5, 1), Res),
+    equal(Res, 0.3192...0.3361).
+
+test(dt32) :-
+    interval(dt(1.5...2, 5, 1), Res),
+    equal(Res, 0.2114...0.3021).
+
+test(dt33) :-
+    interval(dt(0.5...1.5, 5, 1), Res),
+    equal(Res, 0.3020...0.3653).
+
+test(dt34) :-
+    interval(dt(0.5, 5...6, 0), Res),
+    equal(Res, 0.3279...0.3318).
+
+test(dt35) :-
+    interval(dt(0.5, 5...6, 1), Res),
+    equal(Res, 0.3360...0.3387).
+
+test(dt36) :-
+    interval(dt(1.5, 5...6, 1), Res),
+    equal(Res, 0.3020...0.3093).
+
+test(dt37) :-
+    interval(dt(0.4...0.5, 5...6, 0), Res),
+    equal(Res, 0.3279...0.3491).
+
+test(dt38) :-
+    interval(dt(0.4...0.5, 5...6, 1), Res),
+    equal(Res, 0.3192...0.3387).
+
+test(dt39) :-
+    interval(dt(1.5...2, 5...6, 1), Res),
+    equal(Res, 0.2114...0.3093).
+
+test(dt40) :-
+    interval(dt(0.5...1.5, 5...6, 1), Res),
+    equal(Res, 0.3020...0.3702).
+
+test(dt41) :-
+    interval(dt(0.4...0.5, 5, 1...2), Res),
+    equal(Res, 0.1102...0.3361).
+
+test(dt42) :-
+    interval(dt(2...3, 5, 1...2), Res),
+    equal(Res, 0.0812...0.3223).
+
+test(dt43) :-
+    interval(dt(0.5...2, 5, 1...2), Res),
+    equal(Res, 0.1297...0.3653).
+
+test(dt44) :-
+    interval(dt(0.5, 5...6, 1...2), Res),
+    equal(Res, 0.1297...0.3387).
+
+test(dt45) :-
+    interval(dt(1.5, 5...6, 1...2), Res),
+    equal(Res, 0.3020...0.3239).
+
+test(dt46) :-
+    interval(dt(0.4...0.5, 5...6, 1...2), Res),
+    equal(Res, 0.1102...0.3387).
+
+test(dt47) :-
+    interval(dt(1.5...2, 5...6, 1...2), Res),
+    equal(Res, 0.2114...0.3385).
+
+test(dt48) :-
+    interval(dt(0.5...1.5, 5...6, 1...2), Res),
+    equal(Res, 0.1297...0.3702).
+
 :- end_tests(t).
 
 :- begin_tests(chisq).

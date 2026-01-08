@@ -73,6 +73,16 @@ test(eval_min_max1) :-
   rint:max_list([X1, X2, X3, X4], U),
   equal(Res, L...U).
 
+test(eval_min_max2) :-
+  rint:eval_min_max(dt, [1...2, 10...20], [mode([0.9, 0.1])], Res),
+  rint:interval(r(dt(1, 10)), X1),
+  rint:interval(r(dt(1, 20)), X2),
+  rint:interval(r(dt(2, 10)), X3),
+  rint:interval(r(dt(2, 20)), X4),
+  rint:min_list([X1, X2, X3, X4, 0.9, 0.1], L),
+  rint:max_list([X1, X2, X3, X4, 0.9, 0.1], U),
+  equal(Res, L...U).
+
 :- end_tests(eval_min_max).
 
 :- begin_tests(optimize).
