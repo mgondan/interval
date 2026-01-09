@@ -18,8 +18,7 @@ dt(x, df, ncp = 0, log = FALSE)
 
 \item{df}{degree of freedoms}
 
-\item{ncp}{non-centrality parameter. This is only provided for the base \code{stats::pt} function.
-Not supported by the interval version of \code{pt}.}
+\item{ncp}{non-centrality parameter}
 
 \item{lower.tail}{logical; if TRUE (default), probabilities are
 \emph{P}[\emph{X≤x}], otherwise, \emph{P}[\emph{X≥x}]}
