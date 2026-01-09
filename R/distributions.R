@@ -168,8 +168,7 @@ dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 #' degree of freedoms
 #' 
 #' @param ncp
-#' non-centrality parameter. This is only provided for the base `stats::pt` function.
-#' Not supported by the interval version of `pt`.
+#' non-centrality parameter
 #' 
 #' @param lower.tail
 #' logical; if TRUE (default), probabilities are 
@@ -218,7 +217,7 @@ dt <- function(x, df, ncp = 0, log = FALSE) {
 }
 
 .dt_interval <- function(x, df, ncp = 0, log = FALSE) {
-  .eval("dt", x, df, log)
+  .eval("dt", x, df, ncp, log)
 }
 
 .dt_default <- function(x, df, ncp = 0, log = FALSE) {

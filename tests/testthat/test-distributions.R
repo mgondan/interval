@@ -372,3 +372,19 @@ test_that("dt 7", {
   expr <- quote(dt(...(2, 3), ...(10, 11), log=TRUE))
   expect_equal(rnd(eval(expr)), ...(-4.528657, -2.794494))
 })
+
+test_that("dt 8", {
+  expr1 <- quote(dt(...(2, 3), ...(10, 11), ncp=0))
+  expr2 <- quote(dt(...(2, 3), ...(10, 11)))
+  expect_equal(rnd(eval(expr1)), rnd(eval(expr2)))
+})
+
+test_that("dt 9", {
+  expr <- quote(dt(...(2, 3), ...(10, 11), ncp=1))
+  expect_equal(rnd(eval(expr)), ...(0.071435, 0.226811))
+})
+
+test_that("dt 10", {
+  expr <- quote(dt(...(2, 3), ...(10, 11), ncp=1, log=TRUE))
+  expect_equal(rnd(eval(expr)), ...(-2.638958, -1.483638))
+})
