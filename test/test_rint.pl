@@ -1971,6 +1971,158 @@ test(dt48) :-
     interval(dt(0.5...1.5, 5...6, 1...2), Res),
     equal(Res, 0.1297...0.3702).
 
+test(dt49) :-
+    interval(dt(0.5, 5, 0, false), Res),
+    equal(Res, 0.3279...0.3280).
+
+test(dt50) :-
+    interval(dt(0.5, 5, 1, false), Res),
+    equal(Res, 0.3360...0.3361).
+
+test(dt51) :-
+    interval(dt(0.5, 5, 1, true), Res),
+    equal(Res, -1.0907... -1.0906).
+
+test(dt52) :-
+    interval(dt(0.4...0.5, 5, 0, false), Res),
+    equal(Res, 0.3279...0.3454).
+
+test(dt53) :-
+    interval(dt(0.4...0.5, 5, 1, false), Res),
+    equal(Res, 0.3192...0.3361).
+
+test(dt54) :-
+    interval(dt(0.4...0.5, 5, 1, true), Res),
+    equal(Res, -1.1419... -1.0906).
+
+test(dt55) :-
+    interval(dt(1.5...2, 5, 1, false), Res),
+    equal(Res, 0.2114...0.3021).
+
+test(dt56) :-
+    interval(dt(1.5...2, 5, 1, true), Res),
+    equal(Res, -1.5540... -1.1970).
+
+test(dt57) :-
+    interval(dt(0.5...1.5, 5, 1, false), Res),
+    equal(Res, 0.3020...0.3653).
+
+test(dt58) :-
+    interval(dt(0.5...1.5, 5, 1, true), Res),
+    equal(Res, -1.1971... -1.0071).
+
+test(dt59) :-
+    interval(dt(0.5, 5...6, 0, false), Res),
+    equal(Res, 0.3279...0.3318).
+
+test(dt60) :-
+    interval(dt(0.5, 5...6, 1, false), Res),
+    equal(Res, 0.3360...0.3387).
+
+test(dt61) :-
+    interval(dt(0.5, 5...6, 1, true), Res),
+    equal(Res, -1.0907... -1.0828).
+
+test(dt62) :-
+    interval(dt(1.5, 5...6, 1, false), Res),
+    equal(Res, 0.3020...0.3093).
+
+test(dt63) :-
+    interval(dt(1.5, 5...6, 1, true), Res),
+    equal(Res, -1.1971... -1.1737).
+
+test(dt64) :-
+    interval(dt(0.4...0.5, 5...6, 0, false), Res),
+    equal(Res, 0.3279...0.3491).
+
+test(dt65) :-
+    interval(dt(0.4...0.5, 5...6, 1, false), Res),
+    equal(Res, 0.3192...0.3387).
+
+test(dt66) :-
+    interval(dt(0.4...0.5, 5...6, 1, true), Res),
+    equal(Res, -1.1419... -1.0828).
+
+test(dt67) :-
+    interval(dt(1.5...2, 5...6, 1, false), Res),
+    equal(Res, 0.2114...0.3093).
+
+test(dt68) :-
+    interval(dt(1.5...2, 5...6, 1, true), Res),
+    equal(Res, -1.5540... -1.1737).
+
+test(dt69) :-
+    interval(dt(0.5...1.5, 5...6, 1, false), Res),
+    equal(Res, 0.3020...0.3702).
+
+test(dt70) :-
+    interval(dt(0.5...1.5, 5...6, 1, true), Res),
+    equal(Res, -1.1971... -0.9937).
+
+test(dt71) :-
+    interval(dt(0.4...0.5, 5, 1...2, false), Res),
+    equal(Res, 0.1102...0.3361).
+
+test(dt72) :-
+    interval(dt(0.4...0.5, 5, 1...2, true), Res),
+    equal(Res, -2.2052... -1.0906).
+
+test(dt73) :-
+    interval(dt(2...3, 5, 1...2, false), Res),
+    equal(Res, 0.0812...0.3223).
+
+test(dt74) :-
+    interval(dt(2...3, 5, 1...2, true), Res),
+    equal(Res, -2.5108... -1.1323).
+
+test(dt75) :-
+    interval(dt(0.5...2, 5, 1...2, false), Res),
+    equal(Res, 0.1297...0.3653).
+
+test(dt76) :-
+    interval(dt(0.5...2, 5, 1...2, true), Res),
+    equal(Res, -2.0425... -1.0071).
+
+test(dt77) :-
+    interval(dt(0.5, 5...6, 1...2, false), Res),
+    equal(Res, 0.1297...0.3387).
+
+test(dt78) :-
+    interval(dt(0.5, 5...6, 1...2, true), Res),
+    equal(Res, -2.0425... -1.0828).
+
+test(dt79) :-
+    interval(dt(1.5, 5...6, 1...2, false), Res),
+    equal(Res, 0.3020...0.3239).
+
+test(dt80) :-
+    interval(dt(1.5, 5...6, 1...2, true), Res),
+    equal(Res, -1.1971... -1.1273).
+
+test(dt81) :-
+    interval(dt(0.4...0.5, 5...6, 1...2, false), Res),
+    equal(Res, 0.1102...0.3387).
+
+test(dt82) :-
+    interval(dt(0.4...0.5, 5...6, 1...2, true), Res),
+    equal(Res, -2.2052... -1.0828).
+
+test(dt83) :-
+    interval(dt(1.5...2, 5...6, 1...2, false), Res),
+    equal(Res, 0.2114...0.3385).
+
+test(dt84) :-
+    interval(dt(1.5...2, 5...6, 1...2, true), Res),
+    equal(Res, -1.5540... -1.0835).
+
+test(dt85) :-
+    interval(dt(0.5...1.5, 5...6, 1...2, false), Res),
+    equal(Res, 0.1297...0.3702).
+
+test(dt86) :-
+    interval(dt(0.5...1.5, 5...6, 1...2, true), Res),
+    equal(Res, -2.0425... -0.9937).
+    
 :- end_tests(t).
 
 :- begin_tests(chisq).

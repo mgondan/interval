@@ -528,6 +528,17 @@ dt1(A1...A2, Df1...Df2, Ncp1...Ncp2, Log, Res) :-
 
 macro(dt/3, interval_, []).
 
+% dt/4 
+interval_(dt(number(A), number(Df), number(Ncp), bool(Log)), Res, _Flags) :-
+    dt_(A, Df, Ncp, Log, Res0),
+    !, Res = number(Res0).
+
+interval_(dt(A1...A2, Df1...Df2, Ncp1...Ncp2, bool(Log)), Res, _Flags) :-
+    dt1(A1...A2, Df1...Df2, Ncp1...Ncp2, Log, Res0),
+    !, Res = Res0.
+
+macro(dt/4, interval_, [], [pattern([_, _, _, bool(_)])]).
+
 %
 % Chi-squared distribution
 %
