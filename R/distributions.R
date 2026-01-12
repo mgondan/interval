@@ -204,7 +204,7 @@ qt <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
 }
 
 .qt_interval <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
-  .eval("qt", p, df, lower.tail, log.p)
+  .eval("qt", p, df, ncp, lower.tail, log.p)
 }
 
 .qt_default <- function(p, df, ncp = 0, lower.tail = TRUE, log.p = FALSE) {
