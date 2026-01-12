@@ -475,7 +475,7 @@ qt0(P1...P2, Df1...Df2, false, LogP, L...U) :-
 
 macro(qt/3, interval_, [], [pattern([_, _, bool(_)])]).
 
-% qt/4
+% qt/4 ncp = 0
 interval_(qt(number(P), number(Df), bool(Tail), bool(LogP)), Res, _Flags) :-
     qt_(P, Df, Tail, LogP, Res0),
     !, Res = number(Res0).
@@ -485,6 +485,17 @@ interval_(qt(P1...P2, Df1...Df2, bool(Tail), bool(LogP)), Res, _Flags) :-
     !, Res = Res0.
 
 macro(qt/4, interval_, [], [pattern([_, _, bool(_), bool(_)])]).
+
+% qt/4 log.p = FALSE
+interval_(qt(number(P), number(Df), number(Ncp), bool(Tail)), Res, _Flags) :-
+    qt_(P, Df, Ncp, Tail, false, Res0),
+    !, Res = number(Res0).
+
+interval_(qt(P1...P2, Df1...Df2, Ncp1...Ncp2, bool(Tail)), Res, _Flags) :-
+    eval_min_max(qt, [P1...P2, Df1...Df2, Ncp1...Ncp2, 'lower.tail'=Tail], Res0),
+    !, Res = Res0.
+
+macro(qt/4, interval_, [], [pattern([_, _, _, bool(_)])]).
 
 % dt/2: ncp = 0, log = FALSE
 interval_(dt(number(A), number(Df)), Res, _Flags) :-
