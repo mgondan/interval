@@ -324,18 +324,28 @@ test_that("qt 6", {
 })
 
 test_that("qt 7", {
+  expr <- quote(qt(...(0.6, 0.7), ...(10, 11), ncp=1))
+  expect_equal(rnd(eval(expr)), ...(1.292224, 1.596458))
+})
+
+test_that("qt 8", {
   expr <- quote(qt(...(0.6, 0.7), ...(10, 11), lower.tail=FALSE))
   expect_equal(rnd(eval(expr)), ...(-0.541529, -0.259555))
 })
 
-test_that("qt 8", {
+test_that("qt 9", {
   expr <- quote(qt(...(-0.5108, -0.3566), ...(10, 11), log.p=TRUE))
   expect_equal(rnd(eval(expr)), ...(0.259596, 0.541687))
 })
 
-test_that("qt 9", {
+test_that("qt 10", {
   expr <- quote(qt(...(-0.5108, -0.3566), ...(10, 11), lower.tail=FALSE, log.p=TRUE))
   expect_equal(rnd(eval(expr)), ...(-0.541687, -0.259596))
+})
+
+test_that("qt 11", {
+  expr <- quote(qt(...(-0.5108, -0.3566), ...(10, 11), ncp=1, lower.tail=FALSE, log.p=TRUE))
+  expect_equal(rnd(eval(expr)), ...(0.483614, 0.762011))
 })
 
 test_that("dt 1", {
