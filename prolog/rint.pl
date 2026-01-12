@@ -38,11 +38,16 @@ For general information on the use of interval/2 and interval/3, please refer to
 %       - Cumulated density with default lower tail: interval(pt(X, Df), Res)
 %       - Cumulated density explicit tail argument: interval(pt(X, Df, false), Res)
 %       - Cumulated density explicit tail and log.p argument: interval(pt(X, Df, false, true), Res)
-%       - Quantile with default lower tail: interval(qt(P, Df), Res)
+%       - Quantile with default ncp and tail argument: interval(qt(P, Df), Res)
+%       - Quantile with explicit ncp argument: interval(qt(P, Df, Ncp), Res)
 %       - Quantile with explicit tail argument: interval(qt(P, Df, true), Res)
 %       - Quantile with explicit tail and log.p argument: interval(qt(P, Df, true, true), Res)
-%       - Density with default log argument: interval(dt(X, Df), Res)
+%       - Quantile with explicit ncp and tail argument: interval(qt(P, Df, Ncp, true), Res)
+%       - Quantile with explicit ncp, tail and log.p argument: interval(qt(P, Df, Ncp, true, true), Res
+%       - Density with default ncp and log argument: interval(dt(X, Df), Res)
 %       - Density with explicit log argument: interval(dt(X, Df, true), Res)
+%       - Density with explicit ncp argument: interval(dt(X, Df, Ncp), Res)
+%       - Density with explicit ncp and log argument: interval(dt(X, Df, Ncp, true), Res)
 %
 %   Chi-square distribution
 %       - Cumulated density with default lower tail: interval(pchisq(X, Df), Res)
