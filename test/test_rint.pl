@@ -1666,7 +1666,31 @@ test(pt58) :-
 test(pt59) :-
     interval(pt(-0.5...0.2, 2...5, 1...2, false), Res),
     equal(Res, 0.7905...0.9929).
-    
+
+test(pt60) :-
+    interval(pt(-0.5, 5, 1, true, false), Res),
+    equal(Res, 0.0723...0.0724).
+
+test(pt61) :-
+    interval(pt(-0.5... -0.2, 5, 1, false, true), Res),
+    equal(Res, -0.1249... -0.0750).
+
+test(pt62) :-
+    interval(pt(-0.5, 5...6, 1, true, true), Res),
+    equal(Res, -2.6393... -2.6269).
+
+test(pt63) :-
+    interval(pt(-0.5... -0.2, 5...6, 1, false, false), Res),
+    equal(Res, 0.8825...0.9286).
+
+test(pt64) :-
+    interval(pt(-0.5, 5...6, 1...2, true, false), Res),
+    equal(Res, 0.0070...0.0724).
+
+test(pt65) :-
+    interval(pt(-0.5...0.2, 2...5, 1...2, true, true), Res),
+    equal(Res, -4.9362... -1.5630).
+
 test(qt1) :-
     interval(qt(0.4, 5), Res),
     equal(Res, -0.2672... -0.2671).

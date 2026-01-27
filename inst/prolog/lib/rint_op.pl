@@ -439,6 +439,17 @@ interval_(pt(A1...A2, Df1...Df2, Ncp1...Ncp2, bool(Tail)), Res, _Flags) :-
 
 macro(pt/4, interval_, [], [pattern([_, _, _, bool(_)])]).
 
+% pt/5 
+interval_(pt(number(A), number(Df), number(Ncp), bool(Tail), bool(LogP)), Res, _Flags) :-
+    pt_(A, Df, Ncp, Tail, LogP, Res0),
+    !, Res = number(Res0).
+
+interval_(pt(A1...A2, Df1...Df2, Ncp1...Ncp2, bool(Tail), bool(LogP)), Res, _Flags) :-
+    pt1(A1...A2, Df1...Df2, Ncp1...Ncp2, Tail, LogP, Res0),
+    !, Res = Res0.
+
+macro(pt/5, interval_, [], [pattern([_, _, _, bool(_), bool(_)])]).
+
 % qt/2: ncp = 0, lower.tail = TRUE, log.p = TRUE
 interval_(qt(number(P), number(Df)), Res, _Flags) :-
     qt_(P, Df, true, false, Res0),
