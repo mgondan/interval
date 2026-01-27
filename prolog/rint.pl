@@ -38,6 +38,7 @@ For general information on the use of interval/2 and interval/3, please refer to
 %       - Cumulated density with default arguments: interval(pt(X, Df), Res)
 %       - Cumulated density with explicit tail argument: interval(pt(X, Df, false), Res)
 %       - Cumulated density with explicit ncp argument: interval(pt(X, Df, Ncp), Res)
+%       - Cumulated density with explicit ncp and tail argument: interval(pt(X, Df, Ncp, false), Res)
 %       - Cumulated density with explicit tail and log.p argument: interval(pt(X, Df, false, true), Res)
 %       - Quantile with default ncp and tail argument: interval(qt(P, Df), Res)
 %       - Quantile with explicit ncp argument: interval(qt(P, Df, Ncp), Res)
