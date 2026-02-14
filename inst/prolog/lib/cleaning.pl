@@ -10,6 +10,9 @@ clean(A, Cleaned),
     number(A)
  => Cleaned = number(A).
 
+clean(number(A), Cleaned)
+ => Cleaned = number(A).
+
 clean(L...U, number(A))
  => L = A,
     U = A.
@@ -48,6 +51,9 @@ clean(true, Cleaned)
 clean(false, Cleaned) 
  => Cleaned = bool(false).
 
+clean(bool(Bool), Cleaned) 
+ => Cleaned = bool(Bool).
+
 clean(User, bool(Boolean)) 
  => User = Boolean.
 
@@ -56,12 +62,18 @@ clean(A, Cleaned),
     string(A)
  => Cleaned = string(A).
 
+clean(string(A), Cleaned)
+ => Cleaned = string(A).
+
 clean(User, string(A))
  => User = A.
 
 % Atom
 clean(A, Cleaned),
     atomic(A)
+ => Cleaned = atomic(A).
+
+clean(atomic(A), Cleaned)
  => Cleaned = atomic(A).
 
 clean(User, atomic(A))

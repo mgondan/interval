@@ -57,6 +57,22 @@ test(clean11) :-
     clean(e, B),
     B = number(e).
 
+test(clean12) :-
+    clean(number(1), B),
+    B = number(1).
+
+test(clean13) :-
+    clean(bool(true), B),
+    B = bool(true).
+
+test(clean14) :-
+    clean(string("abc"), B),
+    B = string("abc").
+
+test(clean15) :-
+    clean(atomic(a), B),
+    B = atomic(a).
+
 :- end_tests(clean).
 
 :- begin_tests(unclean).
