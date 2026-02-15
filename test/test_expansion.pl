@@ -38,6 +38,34 @@ test(test4) :-
               ].
 
 test(test5) :-
+    macro_clause(n, [names([size])], Clauses),
+    Clauses = [ (interval_(atomic(size)=atomic(n), Res, _) :-
+                  eval(n, Res0),
+                  !, clean(Res0, Res))
+              ].
+
+test(test6) :-
+    macro_clause(n, [names([size]), hook(r_session:r_topic)], Clauses),
+    Clauses = [ (interval_(atomic(size)=atomic(n), Res, _) :-
+                  eval(hook(r_session:r_topic, n), Res0),
+                  !, clean(Res0, Res))
+              ].
+
+test(test7) :-
+    macro_clause(n, [prefix(rint), names([size])], Clauses),
+    Clauses = [ (interval_(atomic(size)=atomic(n), Res, _) :-
+                  rint:eval(n, Res0),
+                  !, rint:clean(Res0, Res))
+              ].
+
+test(test8) :-
+    macro_clause(n, [hook(r_session:r_topic), names([size]), prefix(rint)], Clauses),
+    Clauses = [ (interval_(atomic(size)=atomic(n), Res, _) :-
+                  rint:eval(hook(r_session:r_topic, n), Res0),
+                  !, rint:clean(Res0, Res))
+              ].
+
+test(test9) :-
     macro_clause((*)/2, interval_, [], Clauses),
     Clauses = [ (interval_(A...B * number(C), Res, _) :-
                   !, interval_(A...B * C...C, Res, _)),
@@ -45,7 +73,7 @@ test(test5) :-
                   !, interval_(A...A * C...D, Res, _))
               ].
 
-test(test6) :-
+test(test10) :-
     macro_clause(pt/3, interval_, [], [pattern([_, _, bool])], Clauses),
     Clauses = [ (interval_(pt(A...B, number(C), bool(Tail)), Res, _) :-
                   !, interval_(pt(A...B, C...C, bool(Tail)), Res, _)),
@@ -54,7 +82,7 @@ test(test6) :-
               ].
 
 
-test(test7) :-
+test(test11) :-
     macro_clause(pt/2, interval_, [], [prefix(interval)], Clauses),
     Clauses = [ (interval_(pt(A...B, number(C)), Res, _) :-
                   !, interval:interval_(pt(A...B, C...C), Res, _)),
@@ -62,7 +90,7 @@ test(test7) :-
                   !, interval:interval_(pt(A...A, C...D), Res, _))
               ].
 
-test(test8) :-
+test(test12) :-
     macro_clause(pt/3, interval_, [], [prefix(interval), pattern([_, _, bool])], Clauses),
     Clauses = [ (interval_(pt(A...B, number(C), bool(Tail)), Res, _) :-
                   !, interval:interval_(pt(A...B, C...C, bool(Tail)), Res, _)),
@@ -70,7 +98,23 @@ test(test8) :-
                   !, interval:interval_(pt(A...A, C...D, bool(Tail)), Res, _))
               ].
 
-test(test9) :-
+test(test13) :-
+    macro_clause((*)/2, interval_, [], [names([left, right])], Clauses),
+    Clauses = [ (interval_((atomic(left)=A...B)*(atomic(right)=number(C)), Res, _) :-
+                  !, interval_((atomic(left)=A...B) * (atomic(right)=C...C), Res, _)),
+                (interval_((atomic(left)=number(A))*(atomic(right)=C...D), Res, _) :-
+                  !, interval_((atomic(left)=A...A) * (atomic(right)=C...D), Res, _))
+              ].
+
+test(test14) :-
+    macro_clause(pt/3, interval_, [], [prefix(interval), pattern([_, _, bool]), names([q, df, 'lower.tail'])], Clauses),
+    Clauses = [ (interval_(pt(atomic(q)=A...B, atomic(df)=number(C), atomic('lower.tail')=bool(Tail)), Res, _) :-
+                  !, interval:interval_(pt(atomic(q)=A...B, atomic(df)=C...C, atomic('lower.tail')=bool(Tail)), Res, _)),
+                (interval_(pt(atomic(q)=number(A), atomic(df)=C...D, atomic('lower.tail')=bool(Tail)), Res, _) :-
+                  !, interval:interval_(pt(atomic(q)=A...A, atomic(df)=C...D, atomic('lower.tail')=bool(Tail)), Res, _))
+              ].
+
+test(test15) :-
     macro_clause((+)/2, all, [+, +], Clauses),
     Clauses = [ (interval_(A...B + C...D, Res, _):-
                   eval(A + C, L),
@@ -89,7 +133,7 @@ test(test9) :-
                   !, Res = number(Res0))
               ].
 
-test(test10) :-
+test(test16) :-
     macro_clause(choose/2, all, [+, +], [hook(r_session:r_topic)], Clauses),
     Clauses = [ (interval_(choose(A...B, C...D), Res, _):-
                   eval(hook(r_session:r_topic, choose(A, C)), L),
@@ -108,7 +152,7 @@ test(test10) :-
                   !, Res = number(Res0))
               ].
 
-test(test11) :-
+test(test17) :-
     macro_clause(choose/2, all, [+, +], [prefix(rint)], Clauses),
     Clauses = [ (interval_(choose(A...B, C...D), Res, _):-
                   rint:eval(choose(A, C), L),
@@ -127,7 +171,7 @@ test(test11) :-
                   !, Res = number(Res0))
               ].
 
-test(test12) :-
+test(test18) :-
     macro_clause(func/2, all, [/,+], [pattern([bool(true), _])], Clauses),
     Clauses = [ (interval_(func(bool(true), A...B), Res, _):-
                   eval(func(true, A), L),
@@ -138,7 +182,26 @@ test(test12) :-
                   !, Res = number(Res0))
               ].
 
-test(test13) :-
+test(test19) :-
+    macro_clause((+)/2, all, [+, +], [names([left, right])], Clauses),
+    Clauses = [ (interval_((atomic(left)=A...B)+(atomic(right)=C...D), Res, _):-
+                  eval(A + C, L),
+                  eval(B + D, U),
+                  !, Res = L...U),
+                (interval_((atomic(left)=A...B)+(atomic(right)=number(C)), Res, _):-
+                  eval(A + C, L),
+                  eval(B + C, U),
+                  !, Res = L...U),
+                (interval_((atomic(left)=number(A))+(atomic(right)=B...C), Res, _):-
+                  eval(A + B, L),
+                  eval(A + C, U),
+                  !, Res = L...U),
+                (interval_((atomic(left)=number(A))+(atomic(right)=number(B)), Res, _) :-
+                  eval(A + B, Res0),
+                  !, Res = number(Res0))
+              ].
+
+test(test20) :-
     macro_clause(func/2, all, [/,+], [pattern([bool(true), _]), prefix(rint), hook(r_session:r_topic)], Clauses),
     Clauses = [ (interval_(func(bool(true), A...B), Res, _):-
                   rint:eval(hook(r_session:r_topic, func(true, A)), L),
@@ -149,7 +212,7 @@ test(test13) :-
                   !, Res = number(Res0))
               ].
 
-test(test14) :-
+test(test21) :-
     macro_clause(var_pool/4, all, [+, /, +, /], [pattern([_, number, _, number])], Clauses),
     Clauses = [ (interval_(var_pool(A...B, number(C), D...E, number(F)), Res, _):-
                   eval(var_pool(A, C, D, F), L),
@@ -168,7 +231,7 @@ test(test14) :-
                   !, Res = number(Res0))
               ].
 
-test(test15) :-
+test(test22) :-
     macro_clause(var_pool/4, all, [+, /, +, /], [hook(r), pattern([_, number, _, number])], Clauses),
     Clauses = [ (interval_(var_pool(A...B, number(C), D...E, number(F)), Res, _):-
                   eval(r(var_pool(A, C, D, F)), L),
@@ -187,7 +250,7 @@ test(test15) :-
                   !, Res = number(Res0))
               ].
 
-test(test16) :-
+test(test23) :-
     macro_clause(var_pool/4, all, [+, /, +, /], [prefix(rint), pattern([_, number, _, number])], Clauses),
     Clauses = [ (interval_(var_pool(A...B, number(C), D...E, number(F)), Res, _):-
                   rint:eval(var_pool(A, C, D, F), L),
@@ -206,7 +269,7 @@ test(test16) :-
                   !, Res = number(Res0))
               ].
 
-test(test17) :-
+test(test24) :-
     macro_clause(var_pool/4, all, [+, /, +, /], [prefix(rint), hook(r), pattern([_, number, _, number])], Clauses),
     Clauses = [ (interval_(var_pool(A...B, number(C), D...E, number(F)), Res, _):-
                   rint:eval(r(var_pool(A, C, D, F)), L),
@@ -225,7 +288,7 @@ test(test17) :-
                   !, Res = number(Res0))
               ].
 
-test(test18) :-
+test(test25) :-
     macro_clause((-)/1, unary_negate, [+], Clauses),
     Clauses = [ (interval_(-(A...B), Res, _) :-
                   unary_negate(A, L), 
@@ -233,7 +296,7 @@ test(test18) :-
                   !, Res = L...U)
               ].
 
-test(test19) :-
+test(test26) :-
     macro_clause((-)/1, all, [+], Clauses),
     Clauses = [ (interval_(-(A...B), Res, _) :-
                   eval(-A, L), 
@@ -244,7 +307,7 @@ test(test19) :-
                   !, Res = number(Res0))
               ].
 
-test(test20) :-
+test(test27) :-
     macro_clause((-)/1, unary_negate, [+], [prefix(rint)], Clauses),
     Clauses = [ (interval_(-(A...B), Res, _) :-
                   rint:unary_negate(A, L), 
@@ -252,7 +315,7 @@ test(test20) :-
                   !, Res = L...U)
               ].
 
-test(test21) :-
+test(test28) :-
     macro_clause((-)/1, all, [+], [prefix(rint)], Clauses),
     Clauses = [ (interval_(-(A...B), Res, _) :-
                   rint:eval(-A, L), 
@@ -263,7 +326,7 @@ test(test21) :-
                   !, Res = number(Res0))
               ].
 
-test(test22) :-
+test(test29) :-
     macro_clause(func/2, unary_negate, [/, +], [pattern([bool(false), _])], Clauses),
     Clauses = [ (interval_(func(bool(false), A...B), Res, _) :-
                   unary_negate(false, A, L), 
@@ -271,7 +334,7 @@ test(test22) :-
                   !, Res = L...U)
               ].
 
-test(test23) :-
+test(test30) :-
     macro_clause(func/2, unary_negate, [/, +], [pattern([bool(true), _]), prefix(rint)], Clauses),
     Clauses = [ (interval_(func(bool(true), A...B), Res, _) :-
                   rint:unary_negate(true, A, L), 
@@ -279,7 +342,7 @@ test(test23) :-
                   !, Res = L...U)
               ].
 
-test(test24) :-
+test(test31) :-
     macro_clause((+)/2, plus, [+, +], Clauses),
     Clauses = [ (interval_(A...B + C...D, Res, _) :-
                   plus(A, C, L), 
@@ -295,7 +358,7 @@ test(test24) :-
                   !, Res = L...U)
               ].
 
-test(test25) :-
+test(test32) :-
     macro_clause((-)/2, minus, [+, -], Clauses),
     Clauses = [ (interval_(A...B - C...D, Res, _) :-
                   minus(A, D, L), 
@@ -311,7 +374,23 @@ test(test25) :-
                   !, Res = L...U)
               ].
 
-test(test26) :-
+test(test32) :-
+    macro_clause((-)/2, minus, [+, -], [names([left, right])], Clauses),
+    Clauses = [ (interval_((atomic(left)=A...B) - (atomic(right)=C...D), Res, _) :-
+                  minus(A, D, L), 
+                  minus(B, C, U), 
+                  !, Res = L...U), 
+                (interval_((atomic(left)=A...B) - (atomic(right)=number(C)), Res, _) :-
+                  minus(A, C, L), 
+                  minus(B, C, U), 
+                  !, Res = L...U), 
+                (interval_((atomic(left)=number(A)) - (atomic(right)=B...C), Res, _) :-
+                  minus(A, C, L), 
+                  minus(A, B, U), 
+                  !, Res = L...U)
+              ].
+
+test(test33) :-
     macro_clause(func/3, func_, [+,/,+], [pattern([_, bool(true), _])], Clauses),
     Clauses = [ (interval_(func(A...B, bool(true), C...D), Res, _) :-
                   func_(A, true, C, L), 
@@ -327,7 +406,7 @@ test(test26) :-
                   !, Res = L...U)
               ].
 
-test(test27) :-
+test(test34) :-
     macro_clause((-)/1, unary_negate, [+], [prefix(rint)], Clauses),
     Clauses = [ (interval_(-(A...B), Res, _) :-
                   rint:unary_negate(A, L), 
@@ -335,7 +414,7 @@ test(test27) :-
                   !, Res = L...U)
               ].
 
-test(test28) :-
+test(test35) :-
   macro_clause(func/3, func_, [+, -, /], [pattern([_, _, bool(false)]), prefix(interval)], Clauses),
   Clauses = [ (interval_(func(A...B, C...D, bool(false)), Res, _) :-
                 interval:func_(A, D, false, L), 
@@ -351,7 +430,7 @@ test(test28) :-
                 !, Res = L...U)
             ].
 
-test(test29) :-
+test(test36) :-
   macro_clause(func/3, func_, [+, -, /], [pattern([_, _, [bool(false), bool(true)]]), prefix(interval)], Clauses),
   Clauses = [ (interval_(func(A...B, C...D, bool(false)), Res, _) :-
                 interval:func_(A, D, false, L), 
@@ -379,7 +458,35 @@ test(test29) :-
                 !, Res = L...U)
             ].
 
-test(30) :-
+test(test37) :-
+  macro_clause(func/3, func_, [+, -, /], [pattern([_, _, [bool(false), bool(true)]]), prefix(interval), names([a, b, c])], Clauses),
+  Clauses = [ (interval_(func(atomic(a)=A...B, atomic(b)=C...D, atomic(c)=bool(false)), Res, _) :-
+                interval:func_(A, D, false, L), 
+                interval:func_(B, C, false, U), 
+                !, Res = L...U), 
+              (interval_(func(atomic(a)=A...B, atomic(b)=C...D, atomic(c)=bool(true)), Res, _) :-
+                interval:func_(A, D, true, L), 
+                interval:func_(B, C, true, U), 
+                !, Res = L...U), 
+              (interval_(func(atomic(a)=A...B, atomic(b)=number(C), atomic(c)=bool(false)), Res, _) :-
+                interval:func_(A, D, false, L), 
+                interval:func_(B, C, false, U), 
+                !, Res = L...U), 
+              (interval_(func(atomic(a)=A...B, atomic(b)=number(C), atomic(c)=bool(true)), Res, _) :-
+                interval:func_(A, D, true, L), 
+                interval:func_(B, C, true, U), 
+                !, Res = L...U), 
+              (interval_(func(atomic(a)=number(A), atomic(b)=B...C, atomic(c)=bool(false)), Res, _) :-
+                interval:func_(A, C, false, L), 
+                interval:func_(A, B, false, U), 
+                !, Res = L...U),
+              (interval_(func(atomic(a)=number(A), atomic(b)=B...C, atomic(c)=bool(true)), Res, _) :-
+                interval:func_(A, C, true, L), 
+                interval:func_(A, B, true, U), 
+                !, Res = L...U)
+            ].
+
+test(test38) :-
   macro_clause(ancova_ci/7, all, [/, /, /, /, /, /, /], [pattern([string, list, list, list, list, list, string])], Clauses),
   Clauses = [(interval_(ancova_ci(string(A), B, C, D, E, F, string(G)), H, _):-
                 eval(ancova_ci(A, B, C, D, E, F, G), I), !, H=number(I))
