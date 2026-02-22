@@ -1,6 +1,7 @@
 :- module(expansion, [macro_clause/2, macro_clause/3, macro_clause/4, macro_clause/5, op(150, xfx, ...)]).
 
 :- use_module(variations).
+:- use_module(cleaning).
 
 /** <module> Macro expansion
 
@@ -31,9 +32,10 @@ macro_clause(Op/Arity, Fn, Dir, Clause)
 %                  !, clean(Res0, Res))
 %               ].
 %
-macro_clause(Atomic, Options, Clause)
- => caller_predicate(Atomic, Term, Options),
-    Clause0 = (interval_(atomic(Atomic), Res, _) :-
+macro_clause(Atomic0, Options, Clause)
+ => caller_predicate(Atomic0, Term, Options),
+    name_args(Options, [atomic(Atomic0)], [Atomic]),
+    Clause0 = (interval_(Atomic, Res, _) :-
                 eval(Term, Res0),
                 !, clean(Res0, Res)),
     prefix(Options, Clause0, Clause1),
@@ -60,8 +62,9 @@ macro_clause(Op/Arity, interval_, [], Options, Clause)
     variations(Arity, Elements, Pattern, HeadArgs0),
     include(memberchk(...), HeadArgs0, HeadArgs1),
     include(memberchk(number), HeadArgs1, HeadArgs2),
-    maplist(maplist(instantiate), HeadArgs2, HeadArgs),
-    maplist(maplist(number_interval), HeadArgs, BodyArgs),
+    maplist(maplist(instantiate), HeadArgs2, HeadArgs3),
+    maplist(maplist(number_interval), HeadArgs3, BodyArgs),
+    maplist(name_args(Options), HeadArgs3, HeadArgs),
     maplist(terms_clause(Options, Op), HeadArgs, BodyArgs, Clause0),
     maplist(prefix(Options), Clause0, Clause).
 
@@ -94,9 +97,10 @@ macro_clause(Op/Arity, all, Dir, Options, Clause)
  => default_elements(Arity, all, Elements),
     option_(Arity, Pattern, Options),
     variations(Arity, Elements, Pattern, HeadArgs0),
-    maplist(maplist(instantiate), HeadArgs0, HeadArgs),
-    maplist(bounds(Dir), HeadArgs, LowerTerm, UpperTerm), 
-    maplist(terms_clause(Options, Op, all), HeadArgs, LowerTerm, UpperTerm, Clause0),
+    maplist(maplist(instantiate), HeadArgs0, HeadArgs1),
+    maplist(bounds(Dir), HeadArgs1, LowerTerm, UpperTerm), 
+    maplist(name_args(Options), HeadArgs1, HeadArgs2),
+    maplist(terms_clause(Options, Op, all), HeadArgs2, LowerTerm, UpperTerm, Clause0),
     maplist(prefix(Options), Clause0, Clause).
 
 
@@ -136,9 +140,10 @@ macro_clause(Op/Arity, Fn, Dir, Options, Clause)
     option_(Arity, Pattern, Options),
     variations(Arity, Elements, Pattern, HeadArgs0), 
     include(memberchk(...), HeadArgs0, HeadArgs1), 
-    maplist(maplist(instantiate), HeadArgs1, HeadArgs), 
-    maplist(bounds(Dir), HeadArgs, LowerTerm, UpperTerm), 
-    maplist(terms_clause(Options, Op, Fn), HeadArgs, LowerTerm, UpperTerm, Clause0),
+    maplist(maplist(instantiate), HeadArgs1, HeadArgs2), 
+    maplist(bounds(Dir), HeadArgs2, LowerTerm, UpperTerm), 
+    maplist(name_args(Options), HeadArgs2, HeadArgs3),
+    maplist(terms_clause(Options, Op, Fn), HeadArgs3, LowerTerm, UpperTerm, Clause0),
     maplist(prefix(Options), Clause0, Clause).
 
 %
@@ -203,6 +208,12 @@ macro_clause(Op/Arity, Fn, Dir, Options, Clause)
 %                       !, Res = number(Res0))
 %                   ].
 %
+% - names[Name1, Name2]: the arguments of the function are named.
+%     ?- macro_clause(pt/2, interval_, [], [names([q, df])], Clauses).
+%        Clauses = [ (interval_(pt(atomic(q)=A...B, atomic(df)=number(C)), Res, Flags) :-
+%                       !, interval_(pt(atomic(q)=A...B, atomic(df)=C...C), Res, Flags)),
+%                    (interval_(pt(atomic(q)=number(D), atomic(df)=E...F), Res, Flags) :-
+%                       !, interval_(pt(atomic(q)=D...D, atomic(df)=E...F), Res, Flags))].
 
 default_elements(Arity, Fn, Elements),
    Arity =:= 1,
@@ -259,6 +270,16 @@ caller_predicate(Term0, Term, Options),
 caller_predicate(Term0, Term, _Options)
  => Term = Term0.
 
+name_args(Options, Args0, Args),
+    option(names(Names0), Options)
+ => maplist(clean, Names0, Names),
+    maplist(name_value_arg, Names, Args0, Args).
+
+name_args(_Options, Args0, Args)
+ => Args = Args0.
+
+name_value_arg(Name, Value, (Name=Value)).
+
 terms_clause(Options, Op, all, HeadArgs, Args, _ArgsUpper, Clause),
     \+ memberchk_(_..._, HeadArgs)
  => HeadTerm =.. [Op | HeadArgs],
@@ -293,11 +314,16 @@ terms_clause(_Options, Op, Fn, HeadArgs, ArgsLower0, ArgsUpper0, Clause)
                 TermUpper,
                 !, Res = L...U).
  
-terms_clause(_Options, Op, HeadArgs, BodyArgs, Clause)
+terms_clause(Options, Op, HeadArgs, BodyArgs0, Clause)
  => HeadExpr =.. [Op | HeadArgs],
+    name_args(Options, BodyArgs0, BodyArgs),
     BodyExpr =.. [Op | BodyArgs],
     Clause = (interval_(HeadExpr, Res, Flags) :-
                 !, interval_(BodyExpr, Res, Flags)).
+
+memberchk_(A, [_Name=(H) | _T]) :-
+   =@=(A, H),
+   !, true.
 
 memberchk_(A, [H | _T]) :-
    =@=(A, H),
