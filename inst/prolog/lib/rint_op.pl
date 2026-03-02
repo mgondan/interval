@@ -19,6 +19,7 @@ For more information on the meaning of macro arguments, refer to the module 'exp
 
 :- use_module(expansion).
 :- use_module(cleaning).
+:- use_module(arguments).
 
 :- multifile(interval_/3).
 
@@ -85,20 +86,20 @@ interval_(:(A, B), Res, _Flags) :-
     !, Res = :(A, B).
 
 %
+% Preserve argument names
+%
+interval_(atomic(Name)=Arg, Res, Flags) :-
+    interval_(Arg, Res0, Flags),
+    !, Res = (atomic(Name)=Res0).
+
+%
 % Binomial distribution
 %
-% pbinom/3: default lower.tail = TRUE
-macro(pbinom/3, all, [+, -, -], [hook(r)]).
+fun(pbinom, args{1:[q], 2:[size], 3:[prob], 4:['lower.tail', true], 5:['log.p', false]}).
 
-% pbinom/4: explicit tail argument
-macro(pbinom/4, all, [+, -, -, /], [hook(r), pattern([_, _, _, bool(true)])]).
+macro(pbinom/5, all, [-, +, +, /, /], [hook(r), pattern([_, _, _, bool(false), bool(_)]), names([q, size, prob, 'lower.tail', 'log.p'])]).
 
-macro(pbinom/4, all, [-, +, +, /], [hook(r), pattern([_, _, _, bool(false)])]).
-
-% pbinom/5: explicit tail and log.p arguments
-macro(pbinom/5, all, [+, -, -, /, /], [hook(r), pattern([_, _, _, bool(true), bool(_)])]).
-
-macro(pbinom/5, all, [-, +, +, /, /], [hook(r), pattern([_, _, _, bool(false), bool(_)])]).
+macro(pbinom/5, all, [+, -, -, /, /], [hook(r), pattern([_, _, _, bool(true), bool(_)]), names([q, size, prob, 'lower.tail', 'log.p'])]).
 
 % qbinom/3: default lower.tail = TRUE
 macro(qbinom/3, all, [+, +, +], [hook(r)]).
@@ -756,3 +757,12 @@ interval_(dchisq(A1...A2, Df1...Df2, bool(Log)), Res, _Flags) :-
     !, Res = Res0.
 
 macro(dchisq/3, interval_, [], [pattern([_, _, bool(_)])]).
+
+% For all R functions defined via signature (fun/2)
+interval_(A, Res, Flags) :-
+    compound(A),
+    compound_name_arguments(A, Fun, UserArgs0),
+    fun(Fun, Signature),
+    maplist(interval__(Flags), UserArgs0, UserArgs1), 
+    process_args(Fun, Signature, UserArgs1, Call), 
+    !, interval_(Call, Res, Flags).
