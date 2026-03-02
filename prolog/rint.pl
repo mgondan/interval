@@ -68,9 +68,10 @@ For general information on the use of interval/2 and interval/3, please refer to
 
 :- nb_setval(digits, 2).
 
-:- consult(['../inst/prolog/lib/interface', 
-            '../inst/prolog/lib/rint_op', 
+:- consult(['../inst/prolog/lib/interface',
             '../inst/prolog/lib/op', 
+            '../inst/prolog/lib/rint_op', 
+            '../inst/prolog/lib/default', 
             '../inst/prolog/lib/eval_r',
             'r', 
             '../inst/prolog/lib/utility']).
