@@ -19,6 +19,7 @@ For more information on the meaning of macro arguments, refer to the module 'exp
 
 :- use_module(expansion).
 :- use_module(cleaning).
+:- use_module(arguments).
 
 :- multifile(interval_/3).
 
@@ -83,6 +84,13 @@ interval_(atomic(Var) <- Expr, Res, Flags) :-
 %
 interval_(:(A, B), Res, _Flags) :-
     !, Res = :(A, B).
+
+%
+% Preserve argument names
+%
+interval_(atomic(Name)=Arg, Res, Flags) :-
+    interval_(Arg, Res0, Flags),
+    !, Res = (atomic(Name)=Res0).
 
 %
 % Binomial distribution
@@ -756,3 +764,12 @@ interval_(dchisq(A1...A2, Df1...Df2, bool(Log)), Res, _Flags) :-
     !, Res = Res0.
 
 macro(dchisq/3, interval_, [], [pattern([_, _, bool(_)])]).
+
+% For all R functions defined via signature (fun/2)
+interval_(A, Res, Flags) :-
+    compound(A),
+    compound_name_arguments(A, Fun, UserArgs0),
+    fun(Fun, Signature),
+    maplist(interval__(Flags), UserArgs0, UserArgs1), 
+    process_args(Fun, Signature, UserArgs1, Call), 
+    !, interval_(Call, Res, Flags).
