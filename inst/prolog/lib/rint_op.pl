@@ -95,18 +95,11 @@ interval_(atomic(Name)=Arg, Res, Flags) :-
 %
 % Binomial distribution
 %
-% pbinom/3: default lower.tail = TRUE
-macro(pbinom/3, all, [+, -, -], [hook(r)]).
+fun(pbinom, args{1:[q], 2:[size], 3:[prob], 4:['lower.tail', true], 5:['log.p', false]}).
 
-% pbinom/4: explicit tail argument
-macro(pbinom/4, all, [+, -, -, /], [hook(r), pattern([_, _, _, bool(true)])]).
+macro(pbinom/5, all, [-, +, +, /, /], [hook(r), pattern([_, _, _, bool(false), bool(_)]), names([q, size, prob, 'lower.tail', 'log.p'])]).
 
-macro(pbinom/4, all, [-, +, +, /], [hook(r), pattern([_, _, _, bool(false)])]).
-
-% pbinom/5: explicit tail and log.p arguments
-macro(pbinom/5, all, [+, -, -, /, /], [hook(r), pattern([_, _, _, bool(true), bool(_)])]).
-
-macro(pbinom/5, all, [-, +, +, /, /], [hook(r), pattern([_, _, _, bool(false), bool(_)])]).
+macro(pbinom/5, all, [+, -, -, /, /], [hook(r), pattern([_, _, _, bool(true), bool(_)]), names([q, size, prob, 'lower.tail', 'log.p'])]).
 
 % qbinom/3: default lower.tail = TRUE
 macro(qbinom/3, all, [+, +, +], [hook(r)]).

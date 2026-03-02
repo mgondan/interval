@@ -571,6 +571,22 @@ test(pbinom43) :-
     interval(pbinom(10...12, 20...21, 0.6...0.7, false, true), Res),
     equal(Res, -0.8774... -0.0267).
 
+test(pbinom44) :-
+    interval(pbinom(q=10...12, size=20...21, prob=0.6...0.7, 'lower.tail'=false, 'log.p'=true), Res),
+    equal(Res, -0.8774... -0.0267).
+
+test(pbinom45) :-
+    interval(pbinom('log.p'=true, 'lower.tail'=false, prob=0.6...0.7, size=20...21, q=10...12), Res),
+    equal(Res, -0.8774... -0.0267).
+
+test(pbinom46) :-
+    interval(pbinom('log.p'=false, 'lower.tail'=true, prob=0.6...0.7, size=20...21, q=10...12), Res),
+    equal(Res, 0.0263...0.5842).
+
+test(pbinom47) :-
+    interval(pbinom(prob=0.6...0.7, size=20...21, q=10...12), Res),
+    equal(Res, 0.0263...0.5842).
+
 :- end_tests(binom).
 
 :- begin_tests(normal).
