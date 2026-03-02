@@ -37,5 +37,6 @@ The choice of using consult and not the module system is motivated by need for m
 
 :- consult(['../inst/prolog/lib/interface', 
             '../inst/prolog/lib/op', 
+            '../inst/prolog/lib/default',
             '../inst/prolog/lib/eval',
             '../inst/prolog/lib/utility']).

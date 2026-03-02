@@ -639,24 +639,3 @@ macro(max/2, all, [+, +]).
 % Min/2
 %
 macro(min/2, all, [+, +]).
-
-%
-% Evaluation of arguments.
-%
-interval_(A0, Res, Flags) :-
-    compound(A0),
-    compound_name_arguments(A0, Name, Args0),
-    maplist(interval__(Flags), Args0, Args1),
-    compound_name_arguments(A1, Name, Args1),
-    dif(A0, A1), 
-    !, interval_(A1, Res, Flags).
-
-interval_(A, _Res, _Flags) :-
-    !, 
-    term_string(A, String),
-    string_concat("No rule matches ", String, Message),
-    writeln(Message),
-    fail.
-
-interval__(Flags, A, Res) :-
-    interval_(A, Res, Flags).
