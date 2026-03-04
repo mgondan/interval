@@ -14,11 +14,14 @@ interval_(A0, Res, Flags) :-
     !, interval_(A1, Res, Flags).
 
 interval_(A, _Res, _Flags) :-
-    !, 
-    term_string(A, String),
-    string_concat("No rule matches ", String, Message),
-    writeln(Message),
-    fail.
+    !,
+    functor(A, Name, Arity),
+    throw(
+        error(
+            existence_error(function, Name/Arity),
+            context(interval_/3, 'No matching interval_/3 clause for this function')
+        )
+    ).
 
 interval__(Flags, A, Res) :-
     interval_(A, Res, Flags).
