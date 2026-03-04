@@ -9,7 +9,7 @@
 :- set_prolog_flag(float_zero_div, infinity).
 
 test_interval :-
-    run_tests([comparison, division, sqrt, power, abs, round, sin, list, no_evaluation, addition, subtraction, multiplication, exponential, unary_plus, unary_minus, max, min]).
+    run_tests([comparison, division, sqrt, power, abs, round, sin, list, no_evaluation, addition, subtraction, multiplication, exponential, unary_plus, unary_minus, max, min, errors]).
 
 :- begin_tests(comparison).
 
@@ -697,6 +697,13 @@ test(min2) :-
     Res = 1...3.
 
 :- end_tests(min).
+
+:- begin_tests(errors).
+
+test(test1, [throws(error(existence_error(function, log/1), _))]) :-
+    interval(log(10), _Res).
+
+:- end_tests(errors).
 
 % Helper predicate to check equality
 equal(Res0, Res) :-
